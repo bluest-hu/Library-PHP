@@ -1,112 +1,284 @@
 <?php
-	session_start();
+    session_start();
+    
+    require_once("class/user.class.php");
 
-    include("config.php");
-
+    // 存储警告信息
     $WARN_MESSAGE = array();
+    $CAN_LOGIN = TRUE;
+
+    // 存储每次的返回路径
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        // 如果非直接打开本页的话（$_SERVER['HTTP_REFERER'])的值为NULL）
+        $referer_url = parse_url($_SERVER['HTTP_REFERER'])['path'];
+    } else {
+        // 直接打开为NULL
+        $referer_url = NULL;
+    }
+
+    // 在session中初始化默认值为空
+    if (!isset($_SESSION['referer_url'])) {
+        $_SESSION['referer_url'] = NULL;
+    }
+
+    // 过滤出非本页的返回路径
+    if ($referer_url != $_SERVER['PHP_SELF'] && $referer_url != NULL) {
+       $_SESSION['referer_url'] =  $referer_url;
+    } 
 
     // 验证登陆
-	if ($_GET) {
-		$username = $_GET["username"];
-    	$password = $_GET["password"];
-	
-		if (!empty($username) && !empty($password)) {
-			
-			$username = mysql_real_escape_string(htmlspecialchars($username));
-			$password = mysql_real_escape_string(htmlspecialchars($password));
-
-			$password = $password = sha1($username . $password);
-
-			$query = "SELECT password, gravatar FROM user WHERE username = '$username' LIMIT 1";
+    if ($_GET) {
+        if ($_GET['action'] == "login") {
+            if ($_POST) {
+                // 存储POST 数据
+                $username     = $_POST["username"];
+                $password     = $_POST["password"];
+                // 处理记住我选项
+                $remberme   = isset($_POST["remberme"]) ? $_POST["remberme"] : false;
             
-            $result = $mysql->query_db($query);
-
-            if ($result) {
-            	while( $row = $mysql->fetch_array($result)) {
+                if (!empty($username) && !empty($password)) {
                     
-            		if ($password == $row['password']) {
-            			
-                        $_SESSION['username'] = htmlspecialchars_decode($username);
-                        $_SESSION['gravatar'] = $row['gravatar'];
-                        setcookie('username', $username, time() + 60 * 60 * 24);
-                        // 把密码加密后存储在Cookies中
-            			header("Location:user.php?user=$username");
-            		} else {
-                        array_push($WARN_MESSAGE, '密码或者用户名错误！');
-                    }
-            	}
-            }
-		} else {
-			if (empty($username)) {
-            	array_push($WARN_MESSAGE, '用户名不能为空！');
-        	} 
-        	if (empty($password)) {
-            	array_push($WARN_MESSAGE,'密码不能为空！');
-        	} 
-		}
-	}
+                    $username   = MySQLDatabase::escape($username);
+                    $password   = MySQLDatabase::escape($password);
+                    $remberme   = MySQLDatabase::escape($remberme);
+                    $password   = User::encry_password($username, $password);
 
+                    $login_query = "SELECT password, avatar, unique_id 
+                                FROM user 
+                                WHERE username = '$username' 
+                                LIMIT 1";
+
+                    $login_sql = new MySQLDatabase($DATABASE_CONFIG);
+
+                    $login_result = $login_sql->query_db($login_query);
+
+                    if ($login_result) {
+                        
+                        if ($login_sql->num_rows() === 0) {
+                            array_push($WARN_MESSAGE, '用户名不存在！');
+                        }
+
+                        while($row = $login_sql->fetch_array()) {
+                            if ($password === $row['password']) {
+                                
+                                $_SESSION['username']   = htmlspecialchars_decode($username);
+                                $_SESSION['is_login']   = TRUE;
+                                // $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
+                                $_SESSION['avatar'] = "image/default.png";
+                                $uniqid                 = User::get_unique();
+
+                                setcookie('username', $username, time() + 60 * 60 * 24);
+
+                                if ($remberme === "on") {
+                                    // 处理自动登录
+                                    $update_uipque_id = "UPDATE user 
+                                            SET unique_id = '$uniqid'
+                                            WHERE username = '$username' 
+                                            LIMIT 1";
+
+                                    $update_query = new MySQLDatabase($DATABASE_CONFIG);
+
+                                    $update_result = $update_query->query_db($update_uipque_id);
+
+                                    if($update_result) {
+                                        if ($update_query->affected_rows() == 1 ) {
+                                            //把密码加密后存储在Cookies中
+                                            setcookie('uniqid', $uniqid, time() + 60 * 60 * 24);
+                                        }
+                                    }
+                                }
+
+                                // 跳转到转入页面
+                                $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                                header("Location:" .$BASE_URL. $location); 
+                                
+                            } else {
+                                array_push($WARN_MESSAGE, '密码或者用户名错误！');
+                            }
+                        }
+                    }
+                } else {
+                    if (empty($username)) {
+                        array_push($WARN_MESSAGE, '用户名不能为空！');
+                    } 
+                    if (empty($password)) {
+                        array_push($WARN_MESSAGE,'密码不能为空！');
+                    } 
+                }
+            }
+        }
+    }
+    
     // 处理已经登陆的情况
-    if (isset($_SESSION['username'])) {
-        header("Location:user.php?user={$_SESSION['username']}");
+    if (isset($_SESSION['is_login'])) {
+        if ($_SESSION['is_login']) {
+            header("Location:user.php?user={$_SESSION['username']}");
+        }
+    }
+
+    // 处理记住我的自动那个登陆
+    if (isset($_COOKIE['username']) && isset($_COOKIE['uniqid']) ) {
+        $username   = $_COOKIE['username'];
+        $uniqid     = $_COOKIE['uniqid'];
+
+        $username   = MySQLDatabase::escape($username);
+        $uniqid     = MySQLDatabase::escape($uniqid);
+
+        $query = "SELECT unique_id, avatar
+                    FROM user 
+                    WHERE username = '$username' 
+                    LIMIT 1";
+                    
+        $mysql = new MySQLDatabase($DATABASE_CONFIG);
+        $result = $mysql->query_db($query);
+
+        if ($result) {
+            while($row = $mysql->fetch_array()) {
+                if ($uniqid === $row['unique_id']) {
+                    $_SESSION['username']   = htmlspecialchars_decode($username);
+                    $_SESSION['is_login']   = TRUE;
+                    $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
+                    $uniqid                 = User::get_unique(); 
+
+                    // 处理自动登录
+                    $update_query = "UPDATE user 
+                                SET unique_id = '$uniqid'
+                                WHERE username = '$username' 
+                                LIMIT 1";
+
+                    $update_mysql = new MySQLDatabase($DATABASE_CONFIG);
+
+                    $update_result = $update_mysql->query_db($update_query);
+
+                    if ($update_result) {
+                         if ($update_mysql->affected_rows() == 1 ) {
+                            //把密码加密后存储在Cookies中
+                            setcookie('uniqid', $uniqid, time() + 60 * 60 * 24);
+                            // 跳转到转入页面
+                            $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                            header("Location:" . $BASE_URL . $location); 
+                        }
+                    }
+                }
+            }
+        }
     }
 ?>
-
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>登陆</title>
+    <link href="style/reset.css" rel="stylesheet" type="text/css" />
     <link href="style/main.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-    </style>
+    <link href="style/style.css" rel="stylesheet" type="text/css" />
+    <link href="style/login.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+    <div class="main">
+    <?php include("templ/nav.temp.php"); ?>
+        <div class="content">
+            <div class="login box center">
+                <div class="login-title box-header">
+                    <img class="header-bg" src="image/7.jpg" alt="">
+                    <img  class="avatar-100 avatar" src="image/Logo.png" alt="" >
+                    <a class="register-btn avatar avatar-100" href="register.php">+</a>
+                </div>
 
-    <div class="login box">
-        <div class="login-title box-header">
-            <h3>登陆</h3>
-        </div>
+                <div class="box-body">
+                    <form name="login" action="<?php echo $_SERVER['PHP_SELF'] . "?action=login"; ?>" method="POST" class="form">
+                        <p class="clear">
+                            <label for="username" class="username-label">&#xF170</label>
+                            <input type="text" id="username" name="username" value="<?php echo isset($_COOKIE['username']) ? $_COOKIE['username'] : '';?>" placeholder="用户名" required>
+                        </p>
+                       
+                        <p class="clear">
+                            <label for="password" class="password-label">&#xF0C2</label>
+                            <input type="password" id="password" class="password" name="password" placeholder="密码" required>
+                        </p>
 
-        <div class="box-body">
-            <form name="login" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" class="form">
+                        <div class="rember-me-container">
+                            <label for="remeberme" class="remberme-label">记住我：</label>
+                            <div class="switcher">
+                                <div class="container">
+                                    <span class="indicator clear">
+                                        <span class="on status">ON</span>
+                                        <span class="blank status"></span>
+                                        <span class="off status">OFF</span>
+                                    </span>
+                                    <span class="left-area"></span>
+                                    <span class="right-area"></span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="remberme" class="rember-me" value="on" name="remberme">
+                        </div>
+ 
+                        <div>
+                            <input type="submit" class="btn" id="submit" value="Login">
+                        </div>
+                    </form>
+                   
+                </div>
 
-                <p>
-                    <img src="" alt="">
-                </p>
-
-                <p>
-                    <label for="username">用户名：</label>
-                    <input type="text" id="username" name="username" value="<?php echo isset($_COOKIE['username']) ? $_COOKIE['username'] : '';?>" placeholder="用户名">
-                </p>
-               
-                <p>
-                    <label for="password">密码：</label> 
-                    <input type="password" id="password" class="password" name="password">
-                </p>
-
-                <p>
-                    <input type="submit" class="btn" value="submit">
-                    <span class="clear"></span>
-                </p>
-
-            </form>
-           
-        </div>
-
-        <div class="box-footer">
-            <div class="warning message" style="display:<?php echo count($WARN_MESSAGE) > 0 ? 'block' : 'none'; ?>">
-                <span class="close-btn">X</span>
-                <?php
-                foreach ($WARN_MESSAGE as $value) {
-                    echo "\t\t" . "<p>{$value}</P>\n";
-                }?>
+                <?php if (count($WARN_MESSAGE) >= 1) { ?>
+                <div class="box-footer">
+                    <div class="warning message">
+                        <span class="close-btn">X</span>
+                         <?php
+                            foreach ($WARN_MESSAGE as $value) {
+                                echo "\t\t" . "<p>{$value}</P>\n";
+                        }?> 
+                    </div>
+                </div>
+                <?php } ?>
             </div>
-        </div>
+        </div>  
     </div>
-	
+	<?php include("templ/footer.temp.php");?>
 </body>
+<script type="text/javascript" src="script/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+
+// 处理
+$(function() {
+    var closeBtn = $(".message .close-btn");
+    if (closeBtn) {
+        closeBtn.on("click", function () {
+            closeBtn.parent(".message").slideUp();
+        });
+    }
+});
+</script> 
+<script type="text/javascript">
+    // 滑动按钮
+    ($(function() {
+      var moveDis = parseInt($(".switcher").css("width"));  
+      var $indicator = $(".switcher .indicator");
+
+      // reset width
+      $indicator.css({"width": moveDis / 2 * 3});
+
+      var remberme = document.getElementById('remberme');
 
 
+      $(".switcher .container .left-area").on("click", function (event) {
+        $indicator.animate({"left": 0}, "fast", "linear", function () {
+            remberme.value  = "on";
+        });
+
+        event = event||window.event;
+        event.preventDefault(); 
+      });
+
+    $(".switcher .container .right-area").on("click", function() {
+        $indicator.animate({"left": - moveDis / 2  }, "fast", "linear", function () {
+            remberme.value  = "off";
+        });
+        event = event||window.event;
+        event.preventDefault(); 
+    });
+
+    }));
+</script>
 
 </html>

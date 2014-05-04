@@ -5,7 +5,6 @@
  */
 class DataBase {
 
-
 	// DB Conection Infomation
 	protected $SERVER 		= null;
 	protected $USERNAME 	= null;
@@ -87,8 +86,12 @@ class DataBase {
 	 * @param  	string $query SQL查询语句
 	 * @return string        转以后的SQL查询语句
 	 */
-	public function escape($str) {
+	public static function escape($str) {
 		return mysql_escape_string($str);
+	}
+
+	public  function affected_rows() {
+		
 	}
 }
 

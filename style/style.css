@@ -1,0 +1,56 @@
+.switcher {
+	border: 1px solid #E0E0E0; 
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.switcher .container {
+	width: inherit;
+	height: inherit;
+	position: relative;
+}
+
+.switcher .indicator,
+.switcher .left-area,
+.switcher .right-area {
+	position: absolute;
+	top: 0px;
+	width: 50%;
+	height: inherit;
+	display: block;
+}
+
+.switcher .indicator {
+	width: 150%;
+}
+
+.switcher .indicator .status {
+	float: left;
+	display: block;
+	width: 33.33333333333%;
+	height: inherit;
+	text-align: center;
+	font: normal 12px/20px Arial;
+	color: #FFF;
+}
+
+.switcher .indicator .on {
+	background-color: #27AE60;
+}
+
+.switcher .indicator .off {
+	background-color: #E74C3C;
+}
+
+
+.switcher .left-area {
+	left: 0px;
+}
+.switcher .right-area {
+	right: 0px;
+}
+
+.switcher .left-area:hover,
+ .switcher .right-area:hover {
+ 	cursor: pointer;
+}

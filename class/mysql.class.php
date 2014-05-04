@@ -51,6 +51,7 @@ class MySQLDatabase extends DataBase{
 			die("无法选择数据库" . mysql_error());
 			// close connection
 			$this->close_db();
+			return FALSE;
 		}
 	}
 
@@ -67,6 +68,10 @@ class MySQLDatabase extends DataBase{
 			die("无法查询数据库" . mysql_error());
 			// close connection
 			$this->close_db();
+			
+			return FALSE;
+		} else {
+			return $this->result;
 		}
 	}
 
@@ -77,8 +82,9 @@ class MySQLDatabase extends DataBase{
 	public function fetch_array() {
 		if (!$this->result) {
 			die("无法查询数据库" . mysql_error());
+			return FALSE;
 		} else {
-			return mysql_fetch_array($this->result);
+			return mysql_fetch_array($this->result) ;
 		}
 	}
 
@@ -89,6 +95,7 @@ class MySQLDatabase extends DataBase{
 	public function fetch_row() {
 		if (!$this->result) {	
 			die("无法查询数据库" . mysql_error());
+			return FALSE;
 		} else {
 			return mysql_fetch_row($this->result);
 		}
@@ -99,8 +106,16 @@ class MySQLDatabase extends DataBase{
 	 * @param  	string $query SQL查询语句
 	 * @return string        转以后的SQL查询语句
 	 */
-	public function escape($str) {
-		return mysql_escape_string($str);
+	public static function escape($str) {
+		return mysql_real_escape_string(htmlspecialchars($str));
+	}
+
+	public function num_rows() {
+		return mysql_num_rows($this->result);
+	}
+
+	public  function affected_rows() {
+		return mysql_affected_rows ($this->link);
 	}
 }
 ?>

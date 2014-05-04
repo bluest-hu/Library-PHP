@@ -7,7 +7,43 @@
 html, body {
 	padding: 0px;
 	margin: 0px;
+	font: normal 16px/1.5 "Microsoft Yahei","宋体", Arial;
 }
 
+h1, h2, h3, h4, h5, p {
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+img {
+	border: none; 
+
+}
+
+input {
+	padding: 0;
+	margin: 0;
+	font-family: "Microsoft Yahei";
+	box-sizing: content-box; /* 让你丫的盒模型不一致*/
+}
+
+input[type="text"], 
+input[type="password"] {
+	border: 1px solid #E0E0E0;
+}
+
+input[type="submit"] {
+	border: none;
+	border-radius: 2px;
+	color: #FFF;
+}
+
+input:focus {
+	outline: none;
+}
 
 
