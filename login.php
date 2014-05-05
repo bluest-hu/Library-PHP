@@ -43,7 +43,7 @@
                     $remberme   = MySQLDatabase::escape($remberme);
                     $password   = User::encry_password($username, $password);
 
-                    $login_query = "SELECT password, avatar, unique_id 
+                    $login_query = "SELECT password, avatar, unique_id, level
                                 FROM user 
                                 WHERE username = '$username' 
                                 LIMIT 1";
@@ -64,8 +64,9 @@
                                 $_SESSION['username']   = htmlspecialchars_decode($username);
                                 $_SESSION['is_login']   = TRUE;
                                 // $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
-                                $_SESSION['avatar'] = "image/default.png";
+                                $_SESSION['avatar']     = "image/default.png";
                                 $uniqid                 = User::get_unique();
+                                $_SESSION['level']      = (int)$row['level']; 
 
                                 setcookie('username', $username, time() + 60 * 60 * 24);
 
@@ -124,7 +125,7 @@
         $username   = MySQLDatabase::escape($username);
         $uniqid     = MySQLDatabase::escape($uniqid);
 
-        $query = "SELECT unique_id, avatar
+        $query = "SELECT unique_id, avatar, level
                     FROM user 
                     WHERE username = '$username' 
                     LIMIT 1";

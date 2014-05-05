@@ -115,6 +115,28 @@
 	color: #666;
 }
 
+.header .user-area .login-btn,
+.header .user-area .register-btn {
+	display: inline-block;
+	margin: 24px 0;
+	width: 100px;
+	height: 30px;
+	text-align: center;
+	float: left;
+	line-height: 30px;
+	border-top: none;
+	border-bottom: none;
+	font-weight: bold;
+	font-size: 14px;
+	border: 1px solid #E74C3C;
+	border-radius: 50px;
+	color: #E74C3C;
+}
+
+.header .user-area .register-btn {
+	margin-left: 20px;
+}
+
 .header .navigation ul li {
 	display: inline-block;
 	position: relative;
@@ -133,9 +155,10 @@
 	transition: all .1s ease;
 }
 
-.header .navigation ul li:hover::after {
+.header .navigation ul li:hover::after,
+.header .navigation ul li.current::after {
 	display: block;
-	bottom: 2px;
+	bottom: 1px;
 }
 
 .header .navigation ul li a {
@@ -146,19 +169,20 @@
 	color: #2980B9;
 }
 
-.header .navigation ul li a:hover {
+.header .navigation ul li a:hover,
+.header .navigation ul li.current a {
 	color: #3498DB; 
 }
 
 .header .navigation ul li a span.icon {
 	padding-right: 5px;
-	font-size: 24px;	
+	font-size: 22px;	
 } 
 
 /** Search Form **/
 .header .search {
-	height: 26px;
-	margin: 30px 10px 30px 10px;
+	height: 30px;
+	margin: 25px 10px 25px 10px;
 	padding-left: 10px;
 	border-left: 1px solid #E0E0E0;
 }
@@ -169,9 +193,9 @@
 }
 
 .header .search-from #s {
-	width: 100px;
+	width: 120px;
 	border-radius: 30px;
-	height: 24px;
+	height: 28px;
 	position: relative;
 	text-indent: 10px;
 	transition: width .5s ease;
@@ -200,7 +224,6 @@
 	cursor: pointer;
 	color: #2C3E50;
 }
-
 
 .header .title a h1 {
 	line-height: 80px;

@@ -16,6 +16,7 @@ CREATE TABLE user (
     loaction VARCHAR(255) NULL,
     sex INT NULL,
     level INT NOT NULL,
+    cover_bg VARCHAR(255) NULL,
 	PRIMARY KEY (ID),
 	UNIQUE(username),
     CHECK(sex = 0 OR sex = 1 OR sex = 2),

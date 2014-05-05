@@ -46,4 +46,11 @@ input:focus {
 	outline: none;
 }
 
+ul,
+ul li {
+	padding: 0px;
+	margin: 0px;
+	list-style: none;
+}
+
 

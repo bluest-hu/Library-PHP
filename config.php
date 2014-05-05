@@ -1,6 +1,5 @@
 <?php 
 
-
 /**
  * 数据库信息
  */
@@ -10,4 +9,7 @@ $DATABASE_CONFIG = array(
         'password'  => 'usbw',
         'database'  => 'library'
         );
+$BASE_URL = "http://localhost:8080";
+
+
 ?>

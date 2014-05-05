@@ -1,5 +1,5 @@
 <?php 
-
+session_start();
 include("class/mysql.class.php")
 ?>
 
@@ -9,10 +9,20 @@ include("class/mysql.class.php")
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link href="style/reset.css" rel="stylesheet" type="text/css" />
+    <link href="style/main.css" rel="stylesheet" type="text/css" />
+    <link href="style/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-	<h1 style="text-align:center">Nothing Here!造物主正在紧张施工中~~</h1>
-	<a href="login.php">Login</a>
-	<a href="register.php">Register</a>
+	<div class="main">
+		<?php include("templ/nav.temp.php"); ?>
+
+		<div class="content">
+			<h1 style="text-align:center">Nothing Here!造物主正在紧张施工中~~</h1>
+			<a href="login.php">Login</a>
+			<a href="register.php">Register</a>
+			
+		</div>
+	</div>
 </body>
 </html>
