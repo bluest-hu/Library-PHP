@@ -90,7 +90,7 @@
                                 }
 
                                 // 跳转到转入页面
-                                $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                                $location = is_null($_SESSION['referer_url']) ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
                                 header("Location:" .$BASE_URL. $location); 
                                 
                             } else {
@@ -140,6 +140,7 @@
                     $_SESSION['is_login']   = TRUE;
                     $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
                     $uniqid                 = User::get_unique(); 
+                    $_SESSION['level']      = $row['level'];
 
                     // 处理自动登录
                     $update_query = "UPDATE user 

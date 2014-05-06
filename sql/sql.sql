@@ -25,9 +25,17 @@ CREATE TABLE user (
 );
 
 # TABLE Books
-
 CREATE TABLE books (
     ID INT NOT NULL AUTO_INCREMENT,
-    bookname VARCHAR(255) NOT NULL,
-    
+    book_name VARCHAR(255) NOT NULL,
+    publisher VARCHAR(255) NULL,
+    cover VARCHAR(255) NULL,
+    author INT NULL,
+    publish_date TIMESTAMP NULL,
+    sum_count INT NOT NULL,
+    borrowed_count INT DEFAULT 0,
+    tags VARCHAR(255),
+    category INT NULL,
+    summary TEXT NULL,
+    PRIMARY KEY (ID)
 );

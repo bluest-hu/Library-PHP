@@ -19,10 +19,8 @@ include("class/mysql.class.php")
 
 		<div class="content">
 			<h1 style="text-align:center">Nothing Here!造物主正在紧张施工中~~</h1>
-			<a href="login.php">Login</a>
-			<a href="register.php">Register</a>
-			
 		</div>
+		<?php include("templ/footer.temp.php");?>
 	</div>
 </body>
 </html>

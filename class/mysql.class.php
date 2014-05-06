@@ -19,7 +19,7 @@ class MySQLDatabase extends DataBase{
 	public function open_db() {
 		// SAVE CONNECTION LINK
 		$this->link = mysql_connect($this->SERVER, $this->USERNAME, $this->PASSWORD);
-		
+		mysql_query("SET NAMES UTF8");
 		if (!$this->link) {
 			die("链接数据库失败" . mysql_error());
 			$this->close_db();

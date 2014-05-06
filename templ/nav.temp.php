@@ -26,8 +26,8 @@ function get_current($target_name) {
 				<li class="<?php get_current("index.php"); ?>">
 					<a href="<?php echo $BASE_URL;?>"><span class="icon">&#xF161</span>Index</a>
 				</li>
-				<li class="<?php get_current("aa.php"); ?>">
-					<a href=""><span class="icon">&#xF0D1</span>Books</a>
+				<li class="<?php get_current("books.php"); ?>">
+					<a href="<?php echo $BASE_URL. "/books.php";?>"><span class="icon">&#xF0D1</span>Books</a>
 				</li>
 				<li class="<?php get_current("bb.php"); ?>">
 					<a href=""><span class="icon">&#xF136</span>Author</a>
@@ -60,7 +60,7 @@ function get_current($target_name) {
 				<div class="user-title left clear">
 					<span class="username text-large left"><?php echo $_SESSION['username']; ?></span>
 					<!-- <br/> -->
-					<span class="text-normal left">
+					<span class="text-normal left level">
 					<?php
 					switch($_SESSION['level']) {
 						case 0:
@@ -80,10 +80,9 @@ function get_current($target_name) {
 					</span>
 				</div>
 				<div class="user-action">
-					<ul>
-						<li><a href=""></a></li>
-						<li><a href=""></a></li>
-						<li><a href=""></a></li>
+					<ul class="actions">
+						<li><a href="<?php echo $BASE_URL . 'cc';?>"></a></li>
+						<li><a href="<?php echo $BASE_URL . '/Logout.php'; ?>">Logout</a></li>
 					</ul>
 				</div>
 			</div>
@@ -93,8 +92,8 @@ function get_current($target_name) {
 		} else {
 		 ?>
 		<div class="user-area not-login">
-			<a class="login-btn ribbon" href="">Login</a>
-			<a class="register-btn" href="">Register</a>
+			<a class="login-btn ribbon" href="<?php echo $BASE_URL . '/login.php' ?>">Login</a>
+			<a class="register-btn" href="<?php echo $BASE_URL . '/register.php' ?>">Register</a>
 		</diiv>
 		<?php } ?>
 		</div>

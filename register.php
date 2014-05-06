@@ -110,8 +110,7 @@ if ($_POST) {
         $query = "INSERT INTO user 
             (username, password, register_time, unique_id, level) 
             VALUES ('$username', '$password', NOW(), '$unique_id', 1);";
-
-        echo $query;   
+ 
         
         $result = $mysql->query_db($query);
 
@@ -197,6 +196,7 @@ if (isset($_SESSION['is_login'])) {
                     </div>
                 </div>  
             </div>
+            <?php include("templ/footer.temp.php");?>      
         </div>
     </body>
     <script type="text/javascript" src="script/jquery-2.1.0.min.js"></script>
