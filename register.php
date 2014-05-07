@@ -199,19 +199,8 @@ if (isset($_SESSION['is_login'])) {
             <?php include("templ/footer.temp.php");?>      
         </div>
     </body>
-    <script type="text/javascript" src="script/jquery-2.1.0.min.js"></script>
-    <script type="text/javascript">
-
-        // 处理
-        $(function() {
-            var closeBtn = $(".message .close-btn");
-            if (closeBtn) {
-                closeBtn.on("click", function () {
-                    closeBtn.parent(".message").slideUp();
-                });
-            }
-        });
-    </script>
+    <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
     <script type="text/javascript">
         window.addEventListener("DOMContentLoaded", function () {
 

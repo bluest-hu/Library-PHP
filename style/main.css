@@ -139,24 +139,39 @@
 .header .user-area .login-btn,
 .header .user-area .register-btn {
 	display: inline-block;
-	margin: 24px 0;
-	width: 100px;
-	height: 30px;
+	margin: 25px 0;
+	width: 90px;
+	height: 28px;
 	text-align: center;
 	float: left;
-	line-height: 30px;
+	line-height: 28px;
 	border-top: none;
 	border-bottom: none;
 	font-weight: bold;
-	font-size: 14px;
-	border: 1px solid #E74C3C;
+	font-size: 12px;
+	border: 1px solid #3498DB;
 	border-radius: 50px;
-	color: #E74C3C;
+	color: #3498DB;
+	transition: background-color 0.5s ease,
+				color 0.5s ease;
 }
 
 .header .user-area .register-btn {
-	margin-left: 20px;
+	margin-left: 10px;
+	color: #27AE60;
+	border-color: #27AE60;
 }
+
+.header .user-area .login-btn:hover {
+	background-color: #3498DB;
+	color: #FFF;
+}
+
+.header .user-area .register-btn:hover {
+	background-color: #27AE60;
+	color: #FFF;
+}
+
 
 .header .navigation ul li {
 	display: inline-block;
@@ -204,7 +219,7 @@
 .header .search {
 	height: 30px;
 	margin: 25px 10px 25px 10px;
-	padding-left: 10px;
+	padding-left: 20px;
 	border-left: 1px solid #E0E0E0;
 }
 
@@ -256,4 +271,42 @@
 	padding: 20px 0;
 	background-color: #333;
 }
+
+
+
+.number-picker {
+	width: 20 0px;
+	height: 30px;
+	overflow: hidden;
+	border: 1px solid #E0E0E0;
+	border-radius: 2px;
+}
+
+.number-picker .reduce-number-btn,
+.number-picker .add-number-btn {
+	display: block;
+	width: 20%;
+	line-height: 30px;
+	text-align: center;
+	font-size: 18px;
+}
+
+.number-picker .reduce-number-btn:hover,
+.number-picker .add-number-btn:hover {
+	cursor: pointer;
+}
+
+.number-picker .number-text {
+	display: block;
+	border: 1px solid #E0E0E0;
+	border-top: none;
+	border-bottom: none;
+	box-sizing: border-box;
+	width: 60%;
+	background-color: yellow;
+	height: 30px;
+	text-align: center;
+}
+
+
 

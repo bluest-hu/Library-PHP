@@ -65,6 +65,7 @@
                                 $_SESSION['is_login']   = TRUE;
                                 // $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
                                 $_SESSION['avatar']     = "image/default.png";
+                                $_SESSION['user_bg']    = "image/7.jpg";
                                 $uniqid                 = User::get_unique();
                                 $_SESSION['level']      = (int)$row['level']; 
 
@@ -183,7 +184,7 @@
             <div class="login box center">
                 <div class="login-title box-header">
                     <img class="header-bg" src="image/7.jpg" alt="">
-                    <img  class="avatar-100 avatar" src="image/Logo.png" alt="" >
+                    <img  class="avatar-100 avatar" src="image/default.png" alt="" >
                     <a class="register-btn avatar avatar-100" href="register.php">+</a>
                 </div>
 
@@ -238,49 +239,8 @@
     </div>
 	<?php include("templ/footer.temp.php");?>
 </body>
-<script type="text/javascript" src="script/jquery-2.1.0.min.js"></script>
-<script type="text/javascript">
-
-// 处理
-$(function() {
-    var closeBtn = $(".message .close-btn");
-    if (closeBtn) {
-        closeBtn.on("click", function () {
-            closeBtn.parent(".message").slideUp();
-        });
-    }
-});
-</script> 
-<script type="text/javascript">
-    // 滑动按钮
-    ($(function() {
-      var moveDis = parseInt($(".switcher").css("width"));  
-      var $indicator = $(".switcher .indicator");
-
-      // reset width
-      $indicator.css({"width": moveDis / 2 * 3});
-
-      var remberme = document.getElementById('remberme');
-
-
-      $(".switcher .container .left-area").on("click", function (event) {
-        $indicator.animate({"left": 0}, "fast", "linear", function () {
-            remberme.value  = "on";
-        });
-
-        event = event||window.event;
-        event.preventDefault(); 
-      });
-
-    $(".switcher .container .right-area").on("click", function() {
-        $indicator.animate({"left": - moveDis / 2  }, "fast", "linear", function () {
-            remberme.value  = "off";
-        });
-        event = event||window.event;
-        event.preventDefault(); 
-    });
-
-    }));
-</script>
+<script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
+<script type="text/javascript"></script>
 
 </html>

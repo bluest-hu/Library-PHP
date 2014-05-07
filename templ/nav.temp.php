@@ -36,7 +36,7 @@ function get_current($target_name) {
 					<a href="<?php echo $BASE_URL . '/user.php'; ?>"><span class="icon">&#xF045</span>Users</a>
 				</li>
 				<li>
-					<a href="">test</a>
+					<a href=""><span class="icon">&#xF0AD</span>Tags</a>
 				</li>
 			</ul>
 		</nav>
@@ -67,7 +67,7 @@ function get_current($target_name) {
 							echo "Super";
 							break;
 						case 1:
-							echo "2B用户";
+							echo "一般用户";
 							break;
 						case 2:
 							echo "Admin";
@@ -92,8 +92,8 @@ function get_current($target_name) {
 		} else {
 		 ?>
 		<div class="user-area not-login">
-			<a class="login-btn ribbon" href="<?php echo $BASE_URL . '/login.php' ?>">Login</a>
-			<a class="register-btn" href="<?php echo $BASE_URL . '/register.php' ?>">Register</a>
+			<a class="login-btn ribbon" href="<?php echo $BASE_URL . '/login.php' ?>"><span class="icons">&#xF150</span> Login</a>
+			<a class="register-btn" href="<?php echo $BASE_URL . '/register.php' ?>"><span class="icons">&#xF171</span>Register</a>
 		</diiv>
 		<?php } ?>
 		</div>

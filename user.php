@@ -38,7 +38,7 @@ if (isset($_SESSION["username"])) {
 	<style type="text/css">
 
 	.user-nav {
-		border-radius: 4px;
+		border-radius: 8px;
 		width: 250px;
 		background-color: #373942;
 	}
@@ -46,9 +46,35 @@ if (isset($_SESSION["username"])) {
 	.user-nav .navigation {
 		padding-bottom: 20px;
 	}
-	
+
 	.user-nav .user-card {
 		height: 100px;
+		position: relative;
+		overflow: hidden;
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		padding-bottom: 20px; 
+	}
+
+	.user-avastar {
+
+	}
+
+	.user-card .user-bg {
+		position: absolute;
+		width: 254px;
+		height: 104px;
+		top: -2px;
+		left: -2px;
+		-webkit-filter: blur(2px);
+		-moz-filter: blur(2px);
+		-ms-filter: blur(2px);
+		filter: blur(2px);
+	}
+	
+	.user-card .user-info {
+		position: absolute;
+		padding: 20px;
 	}
 
 	.user-nav .navigation a {
@@ -78,28 +104,33 @@ if (isset($_SESSION["username"])) {
 			
 			<div class="left user-nav">
 				<div class="user-card">
-					<a class="avatar avatar-50 left" href="<?php echo $BASE_URL . "/user.php?user=" . $_SESSION['username'] ?>">
-						<img class="avatar-50" src="<?php echo isset($_SESSION['avatar']) ?  $_SESSION['avatar'] : "image/default.png";  ?>">
-					</a>
-					<?php echo $_SESSION['username']; ?>
-					<span class="text-normal level">
-					<?php
-					switch($_SESSION['level']) {
-						case 0:
-							echo "Super";
-							break;
-						case 1:
-							echo "2B用户";
-							break;
-						case 2:
-							echo "Admin";
-							break;
-						default:
-							echo "";		
-							break;
-					}		
-					?>
-					</span>
+					<img class="user-bg" src="<?php echo $_SESSION['user_bg']; ?>" alt="">
+					<div class="user-info">
+						<a class="avatar avatar-50 left user-avastar" href="<?php echo $BASE_URL . "/user.php?user=" . $_SESSION['username'] ?>">
+							<img class="avatar avatar-50" src="<?php echo isset($_SESSION['avatar']) ?  $_SESSION['avatar'] : "image/default.png";  ?>">
+						</a>
+
+						<?php echo $_SESSION['username']; ?>
+						<span class="text-normal level">
+						<?php
+						switch($_SESSION['level']) {
+							case 0:
+								echo "Super";
+								break;
+							case 1:
+								echo "2B用户";
+								break;
+							case 2:
+								echo "Admin";
+								break;
+							default:
+								echo "";		
+								break;
+						}		
+						?>
+						</span>
+					</div>
+					
 				</div>
 				<nav class="navigation">
 					<ul>
@@ -135,9 +166,6 @@ if (isset($_SESSION["username"])) {
 					</li>
 				</ul>
 			</div>
-
-
-			<a href="logout.php">LOGOUT</a>
 		</div>
 	</div>
 	<?php include("templ/footer.temp.php");?>
