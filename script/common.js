@@ -63,14 +63,10 @@ $(function () {
 		return;
 	}
 
-
 	$numberPicks.each(function (index, element) {
 		$numberPick = $(element);
-
-
 		$reduceBtn = $numberPick.find(".reduce-number-btn");
 		$addBtn = $numberPick.find(".add-number-btn");
-
 
 		$reduceBtn.on("click", function(event){
 
@@ -120,8 +116,4 @@ $(function () {
 			$(this).attr("value", value);	
 		});
 	});
-
-
-	
-
 });

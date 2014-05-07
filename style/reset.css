@@ -29,6 +29,9 @@ input {
 	margin: 0;
 	font-family: "Microsoft Yahei";
 	box-sizing: content-box; /* 让你丫的盒模型不一致*/
+	height: 30px;
+	width: 250px;
+	border-radius: 2px;
 }
 
 input[type="text"], 

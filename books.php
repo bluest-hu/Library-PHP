@@ -11,6 +11,10 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
 
 if ($_GET && $_GET['action'] == "add_books") {
 	if ($_POST) {
+
+
+		print_r($_POST);
+
 		$bookname 		= MySQLDatabase::escape(trim($_POST['bookname']));
 		$publisher 		= MySQLDatabase::escape(trim($_POST['publisher']));
 		$cover 			= MySQLDatabase::escape(trim($_POST['cover']));
@@ -61,6 +65,10 @@ if ($_GET && $_GET['action'] == "add_books") {
 	<link href="style/reset.css" rel="stylesheet" type="text/css" />
     <link href="style/main.css" rel="stylesheet" type="text/css" />
     <link href="style/style.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/font-awesome.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/simditor.css" />
+	
 	<style type="text/css">
 
 	.books-list {
@@ -117,22 +125,14 @@ if ($_GET && $_GET['action'] == "add_books") {
 					<label for=""></label>
 					<div class="number-picker clear">
 						<span class="reduce-number-btn left">-</span>
-						<input type="text" class="number-text left" value="0">
+						<input type="text" class="number-text left" value="0" name="sumCount">
 						<span class="add-number-btn left" >+</span>
-						<input type="hideen" name="sumCount">
 					</div>
 					
 				</p>
-
 				<p>
-					<div class="number-picker clear">
-						<span class="reduce-number-btn left">-</span>
-						<input type="text" class="number-text left" value="0">
-						<span class="add-number-btn left" >+</span>
-						<input type="hideen" name="sumCount">
-					</div>
+					<textarea id="editor" placeholder="这里输入内容" autofocus></textarea>
 				</p>
-
 				<p>
 					<label for=""></label>
 					<input type="text" name="cover">
@@ -176,6 +176,31 @@ if ($_GET && $_GET['action'] == "add_books") {
 </body>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
+<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/module.js"></script>
+<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/uploader.js"></script>
+<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/simditor.js"></script>
+<script type="text/javascript">
+	var editor = new Simditor({
+	  	textarea: $('#editor'),
+	  	toolbar: [
+			'title',
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+			'ol',
+			'ul',
+			'blockquote',
+			'code',
+			'table',
+			'link',
+			'image',
+			'hr', 
+			'indent', 
+			'outdent'
+		]
+	});
+</script>
 </html>
 
 
