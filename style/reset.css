@@ -37,6 +37,12 @@ input {
 input[type="text"], 
 input[type="password"] {
 	border: 1px solid #E0E0E0;
+	text-indent: 10px;
+}
+
+input[type="text"]:focus, 
+input[type="password"]:focus {
+	border-color: #CFCFCF;
 }
 
 input[type="submit"] {

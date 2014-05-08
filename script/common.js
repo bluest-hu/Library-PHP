@@ -80,11 +80,13 @@ $(function () {
 
 			event = window.event || event;
 			event.preventDefault();
+			 event.stopPropagation();
 			return false;
 		}).on("dblclick", function(event) {
 
 			event = window.event || event;
 			event.preventDefault();
+		 	event.stopPropagation();
 			return false;
 		});
 		
@@ -100,12 +102,14 @@ $(function () {
 
 			event = window.event || event;
 			event.preventDefault();
+			event.stopPropagation();
 			return false;
 
 		}).on("dblclick", function(event) {
 
 			event = window.event || event;
 			event.preventDefault();
+			event.stopPropagation();
 			return false;
 		});
 

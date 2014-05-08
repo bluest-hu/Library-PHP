@@ -1,6 +1,8 @@
 .simditor {
   position: relative;
-  border: 1px solid #c9d8db;
+  border: 1px solid #E0E0E0;
+  border-radius: 2px;
+  border-radius: 2px;
 }
 .simditor .simditor-wrapper {
   position: relative;
@@ -31,7 +33,7 @@
 }
 .simditor .simditor-body {
   padding: 22px 15px 40px;
-  min-height: 300px;
+  min-height: 30px;
   outline: none;
   cursor: text;
   position: relative;
@@ -118,6 +120,7 @@
   width: 100%;
 }
 .simditor .simditor-toolbar > ul {
+  width: inherit;
   height: 40px;
   margin: 0;
   padding: 0 0 0 6px;
@@ -138,7 +141,7 @@
 .simditor .simditor-toolbar > ul > li > .toolbar-item {
   display: block;
   float: left;
-  width:40px;
+  width:35px;
   height: 40px;
   outline: none;
   overflow: hidden;

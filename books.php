@@ -30,10 +30,6 @@ if ($_GET && $_GET['action'] == "add_books") {
 		// 处理没有输入的情况
 		$publisher = !empty($publisher) ? $publisher : "未知";
 		// 
-
-
-
-
 		print_r($publisher);
 
 		if ($can_submit) {
@@ -62,36 +58,12 @@ if ($_GET && $_GET['action'] == "add_books") {
 	<title>Books</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta charset="UTF-8">
-	<link href="style/reset.css" rel="stylesheet" type="text/css" />
-    <link href="style/main.css" rel="stylesheet" type="text/css" />
-    <link href="style/style.css" rel="stylesheet" type="text/css" />
-
+	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/reset.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/font-awesome.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/simditor.css" />
-	
-	<style type="text/css">
-
-	.books-list {
-
-	}
-	
-	.books-list .book {
-		margin:0 15px 20px 0;
-		width: 100px;
-		float: left;
-		background-color: #FFF;
-		box-shadow: 0 0 3px rgba(0, 0, 0, .1);
-	}
-
-	.books-list .book-cover {
-		width: 100px;
-	}
-
-	.books-list .book-title {
-		font-size: 12px;
-	}
-
-	</style>
 </head>
 <body>
 	<div class="main">
@@ -99,49 +71,64 @@ if ($_GET && $_GET['action'] == "add_books") {
 
 		<div class="content clear">
 
-			<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST">
-				<p>
-					<label for="">Book Name</label>
-					<input type="text" name="bookname">
-				</p>
+			<div class="books-add clear">
+				<div class="add-form left card">
+					<h2 class="title">添加图书</h2>
+					<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" >
+						<p>
+							<label for="">书名：</label>
+							<input type="text" name="bookname">
+						</p>
 
-				<p>
-					<label for="">Publisher</label>
-					<input type="text" name="publisher">
-				</p>
+						<p>
+							<label for="">出版社：</label>
+							<input type="text" name="publisher">
+						</p>
 
-				<p>
-					<label for="">Author</label>
-					<input type="text">
-					<input type="hidden" name="author">
-				</p>
+						<p>
+							<label for="">作者：</label>
+							<input type="text">
+							<input type="hidden" name="author">
+						</p>
 
-				<p>
-					<label for="">出版时间</label>
-					<input type="text" name="publishDate">
-				</p>
+						<p>
+							<label for="">出版时间：</label>
+							<input type="text" name="publishDate">
+						</p>
 
-				<p>
-					<label for=""></label>
-					<div class="number-picker clear">
-						<span class="reduce-number-btn left">-</span>
-						<input type="text" class="number-text left" value="0" name="sumCount">
-						<span class="add-number-btn left" >+</span>
+						<div class="clear">
+							<label class="left" for="">总数：</label>
+							<div class="number-picker clear left">
+								<span class="reduce-number-btn left">-</span>
+								<input type="text" class="number-text left" value="0" name="sumCount">
+								<span class="add-number-btn left" >+</span>
+							</div>
+							
+						</div>
+						<p>
+							<label for="">封面：</label>
+							<input type="file" name="cover" id="cover">
+						</p>
+
+						<div>
+							<p class="clear">
+								<label for="">简介：</label>
+							</p>
+							<textarea id="editor" placeholder="这里输入内容" autofocus></textarea>
+						</div>
+
+						<input type="submit">
+					</form>
+				</div>
+
+				<div class="add-result right card">
+					<h3>效果预览</h3>
+					<div class="book-show">
+						<img src="image/books.png" id="showCover" class="image-cover" alt="">
 					</div>
-					
-				</p>
-				<p>
-					<textarea id="editor" placeholder="这里输入内容" autofocus></textarea>
-				</p>
-				<p>
-					<label for=""></label>
-					<input type="text" name="cover">
-				</p>
-				<input type="submit">
-			</form>
-		
-
-
+				</div>
+			</div>	
+			
 			<div class="books">
 				<ul class="books-list clear">
 				<?php 
@@ -165,12 +152,11 @@ if ($_GET && $_GET['action'] == "add_books") {
 						$html .= '</a>';
 						$html .= '</li>';
 					}
-
 					echo $html;
 				}
 				?>
 				</ul>
-			</div>
+			</div> 
 		</div>
 	<?php include("templ/footer.temp.php");?>
 </body>
@@ -200,6 +186,17 @@ if ($_GET && $_GET['action'] == "add_books") {
 			'outdent'
 		]
 	});
+
+
+	window.addEventListener("load", function() {
+		var cover = document.getElementById('cover');
+		var showCover = document.getElementById('showCover');
+
+		cover.onchange = function(event) {
+			
+			showCover.src = "file:///" + this.value.replace(/\\/g, "/");
+		}
+	},false);
 </script>
 </html>
 
