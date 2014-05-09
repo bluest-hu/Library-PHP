@@ -118,7 +118,7 @@ if (isset($_SESSION["username"])) {
 								echo "Super";
 								break;
 							case 1:
-								echo "2B用户";
+								echo "普通用户";
 								break;
 							case 2:
 								echo "Admin";

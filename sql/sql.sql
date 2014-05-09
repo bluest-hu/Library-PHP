@@ -39,3 +39,9 @@ CREATE TABLE books (
     summary TEXT NULL,
     PRIMARY KEY (ID)
 );
+
+CREATE TABLE invite (
+    ID INT NOT NULL AUTO_INCREMENT,
+    sender_id INT NOT NULL, #发送者
+    regisiter_key
+);

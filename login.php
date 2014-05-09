@@ -1,134 +1,138 @@
 <?php
-    session_start();
-    
-    require_once("class/user.class.php");
+session_start();
 
-    // 存储警告信息
-    $WARN_MESSAGE = array();
-    $CAN_LOGIN = TRUE;
+require_once("class/user.class.php");
 
-    // 存储每次的返回路径
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        // 如果非直接打开本页的话（$_SERVER['HTTP_REFERER'])的值为NULL）
-        $referer_url = parse_url($_SERVER['HTTP_REFERER'])['path'];
-    } else {
-        // 直接打开为NULL
-        $referer_url = NULL;
-    }
+// 存储警告信息
+$WARN_MESSAGE = array();
+$CAN_LOGIN = TRUE;
 
-    // 在session中初始化默认值为空
-    if (!isset($_SESSION['referer_url'])) {
-        $_SESSION['referer_url'] = NULL;
-    }
+// 存储每次的返回路径
+if (isset($_SERVER['HTTP_REFERER'])) {
+    // 如果非直接打开本页的话（$_SERVER['HTTP_REFERER'])的值为NULL）
+    $referer_url = parse_url($_SERVER['HTTP_REFERER'])['path'];
+} else {
+    // 直接打开为NULL
+    $referer_url = NULL;
+}
 
-    // 过滤出非本页的返回路径
-    if ($referer_url != $_SERVER['PHP_SELF'] && $referer_url != NULL) {
-       $_SESSION['referer_url'] =  $referer_url;
-    } 
+// 在session中初始化默认值为空
+if (!isset($_SESSION['referer_url'])) {
+    $_SESSION['referer_url'] = NULL;
+}
 
-    // 验证登陆
-    if ($_GET) {
-        if ($_GET['action'] == "login") {
-            if ($_POST) {
-                // 存储POST 数据
-                $username     = $_POST["username"];
-                $password     = $_POST["password"];
-                // 处理记住我选项
-                $remberme   = isset($_POST["remberme"]) ? $_POST["remberme"] : false;
-            
-                if (!empty($username) && !empty($password)) {
+// 过滤出非本页的返回路径
+if ($referer_url != $_SERVER['PHP_SELF'] && $referer_url != NULL) {
+   $_SESSION['referer_url'] =  $referer_url;
+} 
+
+// 验证登陆
+if ($_GET) {
+    if ($_GET['action'] == "login") {
+        if ($_POST) {
+            // 存储POST 数据
+            $username     = $_POST["username"];
+            $password     = $_POST["password"];
+            // 处理记住我选项
+            $remberme   = isset($_POST["remberme"]) ? $_POST["remberme"] : false;
+        
+            if (!empty($username) && !empty($password)) {
+                
+                $username   = MySQLDatabase::escape($username);
+                $password   = MySQLDatabase::escape($password);
+                $remberme   = MySQLDatabase::escape($remberme);
+                $password   = User::encry_password($username, $password);
+
+                $login_query = "SELECT password, avatar, unique_id, level
+                            FROM user 
+                            WHERE username = '$username' 
+                            LIMIT 1";
+
+                $login_sql = new MySQLDatabase($DATABASE_CONFIG);
+
+                $login_result = $login_sql->query_db($login_query);
+
+                if ($login_result) {
                     
-                    $username   = MySQLDatabase::escape($username);
-                    $password   = MySQLDatabase::escape($password);
-                    $remberme   = MySQLDatabase::escape($remberme);
-                    $password   = User::encry_password($username, $password);
+                    if ($login_sql->num_rows() === 0) {
+                        array_push($WARN_MESSAGE, '用户名不存在！');
+                    }
 
-                    $login_query = "SELECT password, avatar, unique_id, level
-                                FROM user 
-                                WHERE username = '$username' 
-                                LIMIT 1";
+                    while($row = $login_sql->fetch_array()) {
+                        if ($password === $row['password']) {
+                            
+                            $_SESSION['username']   = htmlspecialchars_decode($username);
+                            $_SESSION['is_login']   = TRUE;
+                            $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
+                            $_SESSION['user_bg']    = is_null($row['user_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['user_bg'];
+                            $uniqid                 = User::get_unique();
+                            $_SESSION['level']      = (int)$row['level'];
 
-                    $login_sql = new MySQLDatabase($DATABASE_CONFIG);
+                            setcookie('username', $username, time() + 60 * 60 * 24);
+                            // 悬着记住密码的情况
+                            if ($remberme === "on") {
+                                // 处理自动登录
+                                $update_uipque_id = "UPDATE user 
+                                        SET unique_id = '$uniqid'
+                                        WHERE username = '$username' 
+                                        LIMIT 1";
 
-                    $login_result = $login_sql->query_db($login_query);
+                                $update_query = new MySQLDatabase($DATABASE_CONFIG);
 
-                    if ($login_result) {
-                        
-                        if ($login_sql->num_rows() === 0) {
-                            array_push($WARN_MESSAGE, '用户名不存在！');
-                        }
+                                $update_result = $update_query->query_db($update_uipque_id);
 
-                        while($row = $login_sql->fetch_array()) {
-                            if ($password === $row['password']) {
-                                
-                                $_SESSION['username']   = htmlspecialchars_decode($username);
-                                $_SESSION['is_login']   = TRUE;
-                                // $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
-                                $_SESSION['avatar']     = "image/default.png";
-                                $_SESSION['user_bg']    = "image/7.jpg";
-                                $uniqid                 = User::get_unique();
-                                $_SESSION['level']      = (int)$row['level']; 
-
-                                setcookie('username', $username, time() + 60 * 60 * 24);
-
-                                if ($remberme === "on") {
-                                    // 处理自动登录
-                                    $update_uipque_id = "UPDATE user 
-                                            SET unique_id = '$uniqid'
-                                            WHERE username = '$username' 
-                                            LIMIT 1";
-
-                                    $update_query = new MySQLDatabase($DATABASE_CONFIG);
-
-                                    $update_result = $update_query->query_db($update_uipque_id);
-
-                                    if($update_result) {
-                                        if ($update_query->affected_rows() == 1 ) {
-                                            //把密码加密后存储在Cookies中
-                                            setcookie('uniqid', $uniqid, time() + 60 * 60 * 24);
-                                        }
+                                if($update_result) {
+                                    if ($update_query->affected_rows() == 1 ) {
+                                        //把密码加密后存储在Cookies中
+                                        setcookie('username', $_SESSION['username'], $COOKIES_TIME);
+                                        setcookie('uniqid', $uniqid, $COOKIES_TIME);
+                                        setcookie('user_bg', $_SESSION['user_bg'], $COOKIES_TIME);
+                                        setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
                                     }
                                 }
-
-                                // 跳转到转入页面
-                                $location = is_null($_SESSION['referer_url']) ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
-                                header("Location:" .$BASE_URL. $location); 
-                                
-                            } else {
-                                array_push($WARN_MESSAGE, '密码或者用户名错误！');
                             }
+
+                            // 跳转到转入页面
+                            $location = is_null($_SESSION['referer_url']) ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                            //header("Location:" .$BASE_URL. $location); 
+                            
+                        } else {
+                            array_push($WARN_MESSAGE, '密码或者用户名错误！');
                         }
                     }
-                } else {
-                    if (empty($username)) {
-                        array_push($WARN_MESSAGE, '用户名不能为空！');
-                    } 
-                    if (empty($password)) {
-                        array_push($WARN_MESSAGE,'密码不能为空！');
-                    } 
                 }
+            } else {
+                if (empty($username)) {
+                    array_push($WARN_MESSAGE, '用户名不能为空！');
+                } 
+                if (empty($password)) {
+                    array_push($WARN_MESSAGE,'密码不能为空！');
+                } 
             }
         }
     }
-    
-    // 处理已经登陆的情况
-    if (isset($_SESSION['is_login'])) {
-        if ($_SESSION['is_login']) {
-            header("Location:user.php?user={$_SESSION['username']}");
-        }
-    }
+}
 
+// 处理已经登陆的情况
+if (isset($_SESSION['is_login'])) {
+    if ($_SESSION['is_login']) {
+        header("Location:user.php?user={$_SESSION['username']}");
+    }
+}
+
+
+if (!$_GET) {
     // 处理记住我的自动那个登陆
     if (isset($_COOKIE['username']) && isset($_COOKIE['uniqid']) ) {
-        $username   = $_COOKIE['username'];
-        $uniqid     = $_COOKIE['uniqid'];
-
-        $username   = MySQLDatabase::escape($username);
-        $uniqid     = MySQLDatabase::escape($uniqid);
+        $cookies_username   = $_COOKIE['username'];
+        $cookies_uniqid     = $_COOKIE['uniqid'];
+        // 过滤字符串
+        $cookies_username   = MySQLDatabase::escape($username);
+        $cookies_uniqid     = MySQLDatabase::escape($uniqid);
 
         $query = "SELECT unique_id, avatar, level
                     FROM user 
-                    WHERE username = '$username' 
+                    WHERE username = '$cookies_username' 
                     LIMIT 1";
                     
         $mysql = new MySQLDatabase($DATABASE_CONFIG);
@@ -136,16 +140,19 @@
 
         if ($result) {
             while($row = $mysql->fetch_array()) {
-                if ($uniqid === $row['unique_id']) {
+                if ($cookies_uniqid === $row['unique_id']) {
+
+                    // 将重要信息写入 SESSION
                     $_SESSION['username']   = htmlspecialchars_decode($username);
                     $_SESSION['is_login']   = TRUE;
                     $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
-                    $uniqid                 = User::get_unique(); 
                     $_SESSION['level']      = $row['level'];
+                    $_SESSION['user_bg']    = $row['user_bg'];
+                    $cookies_uniqid         = User::get_unique(); 
 
                     // 处理自动登录
                     $update_query = "UPDATE user 
-                                SET unique_id = '$uniqid'
+                                SET unique_id = '$cookies_uniqid'
                                 WHERE username = '$username' 
                                 LIMIT 1";
 
@@ -155,8 +162,13 @@
 
                     if ($update_result) {
                          if ($update_mysql->affected_rows() == 1 ) {
-                            //把密码加密后存储在Cookies中
-                            setcookie('uniqid', $uniqid, time() + 60 * 60 * 24);
+                            //把密码加密后存储在Cookies中 一天
+                            
+                            setcookie('username', $_SESSION['username'], $COOKIES_TIME);
+                            setcookie('uniqid', $cookies_uniqid, $COOKIES_TIME);
+                            setcookie('user_bg', $_SESSION['username'], $COOKIES_TIME);
+                            setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
+
                             // 跳转到转入页面
                             $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
                             header("Location:" . $BASE_URL . $location); 
@@ -166,6 +178,8 @@
             }
         }
     }
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -183,8 +197,8 @@
         <div class="content">
             <div class="login box center">
                 <div class="login-title box-header">
-                    <img class="header-bg" src="image/7.jpg" alt="">
-                    <img  class="avatar-100 avatar" src="image/default.png" alt="" >
+                    <img class="header-bg" src="<?php echo isset($_COOKIE['user_bg']) ? $_COOKIE['user_bg'] : $DEFAULT_USER_BACKGROUND_IMAGE; ?>" alt="">
+                    <img  class="avatar-100 avatar" src="<?php echo isset($_COOKIE['avatar']) ? $_COOKIE['avatar'] : $DEFAULT_USER_AVASTAR ?>" alt="" >
                     <a class="register-btn avatar avatar-100" href="register.php">+</a>
                 </div>
 
