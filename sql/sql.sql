@@ -5,7 +5,7 @@ CREATE DATABASE library;
 USE DATABASE library;
 
 # TABLE user
-CREATE TABLE user (
+CREATE TABLE users (
 	ID INT NOT NULL AUTO_INCREMENT,
 	username VARCHAR(255) NOT NULL,
 	password VARCHAR(255) NOT NULL,
@@ -32,6 +32,7 @@ CREATE TABLE books (
     cover VARCHAR(255) NULL,
     author INT NULL,
     publish_date TIMESTAMP NULL,
+    add_date TIMESTAMP NOT NULL,
     sum_count INT NOT NULL,
     borrowed_count INT DEFAULT 0,
     tags VARCHAR(255),
@@ -40,8 +41,18 @@ CREATE TABLE books (
     PRIMARY KEY (ID)
 );
 
+# Create Table invite
 CREATE TABLE invite (
     ID INT NOT NULL AUTO_INCREMENT,
     sender_id INT NOT NULL, #发送者
-    regisiter_key
-);
+    register_key VARCHAR(255) NOT NULL,
+    receiver INT NULL,
+    is_completed INT, #是否完成
+    sender_time TIMESTAMP NULL,
+    register_time TIMESTAMP NULL, #其实是冗余
+    level INT NOT NULL,
+    PRIMARY KEY (ID),
+ );
+
+
+CREATE TABLE cata

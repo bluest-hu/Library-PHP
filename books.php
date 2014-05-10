@@ -12,7 +12,6 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
 if ($_GET && $_GET['action'] == "add_books") {
 	if ($_POST) {
 
-
 		print_r($_POST);
 
 		$bookname 		= MySQLDatabase::escape(trim($_POST['bookname']));
@@ -26,9 +25,8 @@ if ($_GET && $_GET['action'] == "add_books") {
 			array_push($WARN_MESSAGE, "书名不能为空");
 		}
 
-
 		// 处理没有输入的情况
-		$publisher = !empty($publisher) ? $publisher : "未知";
+		$publisher = !empty($publisher) ? $publisher : "NULL";
 		// 
 		print_r($publisher);
 
@@ -58,12 +56,14 @@ if ($_GET && $_GET['action'] == "add_books") {
 	<title>Books</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta charset="UTF-8">
+   	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/datepicker/css/datepicker.css">
+   	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/datepicker/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/simditor.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/font-awesome.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/reset.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/font-awesome.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/simditor.css" />
 </head>
 <body>
 	<div class="main">
@@ -93,7 +93,7 @@ if ($_GET && $_GET['action'] == "add_books") {
 
 						<p>
 							<label for="">出版时间：</label>
-							<input type="text" name="publishDate">
+							<input type="text" class="datepicker" data-date-format="dd-mm-yyyy" name="publishDate">
 						</p>
 
 						<div class="clear">
@@ -114,7 +114,7 @@ if ($_GET && $_GET['action'] == "add_books") {
 							<p class="clear">
 								<label for="">简介：</label>
 							</p>
-							<textarea id="editor" placeholder="这里输入内容" autofocus></textarea>
+							<textarea id="editor" name="summery" placeholder="这里输入内容" autofocus></textarea>
 						</div>
 
 						<input type="submit">
@@ -162,6 +162,7 @@ if ($_GET && $_GET['action'] == "add_books") {
 </body>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
+<script type="text/javascript" src="<?php echo $BASE_URL; ?>/datepicker/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/module.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/uploader.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/simditor.js"></script>
@@ -187,6 +188,9 @@ if ($_GET && $_GET['action'] == "add_books") {
 		]
 	});
 
+	$(function() {
+		$('.datepicker').datepicker();
+	});
 
 	window.addEventListener("load", function() {
 		var cover = document.getElementById('cover');

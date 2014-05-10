@@ -41,7 +41,7 @@ if ($_POST) {
 
         // 验证用户名 是否重复
         $query = "SELECT COUNT(username) 
-            FROM user 
+            FROM users 
             WHERE username = '$username' 
             LIMIT 1";
 
@@ -107,7 +107,7 @@ if ($_POST) {
 
         $unique_id = User::get_unique();
 
-        $query = "INSERT INTO user 
+        $query = "INSERT INTO users 
             (username, password, register_time, unique_id, level) 
             VALUES ('$username', '$password', NOW(), '$unique_id', 1);";
  
@@ -117,8 +117,11 @@ if ($_POST) {
         if ($result) {
             
             if ($mysql->affected_rows() == 1) {
-
-                setcookie("username", $username, time() + 24 * 60 * 60);
+                $COOKIES_TIME  = time() + 60 * 60 * 24;
+                setcookie("username", $username, $COOKIES_TIME);
+                setcookie('unique_id', $unique_id, $COOKIES_TIME);
+                setcookie('user_bg', $DEFAULT_USER_BACKGROUND_IMAGE, $COOKIES_TIME);
+                setcookie('avatar', $DEFAULT_USER_AVASTAR, $COOKIES_TIME);
             }
             
             header("Location:login.php");

@@ -73,6 +73,9 @@ $(function () {
 			var $numberShow = $(this).siblings(".number-text");
 
 			var value = parseInt($numberShow.val());
+
+			// 处理非数字
+			value = isNaN(value) ? 0 : value;
 			value--;
 			
 			$numberShow.val(value);
@@ -95,6 +98,8 @@ $(function () {
 			var $numberShow = $(this).siblings(".number-text");
 
 			var value = parseInt($numberShow.val());
+			value = isNaN(value) ? 0 : value;
+			
 			value++;
 			
 			$numberShow.val(value);

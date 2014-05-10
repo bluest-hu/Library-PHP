@@ -35,16 +35,28 @@ if ($_GET) {
             $password     = $_POST["password"];
             // 处理记住我选项
             $remberme   = isset($_POST["remberme"]) ? $_POST["remberme"] : false;
-        
-            if (!empty($username) && !empty($password)) {
+            
+            // 验证用户名不为空
+            if (empty($username)) {
+                array_push($WARN_MESSAGE, '用户名不能为空！');
+                $CAN_LOGIN = FALSE;
+            }
+
+            // 验证密码不为空
+            if (empty($password)) {
+                array_push($WARN_MESSAGE,'密码不能为空！');
+                $CAN_LOGIN = FALSE;
+            } 
+
+            if ($CAN_LOGIN) {
                 
                 $username   = MySQLDatabase::escape($username);
                 $password   = MySQLDatabase::escape($password);
                 $remberme   = MySQLDatabase::escape($remberme);
                 $password   = User::encry_password($username, $password);
 
-                $login_query = "SELECT password, avatar, unique_id, level
-                            FROM user 
+                $login_query = "SELECT *
+                            FROM users 
                             WHERE username = '$username' 
                             LIMIT 1";
 
@@ -64,16 +76,16 @@ if ($_GET) {
                             $_SESSION['username']   = htmlspecialchars_decode($username);
                             $_SESSION['is_login']   = TRUE;
                             $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
-                            $_SESSION['user_bg']    = is_null($row['user_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['user_bg'];
-                            $uniqid                 = User::get_unique();
+                            $_SESSION['user_bg']    = is_null($row['cover_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['cover_bg'];
+                            $unique_id               = User::get_unique();
                             $_SESSION['level']      = (int)$row['level'];
 
                             setcookie('username', $username, time() + 60 * 60 * 24);
                             // 悬着记住密码的情况
                             if ($remberme === "on") {
                                 // 处理自动登录
-                                $update_uipque_id = "UPDATE user 
-                                        SET unique_id = '$uniqid'
+                                $update_uipque_id = "UPDATE users 
+                                        SET unique_id = '$unique_id'
                                         WHERE username = '$username' 
                                         LIMIT 1";
 
@@ -83,9 +95,10 @@ if ($_GET) {
 
                                 if($update_result) {
                                     if ($update_query->affected_rows() == 1 ) {
+                                        $COOKIES_TIME  = time() + 60 * 60 * 24;
                                         //把密码加密后存储在Cookies中
                                         setcookie('username', $_SESSION['username'], $COOKIES_TIME);
-                                        setcookie('uniqid', $uniqid, $COOKIES_TIME);
+                                        setcookie('unique_id', $unique_id, $COOKIES_TIME);
                                         setcookie('user_bg', $_SESSION['user_bg'], $COOKIES_TIME);
                                         setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
                                     }
@@ -94,20 +107,13 @@ if ($_GET) {
 
                             // 跳转到转入页面
                             $location = is_null($_SESSION['referer_url']) ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
-                            //header("Location:" .$BASE_URL. $location); 
+                            header("Location:" .$BASE_URL. $location); 
                             
                         } else {
                             array_push($WARN_MESSAGE, '密码或者用户名错误！');
                         }
                     }
                 }
-            } else {
-                if (empty($username)) {
-                    array_push($WARN_MESSAGE, '用户名不能为空！');
-                } 
-                if (empty($password)) {
-                    array_push($WARN_MESSAGE,'密码不能为空！');
-                } 
             }
         }
     }
@@ -121,58 +127,56 @@ if (isset($_SESSION['is_login'])) {
 }
 
 
-if (!$_GET) {
-    // 处理记住我的自动那个登陆
-    if (isset($_COOKIE['username']) && isset($_COOKIE['uniqid']) ) {
-        $cookies_username   = $_COOKIE['username'];
-        $cookies_uniqid     = $_COOKIE['uniqid'];
-        // 过滤字符串
-        $cookies_username   = MySQLDatabase::escape($username);
-        $cookies_uniqid     = MySQLDatabase::escape($uniqid);
+// 处理记住我的自动那个登陆
+if (isset($_COOKIE['username']) && isset($_COOKIE['unique_id']) ) {
 
-        $query = "SELECT unique_id, avatar, level
-                    FROM user 
-                    WHERE username = '$cookies_username' 
-                    LIMIT 1";
-                    
-        $mysql = new MySQLDatabase($DATABASE_CONFIG);
-        $result = $mysql->query_db($query);
+    $cookies_username   = $_COOKIE['username'];
+    $cookies_unique_id  = $_COOKIE['unique_id'];
+    // 过滤字符串
+    $cookies_username   = MySQLDatabase::escape($cookies_username);
+    $cookies_unique_id  = MySQLDatabase::escape($cookies_unique_id);
 
-        if ($result) {
-            while($row = $mysql->fetch_array()) {
-                if ($cookies_uniqid === $row['unique_id']) {
+    $query = "SELECT *
+                FROM users 
+                WHERE username = '$cookies_username' 
+                LIMIT 1";
+                
+    $mysql = new MySQLDatabase($DATABASE_CONFIG);
+    $result = $mysql->query_db($query);
 
-                    // 将重要信息写入 SESSION
-                    $_SESSION['username']   = htmlspecialchars_decode($username);
-                    $_SESSION['is_login']   = TRUE;
-                    $_SESSION['avatar']     = parse_url($_SERVER['HTTP_HOST'])['path'] ."/" . $row['avatar'];
-                    $_SESSION['level']      = $row['level'];
-                    $_SESSION['user_bg']    = $row['user_bg'];
-                    $cookies_uniqid         = User::get_unique(); 
+    if ($result) {
+        while($row = $mysql->fetch_array()) {
+            if ($cookies_unique_id === $row['unique_id']) {
+                // 将重要信息写入 SESSION
+                $_SESSION['username']   = htmlspecialchars_decode($cookies_username);
+                $_SESSION['is_login']   = TRUE;
+                $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
+                $_SESSION['level']      = $row['level'];
+                $_SESSION['user_bg']    = is_null($row['cover_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['cover_bg'];
+                $cookies_unique_id      = User::get_unique(); 
 
-                    // 处理自动登录
-                    $update_query = "UPDATE user 
-                                SET unique_id = '$cookies_uniqid'
-                                WHERE username = '$username' 
-                                LIMIT 1";
+                // 处理自动登录
+                $update_query = "UPDATE users 
+                            SET unique_id = '$cookies_unique_id'
+                            WHERE username = '$cookies_username' 
+                            LIMIT 1";
 
-                    $update_mysql = new MySQLDatabase($DATABASE_CONFIG);
+                $update_mysql = new MySQLDatabase($DATABASE_CONFIG);
 
-                    $update_result = $update_mysql->query_db($update_query);
+                $update_result = $update_mysql->query_db($update_query);
 
-                    if ($update_result) {
-                         if ($update_mysql->affected_rows() == 1 ) {
-                            //把密码加密后存储在Cookies中 一天
-                            
-                            setcookie('username', $_SESSION['username'], $COOKIES_TIME);
-                            setcookie('uniqid', $cookies_uniqid, $COOKIES_TIME);
-                            setcookie('user_bg', $_SESSION['username'], $COOKIES_TIME);
-                            setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
+                if ($update_result) {
+                     if ($update_mysql->affected_rows() == 1 ) {
+                        //把密码加密后存储在Cookies中 一天
+                        $COOKIES_TIME  = time() + 60 * 60 * 24;
+                        setcookie('username', $_SESSION['username'], $COOKIES_TIME);
+                        setcookie('unique_id', $cookies_unique_id, $COOKIES_TIME);
+                        setcookie('user_bg', $_SESSION['username'], $COOKIES_TIME);
+                        setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
 
-                            // 跳转到转入页面
-                            $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
-                            header("Location:" . $BASE_URL . $location); 
-                        }
+                        // 跳转到转入页面
+                        $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                        header("Location:" . $BASE_URL . $location); 
                     }
                 }
             }

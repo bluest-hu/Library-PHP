@@ -165,6 +165,14 @@ class User {
 		return isset($_COOKIE["avastar"]) ? isset($_COOKIE["avastar"]) : "image/default.png";
 	}
 
+
+	public static function remove_all_cookies() {
+		setcookie('username', $username, time() - 60 * 24);
+		setcookie('unique_id', "", time() - 60 * 60 * 24);
+	    setcookie('user_bg', "", time() - 60 * 24);
+	    setcookie('avatar', "", time() - 60 * 24);
+	}
+
 }
 
 ?>
