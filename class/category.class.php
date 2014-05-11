@@ -1,9 +1,4 @@
 <?php
-
-include("mysql.class.php");
-include(dirname(__FILE__) . "..\..\config.php");
-
-
 /**
  * 奇葩的面向对象用法！！
  * 把类作为一个命名空间一个容器~~
@@ -71,11 +66,24 @@ class Category {
 			FROM category";
 
 		$result = $sql->query_db($query);
+		$result_arr = array();
 
 		if ($result) {
-			while($row = $sql->fetch_row()) {
-				// TODO
+			while($row = $sql->fetch_array()) {
+
+				$temp = array(
+					"id"	=>$row['ID'],
+					'name'	=>$row['cate_name'],
+					'des'	=>$row['description'],
+					'time'	=>$row['add_time']
+					);
+
+				array_push($result_arr	, $temp);
 			}
+
+			return $result_arr;
+		} else {
+			return FALSE;
 		}
 	}	
 

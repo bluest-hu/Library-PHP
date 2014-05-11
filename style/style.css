@@ -3,7 +3,7 @@
  */
 
 
-
+/** Switcher **/
 .switcher {
 	border: 1px solid #E0E0E0; 
 	border-radius: 4px;
@@ -59,4 +59,70 @@
 .switcher .left-area:hover,
  .switcher .right-area:hover {
  	cursor: pointer;
+}
+
+/** Drop Down Input **/
+.drop-down-input {
+	position: relative;
+}
+
+.drop-down-input .arrow-container {
+	text-align: center;
+	line-height: 30px;
+	font-size: 18px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 30px;
+	height: 30px;
+	display: block;
+	background-color: #F7F7F7;
+	border: 1px solid #E0E0E0;
+	color: #999;
+}
+
+.drop-down-input .arrow-container .arrow {
+	display: block;
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	top:0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	margin: auto;
+	transition:all .3s ease;
+}
+
+.drop-down-input .arrow.target {
+	-webkit-transform: rotate(90deg)
+}
+
+.drop-down-input .options {
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	top: 32px;
+	z-index: 999;
+	box-shadow: 0 2px 1px rgba(0,0,0,.1);
+	border-bottom: 1px solid #E0E0E0;	
+	display: none;
+}
+
+.drop-down-input .options .iteams {
+	background-color: #FFF;
+	width: auto;
+	display: block;
+	font-size: 12px;
+	color: #888;
+	line-height: 25px;
+	border-left: 1px solid #E0E0E0;
+	border-right: 1px solid #E0E0E0;
+	padding: 5px 0 5px 20px;	
+}
+
+.drop-down-input .options .iteams:hover {
+	background-color: #F7F7F7;
+	cursor: pointer;
+	color: #666;
 }

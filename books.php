@@ -1,7 +1,9 @@
 <?php 
 session_start();
 header("Content-Type: text/html;charset=utf-8"); 
-require_once("class/user.class.php");
+
+include("class/user.class.php");
+include("class/category.class.php");
 
 $WARN_MESSAGE = array();
 
@@ -104,8 +106,25 @@ if ($_GET && $_GET['action'] == "add_books") {
 							</div>
 						</div>
 
-						<div>
-							<label for="">图书分类：</label>	
+						<div class="clear">
+							<label for="">图书分类：</label>
+
+							<div class="drop-down-input catagory-input left">
+								<input class="input-text" type="text" readonly>
+								<span class="arrow-container"><span class="arrow">&#xF16B</span></span>
+								<div class="options">
+									<?php 
+
+									$cate_arr = Category::get_all();
+
+									foreach ($cate_arr as $key => $value) {
+										echo '<span class="iteams" data-id="'. $value["id"]. '">' . $value['name'] . '</span>';
+									}
+
+									?>
+								</div>
+								<input class="hidden-input" type="hidden" name="catagory" value="0">
+							</div>
 						</div>
 
 						<p>
@@ -204,6 +223,39 @@ if ($_GET && $_GET['action'] == "add_books") {
 			showCover.src = "file:///" + this.value.replace(/\\/g, "/");
 		}
 	},false);
+
+
+	$(function () {
+		$(".drop-down-input").each(function (index,element){
+			var $dropDownInput = $(element);
+			var $input = $dropDownInput.find(".input-text");
+			var $menuContainer = $dropDownInput.find(".options");
+			var $arrow = $dropDownInput.find(".arrow");
+			var $iteams = $menuContainer.find(".iteams");
+			var $hidden = $dropDownInput.find(".hidden-input");
+
+			$input.on("focus", function() {
+				$menuContainer.slideDown();
+				$arrow.addClass("target");
+
+				$that = $(this);
+				$iteams.on("click", function () {
+					$that.val($(this).text());
+					var value = parseInt($(this).data("id"));
+					value = isNaN(value) ? 0 : value;
+					$hidden.get(0).value = value;
+				});
+			}).on("blur", function () {
+				$menuContainer.slideUp();
+				$arrow.removeClass("target");
+			}).on("keyDown", function(event){
+				event = event || window.event;
+				event.preventDefault();
+			});
+		});
+	});
+
+
 </script>
 </html>
 

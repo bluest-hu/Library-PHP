@@ -1,5 +1,7 @@
 <?php 
 session_start();
+
+include("mysql.class.php");
 include(dirname(__FILE__) . "../../config.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 
@@ -14,7 +16,7 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"])) {
 
 $WARN_MESSAGE = array();
 
-Category::add_new("fff", NULL, $WARN_MESSAGE);
+Category::add_new("csacasca", NULL, $WARN_MESSAGE);
 
 
 print_r($WARN_MESSAGE);
@@ -107,6 +109,19 @@ if (isset($_SESSION["username"])) {
 	.user-nav a .icons {
 		margin-right: 15px;
 	}
+
+	
+	label {
+		display: block;
+		width: 80px;
+	}
+
+	input[type="text"], 
+	input[type="password"],
+	textarea {
+		width: 300px;
+	}
+
 	</style>
 </head>
 <body>
@@ -121,12 +136,13 @@ if (isset($_SESSION["username"])) {
 				<div class="catagory-add left">
 					<form action="POST">
 						<p>
-							<label for="">分类名：</label>
+							<label class="left" for="">分类名：</label>
 							<input type="text">
+							<br>
 							<span class="description">书籍的所属分类</span>
 						</p>
 						<p>
-							<label for="">分类描述：</label>
+							<label class="left" for="">分类描述：</label>
 							<textarea></textarea>
 							<span class="description"></span>
 						</p>
