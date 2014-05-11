@@ -51,8 +51,15 @@ CREATE TABLE invite (
     sender_time TIMESTAMP NULL,
     register_time TIMESTAMP NULL, #其实是冗余
     level INT NOT NULL,
-    PRIMARY KEY (ID),
+    PRIMARY KEY (ID)
  );
 
-
-CREATE TABLE cata
+# 图书分类
+CREATE TABLE category (
+    ID INT NOT NULL AUTO_INCREMENT,
+    cate_name VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NULL,
+    add_time TIMESTAMP NOT NULL,
+    PRIMARY KEY (ID),
+    UNIQUE(cate_name)
+);

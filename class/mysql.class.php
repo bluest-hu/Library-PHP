@@ -88,6 +88,16 @@ class MySQLDatabase extends DataBase{
 		}
 	}
 
+
+	public function fetch_assoc() {
+		if (!$this->result) {
+			die("无法查询数据库" . mysql_error());
+			return FALSE;
+		} else {
+			return mysql_fetch_assoc($this->result);
+		}
+	} 
+
 	/**
 	 * [fetch_row description]
 	 * @return [type] [description]

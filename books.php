@@ -5,7 +5,6 @@ require_once("class/user.class.php");
 
 $WARN_MESSAGE = array();
 
-
 $can_submit = TRUE;
 $sql = new MySQLDatabase($DATABASE_CONFIG);
 
@@ -93,7 +92,7 @@ if ($_GET && $_GET['action'] == "add_books") {
 
 						<p>
 							<label for="">出版时间：</label>
-							<input type="text" class="datepicker" data-date-format="dd-mm-yyyy" name="publishDate">
+							<input type="text" class="datepicker" data-date-format="yyyy-mm-dd" name="publishDate">
 						</p>
 
 						<div class="clear">
@@ -103,8 +102,12 @@ if ($_GET && $_GET['action'] == "add_books") {
 								<input type="text" class="number-text left" value="0" name="sumCount">
 								<span class="add-number-btn left" >+</span>
 							</div>
-							
 						</div>
+
+						<div>
+							<label for="">图书分类：</label>	
+						</div>
+
 						<p>
 							<label for="">封面：</label>
 							<input type="file" name="cover" id="cover">

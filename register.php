@@ -109,7 +109,7 @@ if ($_POST) {
 
         $query = "INSERT INTO users 
             (username, password, register_time, unique_id, level) 
-            VALUES ('$username', '$password', NOW(), '$unique_id', 1);";
+            VALUES ('$username', '$password', NOW(), '$unique_id', 0);";
  
         
         $result = $mysql->query_db($query);

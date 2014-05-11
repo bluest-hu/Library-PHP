@@ -1,6 +1,6 @@
 <?php 
 
-include("uuser.class.php")
+include("user.class.php")
 
 
 class Admin extends User {

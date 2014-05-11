@@ -76,7 +76,10 @@ $(function () {
 
 			// 处理非数字
 			value = isNaN(value) ? 0 : value;
+			
 			value--;
+
+			value = value < 0 ? 0 : value;
 			
 			$numberShow.val(value);
 			$numberShow.attr("value", value);
@@ -99,7 +102,7 @@ $(function () {
 
 			var value = parseInt($numberShow.val());
 			value = isNaN(value) ? 0 : value;
-			
+
 			value++;
 			
 			$numberShow.val(value);

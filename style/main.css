@@ -68,7 +68,7 @@
 
 .content {
 	width: 1000px;
-	margin: 0 auto;
+	margin: 0 auto 50px auto;
 }
 
 
@@ -79,6 +79,9 @@
 	box-shadow: 0 0 4px rgba(0, 0, 0, .1);
 }
 
+.header .content {
+	margin: 0 auto;
+}
 
 .header .navigation {
 	height: inherit;

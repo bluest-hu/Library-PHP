@@ -1,7 +1,7 @@
 <?php 
 session_start();
-
-include(dirname(__FILE__) . "../config.php");
+include(dirname(__FILE__) . "../../config.php");
+include(dirname(__FILE__) . "../../class/category.class.php");
 
 // 当前主页是否为自己的
 $is_my_page = false;
@@ -9,8 +9,15 @@ $get_user_name = "";
 
 // 没有登陆切没有指定查看的用户 强制跳转到登陆
 if (!isset($_SESSION['is_login']) && !isset($_GET["user"])) {
-	header("Location:" . $BASE_URL . "/login.php"); 
+	header("Location:" . $BASE_URL . "login.php"); 
 }
+
+$WARN_MESSAGE = array();
+
+Category::add_new("fff", NULL, $WARN_MESSAGE);
+
+
+print_r($WARN_MESSAGE);
 
 if ($_GET && isset($_GET["user"])) {
 	$get_user_name = htmlspecialchars_decode($_GET["user"]);
@@ -36,9 +43,15 @@ if (isset($_SESSION["username"])) {
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
 	<style type="text/css">
-
+	.content {
+		background-color: #FFF;
+		margin-bottom: 50px;
+		border-radius: 4px;
+	}
 	.user-nav {
-		border-radius: 8px;
+		border-radius: 4px;
+		border-top-right-radius: 0px;
+		border-bottom-right-radius: 0px;
 		width: 250px;
 		background-color: #373942;
 	}
@@ -52,7 +65,7 @@ if (isset($_SESSION["username"])) {
 		position: relative;
 		overflow: hidden;
 		border-top-left-radius: 8px;
-		border-top-right-radius: 8px;
+		/*border-top-right-radius: 8px;*/
 		padding-bottom: 20px; 
 	}
 
@@ -98,27 +111,39 @@ if (isset($_SESSION["username"])) {
 </head>
 <body>
 	<div class="main">
-		<?php include("templ/nav.temp.php"); ?>
+		<?php include(dirname(__FILE__) . "../../templ/nav.temp.php"); ?>
 
 		<div class="content clear">
-			
-			<?php include(dirname(__FILE__) . "../templ/usernav.temp.php"); ?>
+			<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
+	
 
-			<div class="user-content">
-				<ul>
-					<li>
+			<div class="catagory clear">
+				<div class="catagory-add left">
+					<form action="POST">
+						<p>
+							<label for="">分类名：</label>
+							<input type="text">
+							<span class="description">书籍的所属分类</span>
+						</p>
+						<p>
+							<label for="">分类描述：</label>
+							<textarea></textarea>
+							<span class="description"></span>
+						</p>
+						<p>
+							<input type="submit">
+						</p>
+					</form>
+				</div>
+				<div class="catagory-show right">
+					<table>
 						
-					</li>
-
-					<li>
-						
-						<form action=""></form>
-					</li>
-				</ul>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
-	<?php include("templ/footer.temp.php");?>
+	<?php include(dirname(__FILE__) . "../../templ/footer.temp.php");?>
 </body>
 </html>
 
