@@ -71,85 +71,6 @@ if ($_GET && $_GET['action'] == "add_books") {
 		<?php include("templ/nav.temp.php"); ?>
 
 		<div class="content clear">
-
-			<div class="books-add clear">
-				<div class="add-form left card">
-					<h2 class="title">添加图书</h2>
-					<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" >
-						<p>
-							<label for="">书名：</label>
-							<input type="text" name="bookname">
-						</p>
-
-						<p>
-							<label for="">出版社：</label>
-							<input type="text" name="publisher">
-						</p>
-
-						<p>
-							<label for="">作者：</label>
-							<input type="text">
-							<input type="hidden" name="author">
-						</p>
-
-						<p>
-							<label for="">出版时间：</label>
-							<input type="text" class="datepicker" data-date-format="yyyy-mm-dd" name="publishDate">
-						</p>
-
-						<div class="clear">
-							<label class="left" for="">总数：</label>
-							<div class="number-picker clear left">
-								<span class="reduce-number-btn left">-</span>
-								<input type="text" class="number-text left" value="0" name="sumCount">
-								<span class="add-number-btn left" >+</span>
-							</div>
-						</div>
-
-						<div class="clear">
-							<label for="">图书分类：</label>
-
-							<div class="drop-down-input catagory-input left">
-								<input class="input-text" type="text" readonly>
-								<span class="arrow-container"><span class="arrow">&#xF16B</span></span>
-								<div class="options">
-									<?php 
-
-									$cate_arr = Category::get_all();
-
-									foreach ($cate_arr as $key => $value) {
-										echo '<span class="iteams" data-id="'. $value["id"]. '">' . $value['name'] . '</span>';
-									}
-
-									?>
-								</div>
-								<input class="hidden-input" type="hidden" name="catagory" value="0">
-							</div>
-						</div>
-
-						<p>
-							<label for="">封面：</label>
-							<input type="file" name="cover" id="cover">
-						</p>
-
-						<div>
-							<p class="clear">
-								<label for="">简介：</label>
-							</p>
-							<textarea id="editor" name="summery" placeholder="这里输入内容" autofocus></textarea>
-						</div>
-
-						<input type="submit">
-					</form>
-				</div>
-
-				<div class="add-result right card">
-					<h3>效果预览</h3>
-					<div class="book-show">
-						<img src="image/books.png" id="showCover" class="image-cover" alt="">
-					</div>
-				</div>
-			</div>	
 			
 			<div class="books">
 				<ul class="books-list clear">
@@ -251,8 +172,11 @@ if ($_GET && $_GET['action'] == "add_books") {
 			}).on("keyDown", function(event){
 				event = event || window.event;
 				event.preventDefault();
+				return false;
 			});
 		});
+
+		$input.css({'cursor':"pointer"});
 	});
 
 

@@ -1,4 +1,4 @@
-<div class="left user-nav">
+<div class="left user-nav left-container">
 	<div class="user-card">
 		<img class="user-bg" src="<?php echo $_SESSION['user_bg']; ?>" alt="">
 		<div class="user-info">
@@ -40,6 +40,10 @@
 			</li>
 			<li>
 				<a href="<?php echo $BASE_URL . "/admin/category.php" ?>"><span class="icons">&#xF0D2</span>Books</a>
+				<ul>
+					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加图书</a></li>
+					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加目录</a></li>
+				</ul>
 			</li>
 			<li>
 				<a href=""><span class="icons">&#xF171</span>Invate</a>

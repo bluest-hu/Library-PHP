@@ -129,3 +129,16 @@ $(function () {
 		});
 	});
 });
+
+
+//ajust user nav 
+
+$(function() {
+	$nav = $(".content .user-nav");
+	
+	if ($nav) {
+		$nav.css({
+			"height": $("#mianContent").css("height")
+		});
+	}
+});

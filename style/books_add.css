@@ -7,6 +7,12 @@
 	font-size: 14px;
 }
 
+
+.input-text:hover {
+	cursor: pointer;
+}
+
+
 .books-list {
 }
 
@@ -27,14 +33,9 @@
 }
 
 .books-add .add-form {
-	background-color: #FFF;
-	width: 550px;
-	padding: 40px 25px;
-	border-radius: 4px;
-	box-shadow: 0px 1px 2px rgba(0, 0, 0, .1);
 }
 
-.books-add .title {
+h3.title {
 	font-size: 20px;
 	line-height: 40px;
 	border-bottom: 1px solid #E0E0E0;
@@ -47,7 +48,7 @@
 	float: left;
 	font-size: 14px;
 	line-height: 30px;
-	text-align: right;
+	text-align: left;
 	margin-right: 10px;
 }
 
@@ -57,21 +58,25 @@
 }
 
 .books-add .add-result {
-	width: 330px;
-	padding: 20px;
-	
+	width: 250px;
+	/*padding: 20px;*/
+	/*margin-left: 100px;*/
+	max-width: 520px;
 }
 
 .books-add .add-result .book-show {
 	width: 100%;
+	height: 300px;
 	position: relative;
 }
 
 .add-result .image-cover {
 	width: 100%;
+	height: inherit;
 	display: block;
 	border-top-right-radius: 4px;
 	border-bottom-right-radius: 4px;
+	background-color: #27AE60;
 	box-shadow: 5px 5px 20px rgba(0,0,0,0.3),
 		inset 4px 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -80,18 +85,82 @@
 	position: absolute;
 	z-index: 9999;
 	top: 0px;
-	/*top: 20px;*/
-	/*left: 20px;*/
 	display: block;
 	content: "";
-	/*background-color: black;*/
+	height: 100%;
 	background-image: -webkit-linear-gradient(180deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .4));
 	border-right: 1px solid rgba(0, 0, 0, .008);
 	width: 15px;
-	height: 502px;
 	box-shadow: 1px 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .simditor {
 	margin-bottom: 10px;
+}
+
+.right-container h2.title {
+	height: 100px;
+	color: #FFF;
+	text-indent: 1.5em;
+	background-color: #3498DB;
+	border-top-right-radius: 4px;
+	font: normal 24px/100px "Batch", "Microsoft YaHei";
+}
+
+.right-container h2.title .icons {
+	margin-right: 15px;
+} 
+
+
+.upload {
+	height: 32px;
+	width: 287px;
+	position: relative;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+.upload .upload-cover {
+	width: 282px;
+	height: 32px;
+	margin-left: 85px;
+} 
+
+.upload .upload-cover .input-cover {
+	width: 234px;
+	float: left;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.upload .upload-cover .btn-cover {
+	background-color: #F7F7F7;
+	width: 45px;
+	height: 30px;
+	border: 1px solid #E0E0E0;
+	border-radius: 2px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	box-sizing:content-box;
+	border-left: none;
+	float: right;
+}
+
+.upload .upload-btn {
+	position: absolute;
+	width: 100%;
+	background-color: #F7F7F7;
+	top: 0px;
+	left: 80px;
+	opacity: 0;
+}
+
+
+.books-add .submit {
+	display: inline-block;
+	width: 400px;
+	height: 40px;
+	margin-top: 30px;
+	background-color: #3498DB;
 }
