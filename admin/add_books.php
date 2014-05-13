@@ -3,115 +3,38 @@ session_start();
 header("Content-Type: text/html;charset=utf-8"); 
 
 include(dirname(__FILE__) . "../../config.php");
+include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
+include(dirname(__FILE__) . "../../class/book.class.php");
 
 // 存储警告信息
 $WARN_MESSAGE = array();
+$SUCESS_MESSAGE = array();
 
-$can_submit = TRUE;
 
-$sql = new MySQLDatabase($DATABASE_CONFIG);
 
 if ($_GET && $_GET['action'] == "add_books") {
+	
+
 	if ($_POST) {
-		// print_r($_POST);
-		$bookname 		= MySQLDatabase::escape(trim($_POST['bookname']));
-		$publisher 		= MySQLDatabase::escape(trim($_POST['publisher']));
-		$author 		= NULL;
-		$cover  		= isset($_POST['cover']) ? $_POST['cover'] : "";
-		$cover 			= MySQLDatabase::escape(trim($cover));
-		$publish_date 	= MySQLDatabase::escape(trim($_POST['publishDate']));
-		$sum_count 		= MySQLDatabase::escape(trim($_POST['sumCount']));
-		$category 		= MySQLDatabase::escape(trim($_POST['sumCount']));
-		$summary 		= MySQLDatabase::escape(trim($_POST['sumCount']));
+		
+		$bookname 		= $_POST['bookname'];
+		$publisher 		= $_POST['publisher'];
+		$author 		= $_POST['author'];
+		// 处理封面
+		$cover 			= isset($_POST['cover']) ? $_POST['cover'] : "";
+		$publish_date 	= $_POST['publishDate'];
+		$sum_count 		= $_POST['sumCount'];
+		$category 		= $_POST['catagory'];
+		$summary 		= $_POST['summery'];
 
-		// $bookname 		= NULL;
-		// $publisher 		= NULL;
-		// $author 		= NULL;
-		// $cover  		= isset($_POST['cover']) ? $_POST['cover'] : "";
-		// $cover 			= NULL;
-		// $publish_date 	= NULL;
-		// $sum_count 		= 10;
-		// $category 		= null;
-		// $summary 		= null;
-
-		// CREATE TABLE books (
-		//     ID INT NOT NULL AUTO_INCREMENT,
-		//     book_name VARCHAR(255) NOT NULL,
-		//     publisher VARCHAR(255) NULL,
-		//     cover VARCHAR(255) NULL,
-		//     author INT NULL,
-		//     publish_date TIMESTAMP NULL,
-		//     add_date TIMESTAMP NOT NULL,
-		//     sum_count INT NOT NULL,
-		//     borrowed_count INT DEFAULT 0,
-		//     tags VARCHAR(255) NULL,
-		//     category INT NULL,
-		//     summary TEXT NULL,
-		//     PRIMARY KEY (ID)
-		// );
-		// 图书名不能为空
-		if (empty($bookname)) {
-			$can_submit = false;
-			array_push($WARN_MESSAGE, "书名不能为空");
-		} elseif (mb_strlen($bookname, 'utf-8') >= 500) {
-			$can_submit = false;
-			array_push($WARN_MESSAGE, "书名太长");
-		}
-
-		if (!empty($publish_date)) {
-			$publish_date .= " 00:00:00";
-		} else {
-
-		}
-
-		// 进入 傻逼拼接字符串模式 本来方式已经很傻逼无法忍受了
-		// Dirty ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-
-		if ($can_submit) {
-			$query = "INSERT INTO books (
-				book_name, 
-				publisher, 
-				cover, 
-				author, 
-				publish_date, 
-				sum_count, 
-				borrowed_count, 
-				tags, 
-				category, 
-				summary
-				) 
-				VALUES (
-					'$bookname', " .  // 图书名
-					get_sql_null($publisher) . "," . //  出版社
-					get_sql_null($cover) . "," . // 封面
-					get_sql_null($author) . "," . // 作者
-					get_sql_null($publish_date) . "," . // 出版日期
-					"$sum_count," . // 书本总数
-					"0 ," . // 已经借出
-					"NULL," . // Tags
-					get_sql_null($category) . "," . // 分类
-					get_sql_null($summary) . ")";
-			
-			$result = $sql->query_db($query);	
-
-			echo $query;
-
-			if ($result) {
-				if ($sql->affected_rows() == 1) {
-					echo "sucess";
-				}
-			}
-		}
+		Book::add_new($bookname, $publisher, $author, $cover, $publish_date,$sum_count,$category,$summary,$WARN_MESSAGE);
+		
 	}
 }
 
 
-
-function get_sql_null ($iteam) {
-	return is_null($iteam) ? "NULL" : "'". $iteam. "'";
-}
 
 ?>
 <!DOCTYPE html>
@@ -141,7 +64,7 @@ function get_sql_null ($iteam) {
 
 
 				<div class="add-form right-content left">
-					<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" class="">
+					<form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" class="">
 						<div class="clear">
 							<div class="left">
 								<h3 class="title">添加图书</h3>
@@ -222,8 +145,6 @@ function get_sql_null ($iteam) {
 						<input type="submit" class="submit" id="submit">
 					</form>
 				</div>
-
-				
 			</div>	
 		</div>
 	<?php include(dirname(__FILE__) .  "../../templ/footer.temp.php");?>
@@ -264,10 +185,12 @@ function get_sql_null ($iteam) {
 		var cover = document.getElementById('cover');
 		var showCover = document.getElementById('showCover');
 
-		cover.onchange = function(event) {
-			
-			showCover.src = "file:///" + this.value.replace(/\\/g, "/");
+		var input = document.getElementById('upload');
+
+		cover.onchange = function () {
+			input.value = this.value;
 		}
+
 	},false);
 
 
@@ -302,6 +225,11 @@ function get_sql_null ($iteam) {
 		});
 
 		// $input.css({'cursor':"pointer"});
+	});
+
+
+	$(function () {
+		
 	});
 
 

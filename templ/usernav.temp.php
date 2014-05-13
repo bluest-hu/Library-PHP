@@ -42,7 +42,7 @@
 				<a href="<?php echo $BASE_URL . "/admin/category.php" ?>"><span class="icons">&#xF0D2</span>Books</a>
 				<ul>
 					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加图书</a></li>
-					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加目录</a></li>
+					<li><a href="<?php echo $BASE_URL . "/admin/category.php" ?>">添加目录</a></li>
 				</ul>
 			</li>
 			<li>

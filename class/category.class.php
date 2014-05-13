@@ -20,8 +20,23 @@ class Category {
 	 */
 	public static function add_new($name, $description, &$WARN_MESSAGE) {
 
-		
 		global $DATABASE_CONFIG;
+
+		$name 			= MySQLDatabase::escape(trim($name));
+		$description 	= MySQLDatabase::escape(trim($description));
+
+
+		if (empty($name)) {
+			array_push($WARN_MESSAGE, "分类名不能为空");
+			return ;
+		}
+
+
+		if (mb_strlen($name, 'utf-8') > 50) {
+			array_push($WARN_MESSAGE, "分类名过长请不要超过50个字");
+			return ;
+		}
+
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 
@@ -40,9 +55,19 @@ class Category {
 			}
 		}
 
-		$query = "INSERT INTO category
-			(cate_name, add_time, description)
-			VALUES('$name', NOW(), '$description')";
+		$query = "INSERT INTO 
+			category(
+				cate_name, 
+				add_time, 
+				description
+			)
+			VALUES(
+				'$name', 
+				NOW(), " . 
+				get_sql_null($description) . " 
+				)";
+
+		// echo $query;
 
 		$result = $sql->query_db($query);
 
@@ -96,10 +121,7 @@ class Category {
 
 
 
-
-
-
-
+		
 	} 
 
 	/** 

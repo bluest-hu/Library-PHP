@@ -2,6 +2,7 @@
 session_start();
 
 include(dirname(__FILE__) . "../../config.php");
+include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 
@@ -16,23 +17,22 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level']
 
 $WARN_MESSAGE = array();
 
-Category::add_new("csacasca", NULL, $WARN_MESSAGE);
+if ($_GET) {
+	if ($_GET['action'] === "add_cate") {
+		if ($_POST) {
+			
+			$cate_name = $_POST['cate_name'];
+			$cate_desc = $_POST['cate_descrption'];
 
 
-
-
-// if ($_GET && isset($_GET["user"])) {
-// 	$get_user_name = htmlspecialchars_decode($_GET["user"]);
-// } else {
-
-// }
-
-// if (isset($_SESSION["username"])) {
-// 	if ($_SESSION["username"] == $get_user_name) {
-// 		$is_my_page = TRUE;
-// 	}
-// }
-
+			if (Category::add_new($cate_name, $cate_desc,$WARN_MESSAGE )) {
+				echo "sucsess";
+			} else {
+				print_r($WARN_MESSAGE);
+			}
+		}
+	}
+}
 
 ?>
 <!DOCTYPE html>
@@ -60,14 +60,14 @@ Category::add_new("csacasca", NULL, $WARN_MESSAGE);
 						<h3 class="title">
 							添加分类
 						</h3>
-						<form action="POST">
+						<form method="POST" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_cate"; ?>" >
 							<p>
 								<label class="" for="">分类名：</label>
-								<input class="category-name" type="text" id="categoryName" name="categorty_name">
+								<input class="category-name" type="text" id="categoryName" name="cate_name">
 							</p>
 							<p>
 								<label class="" for="">分类描述：</label>
-								<textarea></textarea>
+								<textarea name="cate_descrption"></textarea>
 								<span class="description"></span>
 							</p>
 							<p>

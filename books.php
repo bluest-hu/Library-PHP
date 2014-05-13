@@ -1,5 +1,6 @@
 <?php 
 session_start();
+
 header("Content-Type: text/html;charset=utf-8"); 
 
 include("class/user.class.php");
@@ -10,45 +11,6 @@ $WARN_MESSAGE = array();
 $can_submit = TRUE;
 $sql = new MySQLDatabase($DATABASE_CONFIG);
 
-if ($_GET && $_GET['action'] == "add_books") {
-	if ($_POST) {
-
-		print_r($_POST);
-
-		$bookname 		= MySQLDatabase::escape(trim($_POST['bookname']));
-		$publisher 		= MySQLDatabase::escape(trim($_POST['publisher']));
-		$cover 			= MySQLDatabase::escape(trim($_POST['cover']));
-		$publish_date 	= MySQLDatabase::escape(trim($_POST['publishDate']));
-		$sumCount 		= MySQLDatabase::escape(trim($_POST['sumCount']));
-
-		if (empty($bookname)) {
-			$can_submit = false;
-			array_push($WARN_MESSAGE, "书名不能为空");
-		}
-
-		// 处理没有输入的情况
-		$publisher = !empty($publisher) ? $publisher : "NULL";
-		// 
-		print_r($publisher);
-
-		if ($can_submit) {
-			$query = "INSERT INTO books 
-				(book_name, publisher, cover, author, publish_date, sum_count, borrowed_count, tags, category, summary) 
-				VALUES ('测试', '测试', NULL, NULL, '2014-05-14 00:00:00', '5', '0', NULL, NULL, NULL)";
-
-			$result = $sql->query_db($query);	
-
-			echo $query;
-
-			if ($result) {
-				if ($sql->affected_rows() == 1) {
-					echo "sucess";
-				}
-			}
-		}
-	}
-}
-
 
 ?>
 <!DOCTYPE html>
@@ -57,10 +19,6 @@ if ($_GET && $_GET['action'] == "add_books") {
 	<title>Books</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta charset="UTF-8">
-   	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/datepicker/css/datepicker.css">
-   	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/datepicker/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/simditor.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL . "/simditor/styles"; ?>/font-awesome.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/reset.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
@@ -89,10 +47,8 @@ if ($_GET && $_GET['action'] == "add_books") {
 				if ($result) {
 					while ($row = $sql->fetch_array()) {
 						$html .= '<li class="book">';
-						$html .= '<a href="">';
-						$html .= '<img class="book-cover" src="image/books.png" />';
-						$html .= '<span class="book-title">' . $row['book_name'] . "<span>";
-						$html .= '</a>';
+						$html .= '<img class="book-cover" src="' . $BASE_URL ."/image/book_covers/". $row["cover"] . '"/>';
+						$html .= '<span class="book-title">' . $row['book_name'] . "<span>"; 
 						$html .= '</li>';
 					}
 					echo $html;
@@ -105,80 +61,7 @@ if ($_GET && $_GET['action'] == "add_books") {
 </body>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
-<script type="text/javascript" src="<?php echo $BASE_URL; ?>/datepicker/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/module.js"></script>
-<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/uploader.js"></script>
-<script type="text/javascript" src="<?php echo $BASE_URL . "/simditor/scripts/js"; ?>/simditor.js"></script>
 <script type="text/javascript">
-	var editor = new Simditor({
-	  	textarea: $('#editor'),
-	  	toolbar: [
-			'title',
-			'bold',
-			'italic',
-			'underline',
-			'strikethrough',
-			'ol',
-			'ul',
-			'blockquote',
-			'code',
-			'table',
-			'link',
-			'image',
-			'hr', 
-			'indent', 
-			'outdent'
-		]
-	});
-
-	$(function() {
-		$('.datepicker').datepicker();
-	});
-
-	window.addEventListener("load", function() {
-		var cover = document.getElementById('cover');
-		var showCover = document.getElementById('showCover');
-
-		cover.onchange = function(event) {
-			
-			showCover.src = "file:///" + this.value.replace(/\\/g, "/");
-		}
-	},false);
-
-
-	$(function () {
-		$(".drop-down-input").each(function (index,element){
-			var $dropDownInput = $(element);
-			var $input = $dropDownInput.find(".input-text");
-			var $menuContainer = $dropDownInput.find(".options");
-			var $arrow = $dropDownInput.find(".arrow");
-			var $iteams = $menuContainer.find(".iteams");
-			var $hidden = $dropDownInput.find(".hidden-input");
-
-			$input.on("focus", function() {
-				$menuContainer.slideDown();
-				$arrow.addClass("target");
-
-				$that = $(this);
-				$iteams.on("click", function () {
-					$that.val($(this).text());
-					var value = parseInt($(this).data("id"));
-					value = isNaN(value) ? 0 : value;
-					$hidden.get(0).value = value;
-				});
-			}).on("blur", function () {
-				$menuContainer.slideUp();
-				$arrow.removeClass("target");
-			}).on("keyDown", function(event){
-				event = event || window.event;
-				event.preventDefault();
-				return false;
-			});
-		});
-
-		$input.css({'cursor':"pointer"});
-	});
-
 
 </script>
 </html>
