@@ -185,12 +185,146 @@ class Book {
 			return FALSE;
 		}
 	}
+	
 
+	/**
+	 * [get_book_list description]
+	 * @param  [type] $cate_id  [description]
+	 * @param  [type] $page     [description]
+	 * @param  [type] $each_num [description]
+	 * @return [type]           [description]
+	 */
 	public static function get_book_list($cate_id, $page, $each_num) {
-	}
 
-	public static function get_book_nav() {
+		global $DATABASE_CONFIG;
+		global $BASE_URL;
 
+		
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		// 总的条目
+		$sum = Book::get_books_sum($cate_id);
+
+		// 总的页数
+		$sum_page = ceil($sum / $each_num);
+
+		// 处理分页溢出
+		if ($page < 1 || $page > $sum_page ) {
+			$page = 1;
+		}
+
+		$start_index = ($page - 1) * $each_num;
+
+		$offset = $each_num;
+
+		/**
+		 * 0 代表无限
+		 */
+		if ($cate_id < 0 ) {
+			$cate_id = 0;
+		}
+
+		// 处理分类
+		if (!category::cate_is_exit($cate_id)) {
+			$cate_id = 0;
+		}
+
+		if ($cate_id === 0) {
+			$query = "SELECT *
+				FROM books 
+				LIMIT $start_index , $offset";
+		} else {
+			$query = "SELECT *
+				FROM books 
+				WHERE  category = $cate_id
+				LIMIT $start_index , $offset";
+		}
+
+		$result = $sql->query_db($query);
+
+		// 检测是否有内容
+		$HAS_CONTENT = TRUE;
+		if ($result) {
+?>
+
+
+<div class="books-list right">
+	<ul class="books-list-container clear">
+<?php 		$BOOK_LIST_COUNT = 0;
+			while($row = $sql->fetch_array()) {
+				$BOOK_LIST_COUNT++;
+
+?>
+
+		<li class="book">
+			<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
+			<a href="<?php echo  $BASE_URL;?>" class="book-title">
+				<?php echo $row['book_name'];?>
+			</a>
+		</li>
+
+
+<?php				
+			}
+			// 如果木有输图书
+			if ($BOOK_LIST_COUNT < 1) {
+				$HAS_CONTENT = FALSE;
+				echo "Nothing Here</div>";
+			}
+?>
+	</ul>
+<?php 
+		}else {
+				echo "Nothing Here";
+				$HAS_CONTENT = FALSE;
+		}
+
+
+
+		if ($HAS_CONTENT == TRUE) {
+?>
+	<nav class="book-list-nav">
+		<ul>
+			<li><a href="<?php echo $BASE_URL . "/books.php?action=list_book&cate_id=$cate_id&page=1"; ?>">首页</a></li>
+			<li><span>共<?php echo $sum_page; ?>页</span></li>
+<?php
+			if ($page > 1) {
+					$pre_page_index = $page - 1;
+?>
+<li>
+	<a href="<?php echo $BASE_URL . "/books.php?action=list_book&cate_id=$cate_id&page=$pre_page_index"; ?>">上一页</a>
+</li>
+<?php					
+				}
+			// 输出分页
+			for ($i = 1; $i <= $sum_page; $i++ ) {
+				$page_url = $BASE_URL . "/books.php?action=list_book&cate_id=$cate_id&page=$i";
+
+?>
+<li class="<?php echo ($i == $page) ? "current" : "" ?>">
+	<a href="<?php echo $page_url;?>"><?php echo $i; ?></a>
+</li> 
+<?php		
+			}
+			if ($page != $sum_page) {
+
+				$next_page_index = $page + 1;
+?>			
+			<li>
+				<a href="<?php echo $BASE_URL . "/books.php?action=list_book&cate_id=$cate_id&page=$next_page_index"; ?>">下一页</a>
+			</li>
+			<li>
+				<a href="<?php echo $BASE_URL . "/books.php?action=list_book&cate_id=$cate_id&page=$sum_page"; ?>">最后一页</a>
+			</li>
+<?php 
+			}
+?>
+		</ul>
+	</nav>
+</div> 
+<?php
+		}
 	}
 
 	/**
@@ -211,7 +345,6 @@ class Book {
 			$query .= " WHERE category = " . $cate_id; 
 		}
 
-
 		// echo $query;
 		$result = $sql->query_db($query);
 
@@ -221,15 +354,7 @@ class Book {
 			}
 			return FALSE;
 		}
-
 		return FALSE;
-
 	}
 }
-
-
-
-
-
-
 ?>

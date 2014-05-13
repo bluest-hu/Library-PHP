@@ -1,4 +1,4 @@
-// 处理
+// 处理 Message
 $(function() {
     var closeBtn = $(".message .close-btn");
     if (closeBtn) {

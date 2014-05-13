@@ -87,7 +87,7 @@ class User {
 	}
 
 	public function check_password($pass_str) {
-
+		
 	}
 
 	/**

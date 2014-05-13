@@ -13,9 +13,6 @@ $WARN_MESSAGE = array();
 
 $can_submit = TRUE;
 
-
-
-
 $sql = new MySQLDatabase($DATABASE_CONFIG);
 
 ?>
@@ -29,8 +26,6 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
-
-
     <style type="text/css">
 
 	.main .content .books {
@@ -38,21 +33,24 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
 		border: 1px solid #E0E0E0;
 		border-radius: 4px;
 		box-shadow: 0 1px 1px rgba(0,0,0,.1); 
+		overflow: hidden;
 	}
 	.book-cate-nav {
-		width: 198px;
+		width: 230px;
 		height: inherit;
+		background-color: #3498DB;
+
 	}
 	.book-cate-nav a {
 		display: block;
-		font: normal 18px/30px "Microsoft YaHei";
+		font: normal 18px/50px "Microsoft YaHei";
 		text-indent: 2em;
+		color: #FFF;
 	}
 
 	.book-cate-nav a:hover {
-		background-color: #E0E0E0;
+		background-color: #2980B9;
 	}
-
 
 	.books-list {
 		width: 760px;
@@ -82,6 +80,27 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
 		display: block;
 		text-align: center;
 	}
+
+	.book-list-nav {
+		margin: 10px 0;
+	}
+
+	.book-list-nav ul {
+		text-align: center;
+		font-size: 0px;
+	}
+
+	.book-list-nav ul li {
+		display: inline-block;
+	}
+
+	.book-list-nav ul li a,
+	.book-list-nav ul li span {
+		display: block;
+		padding:  4px 10px;
+		background-color: #E0E0E0;
+		font-size: 15px;
+	}
     </style>
 </head>
 <body>
@@ -92,12 +111,13 @@ $sql = new MySQLDatabase($DATABASE_CONFIG);
 
 			<div class="books clear">
 				<nav class="book-cate-nav left">
-					<h2 class="titile">safcascf</h2>
+					<h2 class="titile"><span clss="icons"></span>图书分类</h2>
 					<ul>
 						<li><a href="<?php echo $BASE_URL . $_SERVER['PHP_SELF'] . '?action=list_book&cate_id=0&page=1';?>">All</a></li>
 <?php 
 
 $cate_arr = Category::get_all();
+// print_r(Category::cate_is_exit(0));
 
 foreach ($cate_arr as $key => $value) { 
 
@@ -111,8 +131,7 @@ foreach ($cate_arr as $key => $value) {
 					</ul>
 				</nav>
 
-				<div class="books-list right">
-					<ul class="books-list-container clear">
+				
 <?php 
 
 if (is_null($sql)) {
@@ -122,34 +141,24 @@ if (is_null($sql)) {
 
 if ($_GET) {
 	if ($_GET['action'] == "list_book") {
-		$cate_id = (int) $_GET['cate_id'];
-		$page = (int)$_GET['page']; 
-
-		echo Book::get_books_sum($cate_id);
+		$cate_id = (int) isset($_GET['cate_id']) ? $_GET['cate_id'] : 0;
+		$page = (int)isset($_GET['page']) ? $_GET['page'] : 1; 
+	} else {
+		$cate_id = 0;
+		$page = 1;
 	}
-} 
-
-$query = "SELECT * FROM books LIMIT 0,10";
-
-$result = $sql->query_db($query);	
-
-$html = "";
-
-if ($result) {
-	while ($row = $sql->fetch_array()) { ?>
-<li class="book">
-	<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
-	<a href="<?php echo  $BASE_URL;?>" class="book-title">
-		<?php echo $row['book_name'];?>
-	</a>
-</li>
-<?php	}
+} else {
+	$cate_id = 0;
+	$page = 1;
 }
+
+
+// 输出
+Book::get_book_list($cate_id, $page, 18);
 ?>
-					</ul>
-				</div> 
-			</div>
+				
 		</div>
+	</div>
 	<?php include("templ/footer.temp.php");?>
 </body>
 <script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>

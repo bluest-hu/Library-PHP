@@ -124,6 +124,24 @@ class Category {
 		
 	} 
 
+
+	/**
+	 * [cate_is_exit description]
+	 * @param  [type] $cate_id [description]
+	 * @return [type]          [description]
+	 */
+	public static function cate_is_exit($cate_id) {
+		$cate_arr = Category::get_all();
+		
+
+		foreach ($cate_arr as $key => $value) {
+			if ($cate_id == (int)$value['id']) {
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
 	/** 
 	 * 删除目录
 	 *
