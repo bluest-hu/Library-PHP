@@ -5,14 +5,13 @@ header("Content-Type: text/html;charset=utf-8");
 include(dirname(__FILE__) . "../../config.php");
 include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
+include(dirname(__FILE__) . "../../class/user.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 include(dirname(__FILE__) . "../../class/book.class.php");
 
 // 存储警告信息
 $WARN_MESSAGE = array();
 $SUCESS_MESSAGE = array();
-
-
 
 if ($_GET && $_GET['action'] == "add_books") {
 	
@@ -30,7 +29,9 @@ if ($_GET && $_GET['action'] == "add_books") {
 		$summary 		= $_POST['summery'];
 
 		Book::add_new($bookname, $publisher, $author, $cover, $publish_date,$sum_count,$category,$summary,$WARN_MESSAGE);
-		
+	
+
+		print_r($WARN_MESSAGE);
 	}
 }
 

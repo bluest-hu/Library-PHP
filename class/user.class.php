@@ -1,8 +1,5 @@
 <?php
 
-include("mysql.class.php");
-include(dirname(__FILE__) . "..\..\config.php");
-
 class User {
 	// 用户的ID
 	protected $ID;

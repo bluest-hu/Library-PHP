@@ -108,7 +108,7 @@ class Book {
 					$CAN_UPLOAD = false;
 				}
 			
-				$filename = md5($_SESSION["username"]) . '.' . getExtenName($file['name']);
+				$filename = md5(User::get_unique()) . '.' . getExtenName($file['name']);
 				$file_full_name = $FILE_UPLOAD_CONFIG['DIR'] . $filename;
 
 				if ($CAN_UPLOAD) {
@@ -173,7 +173,7 @@ class Book {
 			
 			$result = $sql->query_db($query);	
 
-			echo $query;
+			// echo $query;
 
 			if ($result) {
 				if ($sql->affected_rows() == 1) {
@@ -185,7 +185,51 @@ class Book {
 			return FALSE;
 		}
 	}
+
+	public static function get_book_list($cate_id, $page, $each_num) {
+	}
+
+	public static function get_book_nav() {
+
+	}
+
+	/**
+	 * [get_books_sum description]
+	 * @param  [type] $cate_id [description]
+	 * @return [type]          [description]
+	 */
+	public static function get_books_sum($cate_id) {
+
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "SELECT COUNT(ID) AS sum
+			FROM books";
+
+		if ($cate_id > 0)  {
+			$query .= " WHERE category = " . $cate_id; 
+		}
+
+
+		// echo $query;
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				return $row['sum'];
+			}
+			return FALSE;
+		}
+
+		return FALSE;
+
+	}
 }
+
+
+
+
 
 
 ?>

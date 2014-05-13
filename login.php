@@ -1,7 +1,12 @@
 <?php
 session_start();
 
-require_once("class/user.class.php");
+include(dirname(__FILE__) . "../config.php");
+include(dirname(__FILE__) . "../function.php");
+include(dirname(__FILE__) . "../class/mysql.class.php");
+include(dirname(__FILE__) . "../class/category.class.php");
+include(dirname(__FILE__) . "../class/user.class.php");
+
 
 // 存储警告信息
 $WARN_MESSAGE = array();

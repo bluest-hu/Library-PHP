@@ -1,7 +1,10 @@
 <?php
 
-include("config.php");
-include("class/user.class.php");
+include(dirname(__FILE__) . "../config.php");
+include(dirname(__FILE__) . "../function.php");
+include(dirname(__FILE__) . "../class/mysql.class.php");
+include(dirname(__FILE__) . "../class/category.class.php");
+
 
 // 开启session
 session_start();
