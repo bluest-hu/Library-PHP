@@ -59,94 +59,95 @@ if ($_GET && $_GET['action'] == "add_books") {
 		<?php include(dirname(__FILE__) . "../../templ/nav.temp.php"); ?>
 
 		<div class="content clear" id="mianContent">
-			<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
-			<div class="books-add right-container right clear">
-				<h2 class="title">添加图书</h2>
+			<div class="wrap">
+				
+				<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
+				<div class="books-add right-container right clear">
+					<h2 class="title">添加图书</h2>
+					<div class="add-form right-content left">
+						<form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" class="">
+							<div class="clear">
+								<div class="left">
+									<h3 class="title">添加图书</h3>
+									<p>
+										<label for="bookName">书名：</label>
+										<input type="text" id="bookName" name="bookname" placeholder="书名">
+									</p>
 
+									<p>
+										<label for="publisher">出版社：</label>
+										<input type="text" id="publisher" name="publisher" placeholder="出版社">
+									</p>
 
-				<div class="add-form right-content left">
-					<form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_books"; ?>" method="POST" class="">
-						<div class="clear">
-							<div class="left">
-								<h3 class="title">添加图书</h3>
-								<p>
-									<label for="bookName">书名：</label>
-									<input type="text" id="bookName" name="bookname" placeholder="书名">
-								</p>
+									<p>
+										<label for="anthor">作者：</label>
+										<input type="text" id="anthor" name="author"  placeholder="作者">
+									</p>
 
-								<p>
-									<label for="publisher">出版社：</label>
-									<input type="text" id="publisher" name="publisher" placeholder="出版社">
-								</p>
+									<p>
+										<label for="publishDate">出版时间：</label>
+										<input type="text" class="datepicker" data-date-format="yyyy-mm-dd" name="publishDate" id="publishDate"  placeholder="出版时间">
+									</p>
 
-								<p>
-									<label for="anthor">作者：</label>
-									<input type="text" id="anthor" name="author"  placeholder="作者">
-								</p>
-
-								<p>
-									<label for="publishDate">出版时间：</label>
-									<input type="text" class="datepicker" data-date-format="yyyy-mm-dd" name="publishDate" id="publishDate"  placeholder="出版时间">
-								</p>
-
-								<div class="clear">
-									<label class="left" for="sumNumberInput">总数：</label>
-									<div class="number-picker clear left">
-										<span class="reduce-number-btn left">-</span>
-										<input type="text" class="number-text left" id="sumNumberInput" value="1" name="sumCount">
-										<span class="add-number-btn left" >+</span>
-									</div>
-								</div>
-
-								<div class="clear">
-									<label for="cateDropDownInput">图书分类：</label>
-									<div class="drop-down-input catagory-input left">
-										<input class="input-text" id="cateDropDownInput" type="text" placeholder="默认分类" readonly>
-										<span class="arrow-container"><span class="arrow">&#xF16B</span></span>
-										<div class="options">
-											<?php 
-
-											$cate_arr = Category::get_all();
-
-											foreach ($cate_arr as $key => $value) {
-												echo '<span class="iteams" data-id="'. $value["id"]. '">' . $value['name'] . '</span>';
-											}
-
-											?>
+									<div class="clear">
+										<label class="left" for="sumNumberInput">总数：</label>
+										<div class="number-picker clear left">
+											<span class="reduce-number-btn left">-</span>
+											<input type="text" class="number-text left" id="sumNumberInput" value="1" name="sumCount">
+											<span class="add-number-btn left" >+</span>
 										</div>
-										<input class="hidden-input" type="hidden" name="catagory" value="0">
+									</div>
+
+									<div class="clear">
+										<label for="cateDropDownInput">图书分类：</label>
+										<div class="drop-down-input catagory-input left">
+											<input class="input-text" id="cateDropDownInput" type="text" placeholder="默认分类" readonly>
+											<span class="arrow-container"><span class="arrow">&#xF16B</span></span>
+											<div class="options">
+												<?php 
+
+												$cate_arr = Category::get_all();
+
+												foreach ($cate_arr as $key => $value) {
+													echo '<span class="iteams" data-id="'. $value["id"]. '">' . $value['name'] . '</span>';
+												}
+
+												?>
+											</div>
+											<input class="hidden-input" type="hidden" name="catagory" value="0">
+										</div>
+									</div>
+
+									<div class="upload">
+										<label for="upload">封面：</label>
+										<div class="upload-cover">
+											<input class="input-cover" type="text" name="" id="upload">
+											<input class="btn-cover" type="button" value="上传">
+										</div>
+										<input class="upload-btn" type="file" name="cover" id="cover">
+									</div>
+
+								</div>
+								<div class="add-result right">
+									<h3 class="title">效果预览</h3>
+									<div class="book-show">
+										<img src="image/books.png" id="showCover" class="image-cover" alt="">
 									</div>
 								</div>
-
-								<div class="upload">
-									<label for="upload">封面：</label>
-									<div class="upload-cover">
-										<input class="input-cover" type="text" name="" id="upload">
-										<input class="btn-cover" type="button" value="上传">
-									</div>
-									<input class="upload-btn" type="file" name="cover" id="cover">
-								</div>
-
 							</div>
-							<div class="add-result right">
-								<h3 class="title">效果预览</h3>
-								<div class="book-show">
-									<img src="image/books.png" id="showCover" class="image-cover" alt="">
-								</div>
+							
+							<div>
+								<p class="clear">
+									<label for="editor">简介：</label>
+								</p>
+								<textarea id="editor" name="summery" placeholder="这里输入内容" autofocus></textarea>
 							</div>
-						</div>
-						
-						<div>
-							<p class="clear">
-								<label for="editor">简介：</label>
-							</p>
-							<textarea id="editor" name="summery" placeholder="这里输入内容" autofocus></textarea>
-						</div>
 
-						<input type="submit" class="submit" id="submit">
-					</form>
-				</div>
-			</div>	
+							<input type="submit" class="submit" id="submit">
+						</form>
+					</div>
+				</div>	
+			</div>
 		</div>
 	<?php include(dirname(__FILE__) .  "../../templ/footer.temp.php");?>
 </body>

@@ -83,12 +83,12 @@ h3.title {
 }
 
 .right-container h2.title {
-	height: 100px;
+	height: 80px;
 	color: #FFF;
 	text-indent: 1.5em;
 	background-color: #3498DB;
 	border-top-right-radius: 4px;
-	font: normal 24px/100px "Batch", "Microsoft YaHei";
+	font: normal 24px/80px "Batch", "Microsoft YaHei";
 }
 
 .right-container h2.title .icons {

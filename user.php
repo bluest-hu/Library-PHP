@@ -37,66 +37,8 @@ if (isset($_SESSION["username"])) {
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/user.css" />
-	<style type="text/css">
 
-	.user-nav {
-		border-radius: 8px;
-		width: 250px;
-		background-color: #373942;
-	}
-
-	.user-nav .navigation {
-		padding-bottom: 20px;
-	}
-
-	.user-nav .user-card {
-		height: 100px;
-		position: relative;
-		overflow: hidden;
-		border-top-left-radius: 8px;
-		border-top-right-radius: 8px;
-		padding-bottom: 20px; 
-	}
-
-	.user-avastar {
-
-	}
-
-	.user-card .user-bg {
-		position: absolute;
-		width: 254px;
-		height: 104px;
-		top: -2px;
-		left: -2px;
-		-webkit-filter: blur(2px);
-		-moz-filter: blur(2px);
-		-ms-filter: blur(2px);
-		filter: blur(2px);
-	}
 	
-	.user-card .user-info {
-		position: absolute;
-		padding: 20px;
-	}
-
-	.user-nav .navigation a {
-		padding-left: 45px;
-		display: block;
-		color: #7b7d86;
-		line-height: 40px;
-		font-size: 16px;
-		font-family: "Batch", "Microsoft Yahei";
-	}
-
-	.user-nav a:hover {
-		background-color: #2f303a;
-		color: #EAEAEA;
-	}
-
-	.user-nav a .icons {
-		margin-right: 15px;
-	}
-	</style>
 </head>
 <body>
 	<div class="main">

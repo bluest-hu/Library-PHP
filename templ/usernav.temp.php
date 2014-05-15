@@ -5,26 +5,27 @@
 			<a class="avatar avatar-50 left user-avastar" href="<?php echo $BASE_URL . "/user.php?user=" . $_SESSION['username'] ?>">
 				<img class="avatar avatar-50" src="<?php echo isset($_SESSION['avatar']) ?  $_SESSION['avatar'] : "image/default.png";  ?>">
 			</a>
-
-			<?php echo $_SESSION['username']; ?>
-			<span class="text-normal level">
-			<?php
-			switch($_SESSION['level']) {
-				case 0:
-					echo "Super";
-					break;
-				case 1:
-					echo "普通用户";
-					break;
-				case 2:
-					echo "Admin";
-					break;
-				default:
-					echo "";		
-					break;
-			}		
-			?>
-			</span>
+			<div class="text-info">
+				<span class="username"><?php echo $_SESSION['username']; ?></span><span class="text-normal level">
+				<?php
+				switch($_SESSION['level']) {
+					case 0:
+						echo "Super";
+						break;
+					case 1:
+						echo "普通用户";
+						break;
+					case 2:
+						echo "Admin";
+						break;
+					default:
+						echo "";		
+						break;
+				}		
+				?>
+				</span>
+			</div>
+		
 		</div>
 	</div>
 	<nav class="navigation">

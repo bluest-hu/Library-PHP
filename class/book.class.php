@@ -250,6 +250,7 @@ class Book {
 
 
 <div class="books-list right">
+	<h2 class="title">图书</h2>
 	<ul class="books-list-container clear">
 <?php 		$BOOK_LIST_COUNT = 0;
 			while($row = $sql->fetch_array()) {
@@ -303,7 +304,7 @@ class Book {
 
 ?>
 <li class="<?php echo ($i == $page) ? "current" : "" ?>">
-	<a href="<?php echo $page_url;?>"><?php echo $i; ?></a>
+	<a class="page" href="<?php echo $page_url;?>"><?php echo $i; ?></a>
 </li> 
 <?php		
 			}
@@ -355,6 +356,12 @@ class Book {
 			return FALSE;
 		}
 		return FALSE;
+	}
+
+
+
+	public static function get_book_info_by_id($id) {
+		
 	}
 }
 ?>
