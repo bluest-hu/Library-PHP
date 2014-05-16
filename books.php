@@ -35,221 +35,7 @@ if ($_GET) {
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
-    <style type="text/css">
-
-	.main .content .books {
-		/*background-color: #FFF;*/
-		border: 1px solid #E0E0E0;
-		border-radius: 4px;
-		box-shadow: 0 1px 1px rgba(0,0,0,.1); 
-		overflow: hidden;
-		height: 100%;
-		background-color: #EEE;
-	}
-	.book-cate-nav {
-		width: 230px;
-		height: inherit;
-		background-color: #FFF;
-		height: 100%;
-		box-shadow: 1px 0px 4px rgba(0,0,0,.1); 
-		position: relative;
-		z-index: 99999;
-	}
-
-	.book-cate-nav .title {
-		background-color: #2980B9;
-		height: 80px;
-		text-align: center;
-		color: #FFF;
-		position: relative;
-	}
-
-	.book-cate-nav .title .icons {
-		text-align: center;
-		position: absolute;
-		display: block;
-		top: 0px;
-		right: 0px;
-		bottom: 0px;
-		left: 0px;
-		margin: auto;
-		width: 60px;
-		height: 60px;
-		font: normal 40px/60px "Batch","Microsoft YaHei" ;
-		background-color: #FFF;
-		border-radius: 50%;
-		color: #2980B9;
-	}
-
-	.book-cate-nav a {
-		display: block;
-		font: lighter 14px/50px "Batch","Microsoft YaHei";
-		padding-left:25px;
-		color: #999;
-		transition: all .5s ease;
-	}
-	.book-cate-nav a .icons {
-		margin-right: 6px;
-		font-size: 15px;
-		transition: all .5s ease;
-	}
-
-	.book-cate-nav a .count {
-		background-color: #999;
-		color: #FFF;
-		font-size: 10px;
-		padding: 0px 7px;
-		margin: 15px 15px 15px 0;
-		border-radius: 15px;
-		line-height: 20px;
-		/*display: none;*/
-		/*text-align: right;*/
-		float: right;
-		font-family: Arial;
-		transition: all .5s ease;
-	}
-
-
-	.book-cate-nav a:hover{
-		background-color: #777;
-		color: #FFF;
-	}
-	 .book-cate-nav a:hover .count {
-		background-color: #FFF;
-		color: #999;
-	}
-
-	.book-cate-nav li.current a {
-		background-color: #3498DB;
-		color: #FFF;
-	}
-
-	.book-cate-nav li.current a .count {
-		background-color: #FFF;
-		color: #3498DB;
-	}
-	
-
-	.book-cate-nav li.current {
-		position: relative;
-	}
-
-	.book-cate-nav li.current:after {
-		position: absolute;
-		right: 0px;
-		width: 0px;
-		height: 0px;
-		display: block;
-		top: 10px;
-		right: -5px;
-		content: "";
-		border: 15px solid transparent;
-		border-right-color:#EEE; 
-		z-index: 9;
-	}
-
-	.books-list {
-		width: 760px;
-		padding: 20px;
-		padding-top: 0px;
-		padding-right: 0px;
-		padding-left: 8px;
-		
-	}
-
-	.books-list .book {
-		margin:15px 10px;
-		width: 105px;
-		float: left;
-		background-color: #FFF;
-		box-shadow: 0 1px 8px rgba(0, 0, 0, .3);
-	}
-
-	.books-list .book-cover {
-		width: inherit;
-		height: 160px;
-		display: block;
-	}
-
-	.books-list .book-title {
-		width: inherit;
-		font: normal 14px/30px "Microsoft YaHei";
-		display: block;
-		text-align: center;
-		color: #333;
-	}
-
-	.books-list .title {
-		border-bottom: 1px solid #E0E0E0;
-		text-indent: 30px;
-		line-height: 80px;
-		margin-bottom: 15px;
-		background: #FFF;
-		margin-left: -10px;
-		color: #666;
-		box-shadow: 0px 1px 4px rgba(0,0,0,.1);
-	}
-
-	.book-list-nav {
-		margin: 30px 0 10px 0;
-		text-align: center;
-	}
-
-	.book-list-nav ul {
-		font-size: 0px;
-		display: inline-block;
-		background-color: #FFF;
-		border-radius: 4px;
-		overflow: hidden;
-		box-shadow: 0 1px 1px rgba(0,0,0,.1);
-	}
-
-	.book-list-nav ul li {
-		display: inline-block;
-	}
-
-
-	.book-list-nav ul li a,
-	.book-list-nav ul li span {
-		display: block;
-		padding:  12px 8px;
-		font-size: 14px;
-		color: #7E7E7E;
-	}
-
-	.book-list-nav ul li a.page {
-		padding:  12px 18px;
-	}
-
-
-	.book-list-nav ul li a:hover,
-	.book-list-nav ul li span:hover {
-		background-color: #FAFAFA;
-		color: #666;
-	}
-
-	.book-list-nav ul li.current a {
-		background-color: #3498DB;
-		color: #FFF;
-	}
-
-	.book-list-nav ul li a:hover {
-		background-color: 
-	}
-
-	.expland {
-		width: 100%;
-		height: 200px;
-		margin-left: -8px; 
-		padding-right: 10px;
-		clear: both;
-		background-color:#333; 
-		display: none;
-		position: relative;
-		z-index: 99000;
-	}
-    </style>
-
+    <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books.css" />
 </head>
 <body>
 	<div class="main">
@@ -310,61 +96,97 @@ Book::get_book_list($cate_id, $page, 18);
 <script type="text/javascript">
 
 $(function () {
-
-	var mainHeight = $("#mianContent").height()-2;
-	var navHeight = $("#bookCateNav").height();
-	var height = mainHeight > navHeight ? mainHeight : navHeight;
-	$("#bookCateNav").css("height", height);
+	updateNavHeight();
+	
 });
 
+
+function updateNavHeight() {
+	var mainHeight = $("#mianContent").height() - 2;
+	var navHeight = $("#bookCateNav").height();
+	// var height = mainHeight > navHeight ? mainHeight : navHeight;
+	$("#bookCateNav").css("height", mainHeight);
+}
 
 
 $(function() {
 
+	var __html = 	
+	'<li class="expland">' +
+		'<span class="arrow"></span>' +
+		'<span class="close-btn">X</span>' +
+	'</li>';
 
-	var html = $('<li class="expland"></li>')
+
+	var $html = $(__html);
+	var $arrow = $html.find(".arrow");
+	var $closeBtn = $html.find(".close-btn");
 	// 插入的行数
 	var $books = $(".books-list-container .book");
 	var sumCount = $books.length;
 
 	// 插入的第几行
 	var appendRowIndex = 0;
+	// 上一次插入位置缓存
+	var lastappendBookIndex = null;
 	// 每行的图书数目
-	var eachColumnCount = 6;
+
+	var EACH_COLUMN_COUNT = 6;
 	//插入的书的索引
 	var appendBookIndex = 0;
 
-	var lastappendBookIndex = null;
+	// 缓存 上次点击的图书索引 
+	var lastClickedBookIndex = null;
+
+	// 详情窗口是否打开
+	var isSlideDown = false;
 
 	$books.on("click", function () {
 
-		html.css("display", "none");
+		$html.css("display", "none");
 
 		if (lastappendBookIndex != appendBookIndex) {
-			html.slideUp();
 		} 
 
-		var bookIndex = $(this).index();
+		// 计算要插入的一行最后一本图书的索引
+		var bookIndex 	= $(this).index();
+		appendRowIndex 	= parseInt((bookIndex) / EACH_COLUMN_COUNT ) + 1;
+		appendBookIndex = appendRowIndex * EACH_COLUMN_COUNT - 1;
 
-		appendRowIndex = parseInt((bookIndex) /eachColumnCount ) + 1;
+		// 偏移量 简单粗暴 不计算了 
+		// 我懒 我懒 我懒 还写爱出 shit 一样的代码
+		// 看 它们长得一坨坨的~~
+		var arrowToLeftDis = $(this).offset().left - 360;
 
-		appendBookIndex = appendRowIndex * eachColumnCount - 1;
-
-
+		// 如果这一行是满的 那就插入最后一行
+		// 不满的话那就最后一个咯，说明这一排是最后一排（这当然是句废话）
 		if ($books.get(appendBookIndex)){
-			$books.eq(appendBookIndex).after(html);
+			$books.eq(appendBookIndex).after($html);
 		} else {
-			$books.eq(sumCount - 1).after(html);
+			appendBookIndex = sumCount - 1;
+			$books.eq(appendBookIndex).after($html);
 		}
 		
+		// 如果点击的图书是同一行的，那么就不用slideDown特效了
 		if (lastappendBookIndex != appendBookIndex) {
-			html.slideDown();	
+			$html.slideDown();
 		} else {
-			html.css("display", "block");
+			$html.css("display", "block");
 		}
 
-		lastappendBookIndex = appendBookIndex;
+		$arrow.animate({"left": arrowToLeftDis});
 
+
+		lastappendBookIndex = appendBookIndex;
+		lastClickedBookIndex  = bookIndex;
+
+		updateNavHeight();
+	});
+
+	$closeBtn.on("click", function () {
+		$html.slideUp();
+		lastappendBookIndex = null;
+		updateNavHeight();
 	});
 });
 </script>

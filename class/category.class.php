@@ -118,9 +118,6 @@ class Category {
 	 * @return [type]     [description]
 	 */
 	public static function count_books_in_a_categoery($ID) {
-
-
-
 		
 	} 
 
@@ -162,11 +159,60 @@ class Category {
 
 		if ($result) {
 			if ($sql->affected_rows() === 1) {
+
+				// 将有次分类的图书改为未分类
+				$query = "UPDATE books
+					SET category = 0
+					WHERE category = $ID";
+
+				$result = $sql->query_db($query);
+
 				return TRUE;
-			} else {
-				return FALSE;
 			}
 		}
+		return FALSE;
 	} 
+
+
+	public static function uopdate($ID, $name, $desc, &$WARN_MESSAGE) {
+
+		global $DATABASE_CONFIG;
+
+		$name 			= MySQLDatabase::escape(trim($name));
+		$description 	= MySQLDatabase::escape(trim($description));
+		$ID 			= (int)$ID; 
+
+
+		if (empty($name)) {
+			array_push($WARN_MESSAGE, "分类名不能为空");
+			return ;
+		}
+
+
+		if (mb_strlen($name, 'utf-8') > 50) {
+			array_push($WARN_MESSAGE, "分类名过长请不要超过50个字");
+			return ;
+		}
+
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "UPDATE category
+			SET cate_name = '$cate_name',
+				description = ". get_sql_null($desc) . "
+			WHERE ID = $ID";
+
+
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			if ($sql->affected_rows == 1) {
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
 }
 ?>

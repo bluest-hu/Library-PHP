@@ -31,19 +31,22 @@
 	<nav class="navigation">
 		<ul>
 			<li>
-				<a href=""><span class="icons">&#xF080</span>Profile</a>
+				<a href="<?php echo $BASE_URL . "/admin/profile.php" ?>"><span class="icons">&#xF080</span>Profile</a>
 			</li>
 			<li>
-				<a href=""><span class="icons">&#xF133</span>Message</a>
+				<a href=""><span class="icons">&#xF133</span>消息</a>
 			</li>
 			<li>
-				<a href=""><span class="icons">&#xF04D</span>Settings</a>
+				<a href=""><span class="icons">&#xF04D</span>设置</a>
 			</li>
 			<li>
-				<a href="<?php echo $BASE_URL . "/admin/category.php" ?>"><span class="icons">&#xF0D2</span>Books</a>
+				<a href="<?php echo $BASE_URL . "/admin/books.php" ?>">
+					<span class="icons">&#xF0D2</span>
+					图书
+				</a>
 				<ul>
 					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加图书</a></li>
-					<li><a href="<?php echo $BASE_URL . "/admin/category.php" ?>">添加目录</a></li>
+					<li><a href="<?php echo $BASE_URL . "/admin/category.php" ?>">目录管理</a></li>
 				</ul>
 			</li>
 			<li>

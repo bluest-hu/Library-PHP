@@ -19,11 +19,12 @@
 .books-add .add-form {
 }
 
-h3.title {
+.main-title {
 	font-size: 20px;
 	line-height: 40px;
 	border-bottom: 1px solid #E0E0E0;
 	margin-bottom: 20px;
+	color: #777;
 }
 
 .books-add label {

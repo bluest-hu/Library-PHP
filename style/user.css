@@ -2,6 +2,7 @@
 	background-color: #FFF;
 	margin-bottom: 50px;
 	border-radius: 4px;
+	border: 1px solid #E0E0E0;
 }
 .user-nav {
 	border-radius: 4px;
@@ -68,8 +69,12 @@
 	display: block;
 	color: #7b7d86;
 	line-height: 50px;
-	font-size: 18px;
+	font-size: 14px;
 	font-family: "Batch", "Microsoft Yahei";
+}
+
+.user-nav .navigation .icons {
+	font-size: 18px;
 }
 
 .user-nav .navigation ul li ul li a {
@@ -92,7 +97,7 @@ form p {
 
 
 label {
-	display: block;
+	display: inline-block;
 	width: 80px;
 	width: 75px;
 	font-size: 14px;
@@ -119,6 +124,34 @@ textarea {
 
 .right-content {
 	padding: 25px 30px;
-	width: 680px;
+	width: 710px;
+}
+
+
+.category-action {
+	/*display: none;*/
+}
+
+.main-title {
+	height: 80px;
+	color: #FFF;
+	text-indent: 1.5em;
+	background-color: #3498DB;
+	border-top-right-radius: 4px;
+	font: normal 18px/80px "Batch", "Microsoft YaHei";
+}
+
+.main-title .icons {
+	font-size: 20px;
+	margin-right: 10px; 
+}
+
+h3.title {
+	color: #777;
+	line-height: 25px;
+	font-size: 18px;
+	margin-bottom: 15px;
+	text-indent: 1em;
+	border-left: 5px solid #3498DB;
 }
 
