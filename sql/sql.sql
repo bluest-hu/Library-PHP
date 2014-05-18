@@ -15,13 +15,11 @@ CREATE TABLE users (
 	avatar VARCHAR(255) NULL,
     loaction VARCHAR(255) NULL,
     sex INT NULL,
-    level INT NOT NULL,
+    level INT NOT NULL DEFAULT 0,
     cover_bg VARCHAR(255) NULL,
 	PRIMARY KEY (ID),
 	UNIQUE(username),
-    CHECK(sex = 0 OR sex = 1 OR sex = 2),
-    CHECK (level = 0 OR level = 1 OR level = 2)
-
+    CHECK(sex = 0 OR sex = 1 OR sex = 2)
 );
 
 # TABLE Books
@@ -41,19 +39,6 @@ CREATE TABLE books (
     PRIMARY KEY (ID)
 );
 
-# Create Table invite
--- CREATE TABLE invite (
---     ID INT NOT NULL AUTO_INCREMENT,
---     sender_id INT NOT NULL, #发送者
---     register_key VARCHAR(255) NOT NULL,
---     receiver INT NULL,
---     is_completed INT, #是否完成
---     sender_time TIMESTAMP NULL,
---     register_time TIMESTAMP NULL, #其实是冗余
---     level INT NOT NULL,
---     PRIMARY KEY (ID)
---  );
-
 # 图书分类
 CREATE TABLE category (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -62,4 +47,32 @@ CREATE TABLE category (
     add_time TIMESTAMP NOT NULL,
     PRIMARY KEY (ID),
     UNIQUE(cate_name)
+);
+
+
+CREATE TABLE borrow (
+    ID INT NOT NULL AUTO_INCREMENT,
+    book_id INT NOT NULL,
+    user_id INT NOT NULL,
+    borrow_date TIMESTAMP NOT NULL,
+    return_date TIMESTAMP NOT NULL,
+    completed INT NOT NULL DEFAULT 0,
+    PRIMARY KEY(ID),
+    CHECK(completed = 0 OR completed = 1)
+);
+
+
+CREATE TABLE author (
+    ID INT NOT NULL AUTO_INCREMENT,
+    author_name VARCHAR(255) NOT NULL,
+    avatar VARCHAR(255) NULL  DEFAULT NULL,
+    add_time TIMESTAMP NOT NULL DEFAULT NOW(),
+    PRIMARY KEY(ID),
+    UNIQUE(author_name)
+)
+
+
+CREATE TABLE message (
+
+
 );

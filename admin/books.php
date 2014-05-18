@@ -5,7 +5,9 @@ include(dirname(__FILE__) . "../../config.php");
 include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
+include(dirname(__FILE__) . "../../class/author.class.php");
 include(dirname(__FILE__) . "../../class/book.class.php");
+
 
 
 if ($_GET) {
@@ -124,20 +126,23 @@ foreach ($book_all as $key => $value) {
 ?>
 <tr>
 	<td><?php echo $i ;?></td>
-	<td>
+	<td style="max-width:300px;">
 		<img class="book-cover left" src="<?php echo $BASE_URL ."/image/book_covers/" .$value['cover'];?>"/>
 		<div class="left">
 			<p>
 				<b>书名：</b>
-				《<?php echo $value['name'];?>》
+				《<?php  echo mb_substr($value['name'],0,25,"utf-8");?>》
 			</p>
 			<p >
 				<b>出版社：</b>
 				<?php echo is_null($value['publisher']) ? "未知" : $value['publisher'] ; ?>
 			</p >
 			<p>
+				<?php $author_url = $BASE_URL . "/author.php?action=list_book&author_id=" .  Author::get_id_by_name($value['author']) . "&page=1";?>
 				<b>作者：</b>
-				<?php echo is_null($value['author']) ? "未知" : $value['author'] ; ?>
+				<a href="<?php echo $author_url;?>">
+					<?php echo is_null($value['author']) ? "未知" : $value['author'] ; ?>
+				</a>
 			</p >
 			<p >
 				<b>分类：</b>
@@ -157,7 +162,7 @@ foreach ($book_all as $key => $value) {
 	</td>
 	<td><?php echo date("Y-m-d", strtotime($value['date'])); ?></td>
 	
-	<td>
+	<td >
 		<p>
 			<b>共有：</b><?php echo $value['sum']; ?>本
 		</p>
@@ -165,7 +170,7 @@ foreach ($book_all as $key => $value) {
 			<b>借出：</b><?php echo $value['borrow']; ?>本
 		</p>
 	</td>
-	<td>
+	<td style="min-width:60px;">
 	<?php 
 		$del_url = $_SERVER['PHP_SELF']. '?action=book_del&book_id=' . (int)$value['ID'];
 		$update_url = $BASE_URL . '/admin/book_update.php?action=book_update&book_id=' . (int)$value['ID'];

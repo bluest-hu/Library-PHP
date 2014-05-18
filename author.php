@@ -1,34 +1,33 @@
 <?php 
-session_start();
 
-header("Content-Type: text/html;charset=utf-8"); 
+session_start();
 
 include(dirname(__FILE__) . "../config.php");
 include(dirname(__FILE__) . "../function.php");
 include(dirname(__FILE__) . "../class/mysql.class.php");
 include(dirname(__FILE__) . "../class/book.class.php");
 include(dirname(__FILE__) . "../class/category.class.php");
+include(dirname(__FILE__) . "../class/author.class.php");
 
-$WARN_MESSAGE = array();
+$author_all = Author::get_all();
+$author_id = 0;
+$page = 1;
 
 if ($_GET) {
-	if ($_GET['action'] == "list_book") {
-		$cate_id = (int) isset($_GET['cate_id']) ? $_GET['cate_id'] : 0;
-		$page = (int)isset($_GET['page']) ? $_GET['page'] : 1; 
-	} else {
-		$cate_id = 0;
-		$page = 1;
+	if ($_GET['action'] = "list_book") {
+		$author_id = (int)$_GET['author_id'];
+		$page = (int)$_GET['page'];
 	}
-} else {
-	$cate_id = 0;
-	$page = 1;
 }
 
+
 ?>
+
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Books</title>
+	<title>Authors</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/reset.css" />
@@ -36,6 +35,89 @@ if ($_GET) {
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books.css" />
+    <style type="text/css">
+	.all {
+		border-bottom: 1px solid #ddd;
+	}
+	.author-iteams {
+		position: relative;
+		display: block;
+		width: 76px;
+		height: 90px;
+		float: left;
+		border-right: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.author-iteams .avatar {
+		width: 55px;
+		position: absolute;
+		left: 0px;
+		right: 0px;
+		top: 10px;
+		margin: auto;
+		-webkit-filter: grayscale(100%);
+    	-moz-filter: grayscale(100%);
+	    -ms-filter: grayscale(100%);
+	    -o-filter: grayscale(100%);
+	    
+	    filter: grayscale(100%);
+		
+	    filter: gray;
+	}
+
+	.author-iteams .anthor-name {
+		position: absolute;
+		text-align: center;
+		left: 0px;
+		right: 0px;
+		bottom: 4px;
+		margin: auto;
+		font-size: 12px;
+		line-height: 15px;
+		color: #666;
+	}
+
+	.book-cate-nav a .count {
+		background-color: #3498DB; 
+	}
+
+	 .author-iteams .count {
+		display: inline-block;
+		position: absolute;
+		margin: 0px;
+		padding: 0px;
+		right: -6px;
+		top: -6px;
+	} 
+
+	 .author-iteams a {
+		width: inherit;
+		height: inherit;
+		padding-left:0px;
+	}
+
+	.book-cate-nav li.current:after {
+		display: none;
+	}
+
+	.book-cate-nav li:hover .anthor-name,
+	.book-cate-nav li.current .anthor-name {
+		color: #FFF;
+	}
+	
+	.book-cate-nav li:hover .avatar,
+	.book-cate-nav li.current .avatar {
+		-webkit-filter: grayscale(0%);
+    	-moz-filter: grayscale(0%);
+	    -ms-filter: grayscale(0%);
+	    -o-filter: grayscale(0%);
+	    
+	    filter: grayscale(0%);
+		
+	    filter: gray;
+	}
+    </style>
 </head>
 <body>
 	<div class="main">
@@ -43,22 +125,19 @@ if ($_GET) {
 
 		<div class="content" id="mianContent">
 			<div class="books clear">
-				<nav class="book-cate-nav left" id="bookCateNav">
-					<h2 class="title"><span class="icons">&#xF0D3</span></h2>
-					<ul>
-						<li class="<?php echo ($cate_id == 0) ? 'current' : ' ' ;?>" data-id="0">
-							<a href="<?php echo $BASE_URL . $_SERVER['PHP_SELF'] . '?action=list_book&cate_id=0&page=1';?>">
-								<span class="icons">&#xF0AB</span>
+				<nav class="book-cate-nav left book-author-av" id="bookCateNav">
+					<h2 class="title"><span class="icons">&#xF136</span></h2>
+					<ul class="clear" >
+						<li class="all <?php echo ($author_id == 0) ? "current" : "" ;?>" >
+							<a href="<?php echo $BASE_URL;?>/author.php?action=list_book&author_id=0&page=1">
+								<span class="count"><?php echo Book::get_books_count_by_author(0);?></span>
 								All
-								<span class="count"><?php echo Book::get_books_sum(0);?></span>
 							</a>
 						</li>
 <?php 
-
-$cate_arr = Category::get_all();
-foreach ($cate_arr as $key => $value) { 
-	$url = $BASE_URL . $_SERVER['PHP_SELF'] . '?action=list_book&cate_id=' . $value['id'] . "&page=1";
-	if ((int)$value['id'] == $cate_id) {
+foreach ($author_all as $key => $value) { 
+	$url = $BASE_URL . $_SERVER['PHP_SELF'] . '?action=list_book&author_id=' . $value['ID'] . "&page=1";
+	if ((int)$value['ID'] == $author_id) {
 		$nav_curr = "current";
 		$curr_cate_name = $value['name'];
 	} else {
@@ -66,13 +145,13 @@ foreach ($cate_arr as $key => $value) {
 	}
 ?>
 
-						<li data-id="<?php echo $value['id'];?>" class="<?php echo $nav_curr;?>">
-							<a href="<?php echo  $url ?>">
-								<span class="icons">&#xF0AB</span>
-								<?php echo $value['name'];?>
-								<span class="count"><?php echo Book::get_books_sum($value['id']);?></span>
-							</a>
-						</li> 
+<li class="<?php echo $nav_curr;?> author-iteams">
+	<a href="<?php echo  $url ?>">
+		<img class="avatar" src="<?php echo $value['avatar'];?>" alt="">
+		<span class="anthor-name"><?php echo $value['name'];?></span>
+		<span class="count"><?php echo Book::get_books_count_by_author($value['name']);?></span>
+	</a>
+</li> 
 
 <?php } ?>
 					</ul>
@@ -84,7 +163,7 @@ foreach ($cate_arr as $key => $value) {
 <?php 
 
 // 输出
-Book::get_book_list($cate_id, $page, 18);
+Book::get_book_list_by_author($author_id, $page, 18);
 ?>
 				
 		</div>
@@ -231,5 +310,16 @@ $(function() {
 		updateNavHeight();
 	});
 });
+
+
+$(function () {
+	$(".author-iteams").each(function(index,element) {
+
+		if ((index + 1) % 3 === 0) {
+			console.log(element)
+			$(element).css("borderRight","none");
+		}
+	});
+})
 </script>
 </html>

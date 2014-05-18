@@ -72,6 +72,15 @@ class Book {
 			$publish_date = NULL;
 		}
 
+		// 插入 作者表 没有出现过的新作者才会
+ 		if (!empty($author)) {
+			if (!Author::check_author_is_exit($author)) {
+				if (!Author::create_author_by_name($author)) {
+					array_push($WARN_MESSAGE, "处理作者出现错误");
+				}
+			}
+		}
+
 		// 处理 分类
 		$category = (int) $category;
 		// 处理 总数
@@ -170,7 +179,9 @@ class Book {
 					"NULL," . // Tags
 					"$category," . // 分类
 					get_sql_null($summary) . ")";
-			
+		
+
+
 			$result = $sql->query_db($query);	
 
 			// echo $query;
@@ -198,8 +209,6 @@ class Book {
 
 		global $DATABASE_CONFIG;
 		global $BASE_URL;
-
-		
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 
@@ -260,8 +269,8 @@ class Book {
 
 		<li class="book">
 			<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
-			<a class="book-name" href="<?php echo  $BASE_URL .'/api/api.php?action=get_book_info_by_id&book_id=' . $row['ID'] ;?>" class="book-title">
-				<?php echo $row['book_name'];?>
+			<a class="book-name" title="<?php echo $row['book_name'];?>" href="<?php echo  $BASE_URL .'/api/api.php?action=get_book_info_by_id&book_id=' . $row['ID'] ;?>" class="book-title">
+				<?php echo  mb_substr($row['book_name'],0,10,"utf-8");?>
 			</a>
 		</li>
 
@@ -271,13 +280,13 @@ class Book {
 			// 如果木有输图书
 			if ($BOOK_LIST_COUNT < 1) {
 				$HAS_CONTENT = FALSE;
-				echo "Nothing Here</div>";
+				echo "<p class='nothing'>Nothing Here</p></div>";
 			}
 ?>
 	</ul>
 <?php 
 		}else {
-				echo "Nothing Here";
+				echo "<p class='nothing'>Nothing Here</p></div>";
 				$HAS_CONTENT = FALSE;
 		}
 
@@ -328,6 +337,139 @@ class Book {
 		}
 	}
 
+	public static function get_book_list_by_author($author_id, $page, $each_num) {
+
+		global $DATABASE_CONFIG;
+		global $BASE_URL;
+
+		$author_name = Author::get_name_by_id($author_id);
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		// 总的条目
+		$sum = Book::get_books_count_by_author($author_name);
+
+		// 总的页数
+		$sum_page = ceil($sum / $each_num);
+
+		// 处理分页溢出
+		if ($page < 1 || $page > $sum_page ) {
+			$page = 1;
+		}
+
+		$start_index = ($page - 1) * $each_num;
+
+		$offset = $each_num;
+
+		/**
+		 * 0 代表无限
+		 */
+		if ($author_id < 0 ) {
+			$author_id = 0;
+		}
+
+		// 处理分类
+		if (!Author::check_author_is_exit($author_name)) {
+			$author_id = 0;
+		}
+
+		if ($author_id === 0) {
+			$query = "SELECT *
+				FROM books 
+				LIMIT $start_index , $offset";
+		} else {
+			$query = "SELECT *
+				FROM books 
+				WHERE  author = '$author_name'
+				LIMIT $start_index , $offset";
+		}
+
+		// echo $query;
+
+		$result = $sql->query_db($query);
+
+		// 检测是否有内容
+		$HAS_CONTENT = TRUE;
+		if ($result) {
+?>
+
+
+<div class="books-list right">
+	<h2 class="title">图书</h2>
+	<ul class="books-list-container clear">
+<?php 		$BOOK_LIST_COUNT = 0;
+			while($row = $sql->fetch_array()) {
+				$BOOK_LIST_COUNT++;
+?>
+
+		<li class="book">
+			<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
+			<a class="book-name" title="<?php echo $row['book_name'];?>" href="<?php echo  $BASE_URL .'/api/api.php?action=get_book_info_by_id&book_id=' . $row['ID'] ;?>" class="book-title">
+				<?php echo  mb_substr($row['book_name'],0,10,"utf-8");?>
+			</a>
+		</li>
+<?php				
+			}
+			// 如果木有输图书
+			if ($BOOK_LIST_COUNT < 1) {
+				$HAS_CONTENT = FALSE;
+				echo "<p class='nothing'>Nothing Here</p></div>";
+			}
+?>
+	</ul>
+<?php 
+		}else {
+				echo "<p class='nothing'>Nothing Here</p></div>";
+				$HAS_CONTENT = FALSE;
+		}
+
+
+
+		if ($HAS_CONTENT == TRUE) {
+?>
+	<nav class="book-list-nav">
+		<ul>
+			<li><a href="<?php echo $BASE_URL . "/books.php?action=list_book&author_id=$author_id&page=1"; ?>">首页</a></li>
+			<li><span>共<?php echo $sum_page; ?>页</span></li>
+<?php
+			if ($page > 1) {
+					$pre_page_index = $page - 1;
+?>
+<li>
+	<a href="<?php echo $BASE_URL . "/books.php?action=list_book&author_id=$author_id&page=$pre_page_index"; ?>">上一页</a>
+</li>
+<?php					
+				}
+			// 输出分页
+			for ($i = 1; $i <= $sum_page; $i++ ) {
+				$page_url = $BASE_URL . "/books.php?action=list_book&author_id=$author_id&page=$i";
+
+?>
+<li class="<?php echo ($i == $page) ? "current" : "" ?>">
+	<a class="page" href="<?php echo $page_url;?>"><?php echo $i; ?></a>
+</li> 
+<?php		
+			}
+			if ($page != $sum_page) {
+
+				$next_page_index = $page + 1;
+?>			
+			<li>
+				<a href="<?php echo $BASE_URL . "/books.php?action=list_book&author_id=$author_id&page=$next_page_index"; ?>">下一页</a>
+			</li>
+			<li>
+				<a href="<?php echo $BASE_URL . "/books.php?action=list_book&author_id=$author_id&page=$sum_page"; ?>">最后一页</a>
+			</li>
+<?php 
+			}
+?>
+		</ul>
+	</nav>
+</div> 
+<?php
+		}
+	}
+
 	/**
 	 * [get_books_sum description]
 	 * @param  [type] $cate_id [description]
@@ -347,6 +489,30 @@ class Book {
 		}
 
 		// echo $query;
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				return $row['sum'];
+			}
+			return FALSE;
+		}
+		return FALSE;
+	}
+
+
+	public static function get_books_count_by_author ($author) {
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "SELECT COUNT(ID) AS sum
+			FROM books";
+
+		if ($author != "")  {
+			$query .= " WHERE author = '$author'"; 
+		}
+
 		$result = $sql->query_db($query);
 
 		if ($result) {
@@ -465,6 +631,44 @@ class Book {
 		return false;
 	} 
 
+
+	// public static function get_book_list_by_author($author) {
+	// 	$res_arr = array();
+
+	// 	global $DATABASE_CONFIG;
+
+	// 	$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+	// 	$query = "SELECT *
+	// 		FROM books
+	// 		WHERE author = '$author'
+	// 		ORDER BY publish_date DESC";
+
+	// 	$result = $sql->query_db($query);
+
+	// 	if ($result) {
+	// 		while($row = $sql->fetch_array()) {
+	// 			$temp_arr = array(
+	// 				'ID' 		=> $row['ID'],
+	// 				'name'		=> $row['book_name'],
+	// 				'publisher'	=> $row['publisher'],
+	// 				'cover'		=> $row['cover'],
+	// 				'author'	=> $row['author'],
+	// 				'date'		=> $row['publish_date'],
+	// 				'sum'		=> $row['sum_count'],
+	// 				'borrow'	=> $row['borrowed_count'],
+	// 				'cate'		=> Category::get_cate_name_by_id($row['category']),
+	// 				'tag'		=> $row['tags'],
+	// 				'summary' 	=> htmlspecialchars_decode($row['summary'])
+	// 				);
+
+	// 			array_push($res_arr, $temp_arr);
+	// 		}
+
+	// 		return $res_arr;
+	// 	}
+	// 	return False;
+	// }
 
 
 	public static function update (
@@ -592,6 +796,51 @@ class Book {
 						break;
 				}
 			}
+		}
+
+
+		// 进入 傻逼拼接字符串模式 本来方式已经很傻逼无法忍受了
+		// Dirty ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+
+		if ($CAN_SUBMIT) {
+			$query = "INSERT INTO books (
+				book_name, 
+				publisher, 
+				cover, 
+				author, 
+				publish_date,
+				add_date,
+				sum_count, 
+				borrowed_count, 
+				tags, 
+				category, 
+				summary
+				) 
+				VALUES (
+					'$bookname', " .  // 图书名
+					get_sql_null($publisher) . "," . //  出版社
+					get_sql_null($cover) . "," . // 封面
+					get_sql_null($author) . "," . // 作者
+					get_sql_null($publish_date) . "," . // 出版日期
+					"NOW()," .
+					"$sum_count," . // 书本总数
+					"0 ," . // 已经借出
+					"NULL," . // Tags
+					"$category," . // 分类
+					get_sql_null($summary) . ")";
+			
+			$result = $sql->query_db($query);	
+
+			// echo $query;
+
+			if ($result) {
+				if ($sql->affected_rows() == 1) {
+					return TRUE;
+				} 
+				return FALSE;
+			}
+			
+			return FALSE;
 		}
 	}
 }

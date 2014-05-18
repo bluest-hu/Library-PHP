@@ -261,9 +261,9 @@
 .expland  .column-two p b {
 	color: #AAA;
 }
-.expland  .column-two p {
-	font-size: 13px;
-	line-height: 25px;
+.expland   p {
+	font-size: 12px;
+	line-height: 20px;
 	color: #EEE;
 }
 
@@ -279,6 +279,29 @@
 	color: #333;
 }
 
+.books-list  a {
+	color: #3498DB;
+}
+
+
+.books-list  .column-two {
+	max-width: 250px;
+}
+
 .books-list  .column-three {
+	max-width: 250px;
 	margin-left: 20px;
+}
+
+
+p.nothing {
+	border: 2px dashed #E0E0E0;
+	margin: 20px;
+	border-radius: 4px;
+	text-align: center;
+	font-size: 50px;
+	line-height: 150px;
+	color: #333;
+	font-weight: bold;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, .6);
 }

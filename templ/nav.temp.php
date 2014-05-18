@@ -29,8 +29,8 @@ function get_current($target_name) {
 				<li class="<?php get_current("books.php"); ?>">
 					<a href="<?php echo $BASE_URL. "/books.php";?>"><span class="icon">&#xF0D1</span>Books</a>
 				</li>
-				<li class="<?php get_current("bb.php"); ?>">
-					<a href=""><span class="icon">&#xF136</span>Author</a>
+				<li class="<?php get_current("author.php"); ?>">
+					<a href="<?php echo $BASE_URL. "/author.php";?>"><span class="icon">&#xF136</span>Author</a>
 				</li>
 				<li class="<?php get_current("user.php"); ?>">
 					<a href="<?php echo $BASE_URL . '/user.php'; ?>"><span class="icon">&#xF045</span>Users</a>

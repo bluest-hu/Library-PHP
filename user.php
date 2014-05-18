@@ -1,7 +1,11 @@
 <?php 
 session_start();
-
 include(dirname(__FILE__) . "../config.php");
+include(dirname(__FILE__) . "../function.php");
+include(dirname(__FILE__) . "../class/mysql.class.php");
+include(dirname(__FILE__) . "../class/book.class.php");
+include(dirname(__FILE__) . "../class/user.class.php");
+include(dirname(__FILE__) . "../class/category.class.php");
 
 // 当前主页是否为自己的
 $is_my_page = false;

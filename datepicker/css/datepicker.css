@@ -179,3 +179,9 @@
   width: 16px;
   height: 16px;
 }
+
+
+ .table-condensed {
+  border: none;
+  padding: 0px;
+ } 

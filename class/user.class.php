@@ -49,85 +49,6 @@ class User {
 		return sha1(uniqid(mt_rand(), true));
 	}
 
-	// /**
-	//  * 实现重载的构造函数
-	//  */
-	// public function __construct() {
-	// 	$method = "__construct" . func_num_args();
- //        $this->$method();
-	// }
-
-	// public function __construct10($ID, $username, $password, $emaill, $unique_id, $avastr, $register_time, $location, $sex, $level) {
-	// 	$this->$ID 				= $ID;
-	// 	$this->$username 		= $username;
-	// 	$this->$password 		= $password;
-	// 	$this->$emaill 			= $emaill;
-	// 	$this->$unique_id 		= $uniqid;
-	// 	$this->$avastr 			= $avastr;
-	// 	$this->$register_time 	= $register_time;
-	// 	$this->$location 		= $location;
-	// 	$this->$sex 			= $sex;
-	// 	$this->$level 			= $level;
-	// }
- 
-
-	// public function add_new_user($user) {
- //        $str_1 = "(";
- //        $str_2 = "(";	
-
-	// 	foreach ($user as $key => $value) {
-	// 		$str_1 .= $key . ",";
-	// 		$str_1 .= ("'" . $value . "'");
-	// 	}
-
-	//  	$str_1 .= ")";
- //        $str_2 .= ")";
-
-	// 	$query = "INSERT INTO user";
-	// }
-
-	// public function check_password($pass_str) {
-		
-	// }
-
-	// /**
-	// * 只是用于获取用户信息
-	// * 如果返回FALSE，则没有该用户
-	// **/
-	// public static function get_user_by_username($username) {
-
-	// 	$username = MySQLDatabase::escape($username);
-
-	// 	$query = "SELECT *
-	// 		FROM user
-	// 		WHERE username = '$username'
-	// 		LIMIT 1";
-
-	// 	$mysql = new MySQLDatabase($DATABASE_CONFIG);
-		
-	// 	$result = $mysql->query_db($query);
-
-	// 	// 如果没有结果返回false，说明不存在该用户
-	// 	if (!$result) {
-	// 		return FALSE;
-	// 	} 
-
-	// 	while($row = $mysql->fetch_array()) {
-	// 		$ID 			= $row["ID"];
-	// 		$username 		= $row["username"];
-	// 		$password 		= $row["password"];
-	// 		$emaill 		= $row["email"];
-	// 		$unique_id 		= $row["unique_id"];
-	// 		$avastr 		= $row["avatar"];
-	// 		$register_time 	= $row["register_time"];
-	// 		$location 		= $row["location"];
-	// 		$sex 			= $row["sex"];
-	// 		$level 			= $row["level"];
-	// 	}
-
-	// 	return new User($ID, $username, $password, $emaill, $unique_id, $avastr, $register_time, $location, $sex, $level);
-
-	// }
 
 
 	/**
@@ -171,7 +92,35 @@ class User {
 	}
 
 
-	// public static function login($username, $password, $remberme, & $WARN_MESSAGE) {
+	/**
+	 * [check_username_is_exit description]
+	 * @param  [type] $username [description]
+	 * @return [type]           [description]
+	 */
+	public static function check_username_is_exit ($username) {
+
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+		$query = "SELECT *
+			FROM users
+			WHERE username = '$username'
+			LIMIT 1";
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			if($sql->affected_rows() === 1) {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
+	public static function login($username, $password, $remberme, & $WARN_MESSAGE) {
 	// 	global $DATABASE_CONFIG;
 
 	// 	$CAN_LOGIN = TRUE
@@ -255,7 +204,7 @@ class User {
 	//             }
 	//         }
 	//     }
-	// }
+	}
 
 
 	public static function reigster() {
@@ -364,7 +313,29 @@ class User {
 
 
 
-	public static function del_user_by_username () {
+	public static function del_user_by_username ($username) {
+
+
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+
+		// 检查
+
+		$query = "DELETE FROM users
+			WHERE username = '$username'
+			LIMIT 1";
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			if($sql->affected_rows() === 1) {
+				return true;
+			}
+		}
+
+		return false;
 
 	}
 
