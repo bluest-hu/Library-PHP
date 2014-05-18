@@ -30,7 +30,7 @@ CREATE TABLE books (
     book_name VARCHAR(255) NOT NULL,
     publisher VARCHAR(255) NULL,
     cover VARCHAR(255) NULL,
-    author INT NULL,
+    author VARCHAR(255) NULL,
     publish_date TIMESTAMP NULL,
     add_date TIMESTAMP NOT NULL,
     sum_count INT NOT NULL,
@@ -42,17 +42,17 @@ CREATE TABLE books (
 );
 
 # Create Table invite
-CREATE TABLE invite (
-    ID INT NOT NULL AUTO_INCREMENT,
-    sender_id INT NOT NULL, #发送者
-    register_key VARCHAR(255) NOT NULL,
-    receiver INT NULL,
-    is_completed INT, #是否完成
-    sender_time TIMESTAMP NULL,
-    register_time TIMESTAMP NULL, #其实是冗余
-    level INT NOT NULL,
-    PRIMARY KEY (ID)
- );
+-- CREATE TABLE invite (
+--     ID INT NOT NULL AUTO_INCREMENT,
+--     sender_id INT NOT NULL, #发送者
+--     register_key VARCHAR(255) NOT NULL,
+--     receiver INT NULL,
+--     is_completed INT, #是否完成
+--     sender_time TIMESTAMP NULL,
+--     register_time TIMESTAMP NULL, #其实是冗余
+--     level INT NOT NULL,
+--     PRIMARY KEY (ID)
+--  );
 
 # 图书分类
 CREATE TABLE category (

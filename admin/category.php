@@ -42,12 +42,18 @@ if ($_GET) {
 		if ($cate_id != 0) {
 			Category::delete_by_id($cate_id);
 		}
-
-
 	} else if ($_GET['action'] == 'cate_update') {
+		$cate_name = $_POST['cate_name'];
+		$cate_desc = $_POST['cate_descrption'];
+		$cate_id  = (int)$_GET['cate_id'];
 
+		if ($cate_id != 0) {
+			$text = array();
+			if (Category::update($cate_id,$cate_name, $cate_desc, $text)) {
+				header("location:" . $BASE_URL . "/admin/category.php");
+			}
+		}
 	}
-
 }
 
 ?>
@@ -63,11 +69,11 @@ if ($_GET) {
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/books_add.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/style/user.css" />
     <style type="text/css">
-	.cate-list table {
+	 table {
 		border-radius: 2px;
 	}
 
-	.cate-list table td {
+	table td {
 		font-size: 13px;
 		color: #999;
 	}
@@ -76,13 +82,14 @@ if ($_GET) {
 		color: #3498DB;
 	}
 
-	.cate-list .cate-head tr th {
+	thead tr th {
 		color: #666;
 		border-bottom: 1px solid #E0E0E0;
 		font-size: 14px;
 	}
 
 	.cate-list .cate-index {
+
 	}
 
 	.cate-list .del-btn,
@@ -138,6 +145,62 @@ if ($_GET) {
 		height: 40px;
 		margin-left: 90px;
 	}
+
+	.cover {
+		width: 100%;
+		height: 100%;
+		background: rgba(0,0,0,.8);
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		/*opacity: 0;*/
+		display: none;
+	}
+
+	.category-action {
+		margin: 100px auto;
+		width: 400px;
+		padding: 30px;
+		background: #FFF;
+		border: 1px solid #E0E0E0;
+		border-radius: 4px;
+		position: relative;
+		display: none;
+	}
+
+	.close-btn {
+		display: block;
+		width: 25px;
+		height: 25px;
+		text-align: center;
+		line-height: 25px;
+		position: absolute;
+		vertical-align: middle;
+		top: 20px;
+		right: 20px;
+		font-size: 20px;
+		color: #999;
+		/*border-radius: 50%;*/
+		/*background-color: #E74C3C;*/
+	}
+
+	.close-btn:hover {
+		cursor: pointer;
+		color: #666;
+	}
+
+	h3.title {
+		line-height: 40px;
+		border-bottom: 1px solid #E0E0E0;
+	}
+	.cate_list_action {
+		min-width: 90px;
+	}
+
+	textarea {
+		width: 275px; 	
+	}
+
     </style>
 </head>
 <body>
@@ -179,15 +242,21 @@ foreach ($cate_arr as $key => $value) {
 	$time = date("Y/m/d", $time);
 	$cate_index++;
 	$cate_url = $BASE_URL . "/books.php?action=list_book&cate_id=". $value['id']."&page=1";
+	//截取字符串
+	$cate_desc_output = empty($value['des']) ? "暂无描述" : $value['des'];
+
+	if(strlen($cate_desc_output) > 15) {
+		$cate_desc_output = mb_substr($cate_desc_output, 0, 15, 'utf-8') . "...";
+	}
 ?>
 <tr>
 	<td class="cate-index"><?php echo $cate_index; ?></td>
-	<td>
+	<td class="cate-name">
 		<a href="<?php echo $cate_url ?>"><?php echo $value['name']; ?></a>
 	</td>
-	<td><?php echo empty($value['des']) ? "暂无描述" : $value['des']; ?></td>
+	<td class="cate-desc"><?php echo $cate_desc_output ?></td>
 	<td><?php echo $time ;?></td>
-	<td>
+	<td class="cate_list_action">
 		<a class="del-btn" href="<?php echo $_SERVER['PHP_SELF']. '?action=cate_del&cate_id=' . $value['id'];?>">删除</a> 
 		<a class="update-btn" href="<?php echo $_SERVER['PHP_SELF']. '?action=cate_update&cate_id=' . $value['id'];?>">修改</a>
 	</td>
@@ -209,14 +278,15 @@ foreach ($cate_arr as $key => $value) {
 			<h3 class="title">
 				添加分类
 			</h3>
+			<span class="close-btn">x</span>
 			<form method="POST" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_cate"; ?>" >
 				<p>
-					<label class="" for="">分类名：</label>
+					<label class="" for="categoryName">分类名：</label>
 					<input class="category-name" type="text" id="categoryName" name="cate_name">
 				</p>
 				<p>
-					<label class="" for="">分类描述：</label>
-					<textarea name="cate_descrption"></textarea>
+					<label class="" for="cateDesc">分类描述：</label>
+					<textarea name="cate_descrption" id="cateDesc"></textarea>
 					<span class="description"></span>
 				</p>
 				<p>
@@ -228,16 +298,19 @@ foreach ($cate_arr as $key => $value) {
 
 		<div class="catagory-update clear category-action">
 			<h3 class="title">
-				添加分类
+				更新分类
 			</h3>
-			<form method="POST" action="<?php echo $_SERVER['PHP_SELF'] . "?action=add_cate"; ?>" >
+			<span class="close-btn">x</span>
+			<form id="updateForm" method="POST" action="<?php echo $_SERVER['PHP_SELF'] . "?action=cate_update"; ?>" >
 				<p>
-					<label class="" for="">分类名：</label>
-					<input class="category-name" type="text" id="categoryName" name="cate_name">
+					<label class="" for="categoryNameUpdate">分类名：</label>
+					<input class="category-name" type="text" id="categoryNameUpdate" name="cate_name" value="text">
+					<input class="category-id"  type="hidden" name="cate_id">
+				</p>
 				</p>
 				<p>
-					<label class="" for="">分类描述：</label>
-					<textarea name="cate_descrption"></textarea>
+					<label class="" for="cateDescUpdate">分类描述：</label>
+					<textarea name="cate_descrption" id="cateDescUpdate"></textarea>
 					<span class="description"></span>
 				</p>
 				<p>
@@ -252,15 +325,50 @@ foreach ($cate_arr as $key => $value) {
 	<script type="text/javascript">
 
 	$(function () {
+
+		// init cover height
+		$(".cover").css("height",$(document).height());
+
 		$(".add-cate-btn").on("click", function(event) {
-			$(".catagory-add").slideDown();
+			$(".catagory-update").css({"display":"none"});
+			$(".catagory-add").css({"display":"block"});
+			$(".cover").fadeIn();
 
 			event = event || window.event;
 
 			event.preventDefault();
 			return false;
 		});
+
+
+
+		$(".update-btn").on("click", function () {
+
+			
+			$(".catagory-update").css({"display":"block"});
+			$(".catagory-add").css({"display":"none"});
+			$(".cover").fadeIn();
+
+			var parent = $(this).parent().parent();
+			
+			var summary = parent.find(".cate-desc").html();
+			var name = parent.find(".cate-name a").html();
+			$("#updateForm").attr("action",$(this).attr("href"));
+
+			$("#categoryNameUpdate").get(0).value = name;
+			$("#cateDescUpdate").val(summary);
+
+			event = event || window.event;
+			event.preventDefault();
+			return false;
+		});
+
+
+		$(".close-btn").on("click", function () {
+			$(".cover").fadeOut();
+		});
 	});
+
 
 	</script> 
 </html>

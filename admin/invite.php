@@ -6,10 +6,34 @@ include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 
+// 当前主页是否为自己的
+$is_my_page = false;
+$get_user_name = "";
+
 // 没有登陆切没有指定查看的用户 强制跳转到登陆
 if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level'] < 1) {
 	header("Location:" . $BASE_URL . "login.php"); 
 }
+
+$WARN_MESSAGE = array();
+
+if ($_GET) {
+	if ($_GET['action'] === "add_cate") {
+		if ($_POST) {
+			
+			$cate_name = $_POST['cate_name'];
+			$cate_desc = $_POST['cate_descrption'];
+
+
+			if (Category::add_new($cate_name, $cate_desc,$WARN_MESSAGE )) {
+				echo "sucsess";
+			} else {
+				print_r($WARN_MESSAGE);
+			}
+		}
+	}
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -30,17 +54,16 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level']
 		<div class="content clear" id="mianContent">
 			<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
 			<div class="right-container right">
-				<h2 class="title"><span class="icons">&#xF0E3</span>用户信息</h2>
+				<h2 class="title"><span class="icons">&#xF0E3</span>添加邀请</h2>
 				<div class="catagory right-content clear">
-					<div class="user-profile left">
+					<div class="invite-add left">
 						<h3 class="title">
-							用户信息
+							添加分类
 						</h3>
 
-						<div>
-							
-
-						</div>
+						<form action="">
+							<input type="submit">
+						</form>
 					</div>
 				</div>
 			</div>

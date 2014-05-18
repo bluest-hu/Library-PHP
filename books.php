@@ -109,24 +109,21 @@ function updateNavHeight() {
 }
 
 
+function dealUnkonwText(text) {
+	return (jQuery.trim(text) === "") || text == 0 || text ? "未知" : text;
+}
+
+
 $(function() {
 
-	var __html = 	
-	'<li class="expland">' +
-		'<span class="arrow"></span>' +
-		'<span class="close-btn">X</span>' +
-	'</li>';
 
-
-	var $html = $(__html);
-	var $arrow = $html.find(".arrow");
-	var $closeBtn = $html.find(".close-btn");
 	// 插入的行数
 	var $books = $(".books-list-container .book");
 	var sumCount = $books.length;
 
 	// 插入的第几行
 	var appendRowIndex = 0;
+
 	// 上一次插入位置缓存
 	var lastappendBookIndex = null;
 	// 每行的图书数目
@@ -141,7 +138,49 @@ $(function() {
 	// 详情窗口是否打开
 	var isSlideDown = false;
 
+
+	var __html = 	 
+	'<li class="expland">' +
+		'<span class="arrow"></span>' +
+		'<span class="close-btn">X</span>' +
+		'<div class="book-detail clear">' +
+		'</div>' +
+	'</li>';
+
+
+	var $html = $(__html);
+	var $arrow = $html.find(".arrow");
+	var $closeBtn = $html.find(".close-btn");
+	var $content = $html.find(".book-detail"); 
+
 	$books.on("click", function () {
+		var __this = $(this);
+
+		$.ajax({
+			url:$(this).find(".book-name").attr('href'),
+			method:"GET",
+			async:false,
+			complete:function (data) {
+				var json = eval("(" + data.responseText + ")");
+				var __content = 
+"<div class='column-one book-cover left'>"+
+	"<img src='image/book_covers/"+json.cover+"'/>" +
+"</div>"  +
+"<div class='column-two left'>" +
+	"<h4 class='title'>图书信息</h4>" +
+	"<p>" + "<b>书名：</b>《" +json.name + "》</p>" +
+	"<p>" + "<b>出版社：</b>" +  dealUnkonwText(json.publisher) + "</p>" +
+	"<p>" +"<b>作者：</b>" + dealUnkonwText(json.author) + "</p>" +
+	"<p>" +"<b>分类：</b>" + dealUnkonwText(json.cate) + "</p>" +
+"</div>" +
+"<div class='column-three left' style='clear:right'>" +
+	"<h4 class='title'>图书简介</h4>" +
+	"<div>" + dealUnkonwText(json.summary)  + "</div>"
+"</div>";
+				$content.html(__content);
+				
+			}
+		});
 
 		$html.css("display", "none");
 
@@ -149,7 +188,7 @@ $(function() {
 		} 
 
 		// 计算要插入的一行最后一本图书的索引
-		var bookIndex 	= $(this).index();
+		var bookIndex 	= __this.index();
 		appendRowIndex 	= parseInt((bookIndex) / EACH_COLUMN_COUNT ) + 1;
 		appendBookIndex = appendRowIndex * EACH_COLUMN_COUNT - 1;
 
@@ -180,8 +219,11 @@ $(function() {
 		lastappendBookIndex = appendBookIndex;
 		lastClickedBookIndex  = bookIndex;
 
+
 		updateNavHeight();
+
 	});
+
 
 	$closeBtn.on("click", function () {
 		$html.slideUp();

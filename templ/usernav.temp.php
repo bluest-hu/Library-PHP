@@ -50,7 +50,7 @@
 				</ul>
 			</li>
 			<li>
-				<a href=""><span class="icons">&#xF171</span>Invate</a>
+				<a href="<?php echo $BASE_URL . "/admin/invite.php" ?>"><span class="icons">&#xF171</span>Invate</a>
 			</li>
 			
 		</ul>

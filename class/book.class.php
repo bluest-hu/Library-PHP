@@ -260,7 +260,7 @@ class Book {
 
 		<li class="book">
 			<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
-			<a href="<?php echo  $BASE_URL;?>" class="book-title">
+			<a class="book-name" href="<?php echo  $BASE_URL .'/api/api.php?action=get_book_info_by_id&book_id=' . $row['ID'] ;?>" class="book-title">
 				<?php echo $row['book_name'];?>
 			</a>
 		</li>
@@ -359,9 +359,240 @@ class Book {
 	}
 
 
-
+	/**
+	 * [get_book_info_by_id description]
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public static function get_book_info_by_id($id) {
 		
+		$arr = array();		
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+		$id = (int) $id;
+
+		if ($id <= 0) {
+			return False;
+		}
+
+		$query = "SELECT *
+			FROM books
+			WHERE ID = $id";
+
+		$result = $sql->query_db($query);
+			
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				$temp_arr = array(
+					'ID' 		=> $row['ID'],
+					'name'		=> $row['book_name'],
+					'publisher'	=> $row['publisher'],
+					'cover'		=> $row['cover'],
+					'author'	=> $row['author'],
+					'date'		=> date("Y-m-d", strtotime($row['publish_date'])),
+					'sum'		=> $row['sum_count'],
+					'borrow'	=> $row['borrowed_count'],
+					'cate'		=> Category::get_cate_name_by_id($row['category']),
+					'tag'		=> $row['tags'],
+					'summary' 	=> htmlspecialchars_decode($row['summary'])
+					);
+
+				return $temp_arr;				
+			}
+		}
+	}
+
+
+	/**
+	 * [get_all description]
+	 * @return [type] [description]
+	 */
+	public static function get_all() {
+
+		$res_arr = array();
+
+		global $DATABASE_CONFIG;
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		$query = "SELECT *
+			FROM books
+			ORDER BY publish_date DESC";
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				$temp_arr = array(
+					'ID' 		=> $row['ID'],
+					'name'		=> $row['book_name'],
+					'publisher'	=> $row['publisher'],
+					'cover'		=> $row['cover'],
+					'author'	=> $row['author'],
+					'date'		=> $row['publish_date'],
+					'sum'		=> $row['sum_count'],
+					'borrow'	=> $row['borrowed_count'],
+					'cate'		=> Category::get_cate_name_by_id($row['category']),
+					'tag'		=> $row['tags'],
+					'summary' 	=> htmlspecialchars_decode($row['summary'])
+					);
+
+				array_push($res_arr, $temp_arr);
+			}
+
+			return $res_arr;
+		}
+		return False;
+	}
+
+
+	public static function del_by_id($id) {
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+		$query = "DELETE FROM books
+			WHERE ID = $id
+			LIMIT 1";
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			if ($sql->affected_rows() == 1) {
+				return true;
+			}
+		}
+		return false;
+	} 
+
+
+
+	public static function update (
+		$bookname, 
+		$publisher, 
+		$author, 
+		$cover, 
+		$publish_date,
+		$sum_count,
+		$category,
+		$summary,
+		$WARN_MESSAGE
+		) {
+
+		global $DATABASE_CONFIG;
+
+
+		$CAN_SUBMIT = TRUE;
+		$CAN_UPLOAD = FALSE;
+
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$bookname 		= MySQLDatabase::escape(trim($bookname));
+		$publisher 		= MySQLDatabase::escape(trim($publisher));
+		$author 		= MySQLDatabase::escape(trim($author));
+		// 处理封面
+		$cover 			= MySQLDatabase::escape(trim($cover));
+		$publish_date 	= MySQLDatabase::escape(trim($publish_date));
+		$sum_count 		= MySQLDatabase::escape(trim($sum_count));
+		$category 		= MySQLDatabase::escape(trim($category));
+		$summary 		= MySQLDatabase::escape(trim($summary));
+
+
+		// 图书名不能为空
+		if (empty($bookname)) {
+			$CAN_SUBMIT = false;
+			array_push($WARN_MESSAGE, "书名不能为空");
+			return;
+		} elseif (mb_strlen($bookname, 'utf-8') >= 500) {
+			$CAN_SUBMIT = false;
+			array_push($WARN_MESSAGE, "书名太长");
+			return;
+		}
+
+		// 设置时区
+		date_default_timezone_set("Asia/Shanghai");
+		date_default_timezone_set('UTC');
+
+		if (!empty($publish_date)) {
+			// 尝试处理时间验证时间
+			$publish_date  = strtotime($publish_date);
+			if ($publish_date != FALSE) {
+				$publish_date = date("Y-m-d H:i:s", $publish_date);
+			} else {
+				$publish_date = NULL;
+			}
+		} else {
+			$publish_date = NULL;
+		}
+
+		// 处理 分类
+		$category = (int) $category;
+		// 处理 总数
+		$sum_count = (int) $sum_count;
+
+		//上传配置问价
+		$FILE_UPLOAD_CONFIG = array(
+			'MAX_FILE_SIZE' => 10000 * 1000,
+			'TYPE' 			=> array(
+				'image/jpeg',
+				'image/png',
+				'image/gif',
+				'image/pjpeg'
+				),
+			'DIR' 			=> '../image/book_covers/'
+			);
+
+		if ($_FILES && $CAN_SUBMIT) {
+			$file = $_FILES['cover'];
+
+			if ($file['error'] == 0) {
+				// FLAG 能否上传成功的标志位
+				$CAN_UPLOAD = true;
+
+				// 检查文件尺寸
+				if ($file["size"] > $FILE_UPLOAD_CONFIG['MAX_FILE_SIZE']) {
+					array_push($WARN_MESSAGE, '上传文件尺寸过大');
+					$CAN_UPLOAD = false;
+				}
+
+				// 检查文件类型
+				if (!in_array($file['type'], $FILE_UPLOAD_CONFIG['TYPE'])) {
+					array_push($WARN_MESSAGE, '上传文件类型不符合');
+					$CAN_UPLOAD = false;
+				}
+			
+				$filename = md5(User::get_unique()) . '.' . getExtenName($file['name']);
+				$file_full_name = $FILE_UPLOAD_CONFIG['DIR'] . $filename;
+
+				if ($CAN_UPLOAD) {
+					// 上传成功
+					if (move_uploaded_file($file['tmp_name'], $file_full_name)) {
+						$cover = $filename;
+
+					} 
+				} else {
+					array_push($WARN_MESSAGE, "文件上传失败");
+				}
+			} else {
+				switch ($file['error']) {
+					case UPLOAD_ERR_INI_SIZE :
+						break;
+					case UPLOAD_ERR_FORM_SIZE :
+						break;
+					case UPLOAD_ERR_PARTIAL :
+						break;
+					case UPLOAD_ERR_NO_FILE :
+						break;
+					case UPLOAD_ERR_NO_TMP_DIR :
+						break;
+					case UPLOAD_ERR_CANT_WRITE :	
+						break;
+					default:
+						break;
+				}
+			}
+		}
 	}
 }
 ?>

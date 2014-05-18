@@ -130,7 +130,6 @@ class Category {
 	public static function cate_is_exit($cate_id) {
 		$cate_arr = Category::get_all();
 		
-
 		foreach ($cate_arr as $key => $value) {
 			if ($cate_id == (int)$value['id']) {
 				return TRUE;
@@ -174,12 +173,12 @@ class Category {
 	} 
 
 
-	public static function uopdate($ID, $name, $desc, &$WARN_MESSAGE) {
+	public static function update($ID, $name, $desc, &$WARN_MESSAGE) {
 
 		global $DATABASE_CONFIG;
 
 		$name 			= MySQLDatabase::escape(trim($name));
-		$description 	= MySQLDatabase::escape(trim($description));
+		$description 	= MySQLDatabase::escape(trim($desc));
 		$ID 			= (int)$ID; 
 
 
@@ -198,8 +197,8 @@ class Category {
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 
 		$query = "UPDATE category
-			SET cate_name = '$cate_name',
-				description = ". get_sql_null($desc) . "
+			SET cate_name = '$name',
+				description = ". get_sql_null($description) . "
 			WHERE ID = $ID";
 
 
@@ -207,12 +206,25 @@ class Category {
 		$result = $sql->query_db($query);
 
 		if ($result) {
-			if ($sql->affected_rows == 1) {
+			if ($sql->affected_rows() == 1) {
 				return TRUE;
 			}
 		}
 
 		return FALSE;
+	}
+
+
+	public static function get_cate_name_by_id($cate_id) {
+		$cate_all = Category::get_all();
+
+		foreach ($cate_all as $key => $value) {
+			if($cate_id == (int)$value['id']) {
+				return $value['name'];
+			}
+		}
+
+		return false;
 	}
 }
 ?>
