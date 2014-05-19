@@ -99,25 +99,21 @@ class User {
 	 */
 	public static function check_username_is_exit ($username) {
 
-		global $DATABASE_CONFIG;
-
-		$sql = new MySQLDatabase($DATABASE_CONFIG);
-		
 		$query = "SELECT *
 			FROM users
 			WHERE username = '$username'
 			LIMIT 1";
 
-		$result = $sql->query_db($query);
+		return MySQLDatabase::query($query);
+	}
 
-		if ($result) {
-			if($sql->affected_rows() === 1) {
-				return true;
-			}
-		}
 
-		return false;
-
+	public static function del_by_id($id) {
+	
+		$query = "DELETE FROM users
+			WHERE ID = $id
+			LIMIT 1";
+		return MySQLDatabase::query($query);
 	}
 
 	public static function login($username, $password, $remberme, & $WARN_MESSAGE) {
@@ -312,31 +308,17 @@ class User {
 	}
 
 
-
+	/**
+	 * [del_user_by_username description]
+	 * @param  [type] $username [description]
+	 * @return [type]           [description]
+	 */
 	public static function del_user_by_username ($username) {
-
-
-		global $DATABASE_CONFIG;
-
-		$sql = new MySQLDatabase($DATABASE_CONFIG);
-		
-
 		// 检查
-
 		$query = "DELETE FROM users
 			WHERE username = '$username'
 			LIMIT 1";
-
-		$result = $sql->query_db($query);
-
-		if ($result) {
-			if($sql->affected_rows() === 1) {
-				return true;
-			}
-		}
-
-		return false;
-
+		return MySQLDatabase::query($query);
 	}
 
 	public static function get_all () {
@@ -344,12 +326,13 @@ class User {
 		$res_arr = array();
 
 		global $DATABASE_CONFIG;
+		global $BASE_URL;
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 		
 		$query = "SELECT *
 			FROM users
-			ORDER BY  DESC";
+			ORDER BY register_time DESC";
 
 		$result = $sql->query_db($query);
 
@@ -357,25 +340,89 @@ class User {
 			while($row = $sql->fetch_array()) {
 				$temp_arr = array(
 					'ID' 		=> $row['ID'],
-					'name'		=> $row['book_name'],
-					'publisher'	=> $row['publisher'],
-					'cover'		=> $row['cover'],
-					'author'	=> $row['author'],
-					'date'		=> $row['publish_date'],
-					'sum'		=> $row['sum_count'],
-					'borrow'	=> $row['borrowed_count'],
-					'cate'		=> $row['category'],
-					'tag'		=> $row['tags'],
-					'summary' 	=> $row['summary']
+					'name'		=> $row['username'],
+					'password'	=> $row['password'],
+					'time'		=> date("Y-m-d", strtotime($row['register_time'])),
+					'uid'		=> $row['unique_id'],
+					'email'		=> $row['email'],
+					'avatar'	=> is_null($row['avatar']) ? $BASE_URL . "/image/default.png": $BASE_URL . "/image/". $row['avatar'],
+					'sex'		=> $row['sex'],
+					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
+					'level'		=> $row['level'],
+					'bg' 		=> is_null($row['cover_bg']) ? $BASE_URL . "/image/default.png": $BASE_URL . "/image/". $row['cover_bg']
 					);
 
 				array_push($res_arr, $temp_arr);
 			}
-
 			return $res_arr;
 		}
 		return False;
 	}
+
+
+	/** 我就不写文档~~~
+	 * [deal_with_sex description]
+	 * @param  [type] $sex [description]
+	 * @return [type]      [description]
+	 */
+	public static function deal_with_sex($sex) {
+
+		if (is_null($sex)) {
+			return "未知";
+		} else {
+			switch ($sex) {
+				case 1:
+					return "小哥";
+					break;
+				case 2:
+					return "妹子";
+					break;
+				case 0:
+					return "基佬";
+					break;
+				default:
+					return "不明生物";
+					break;
+			}
+		}
+	}
+
+	public static function get_info_by_id($id) {
+		$res_arr = array();
+
+		global $DATABASE_CONFIG;
+		global $BASE_URL;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+		$query = "SELECT *
+			FROM users
+			WHERE ID = $id
+			ORDER BY register_time DESC";
+
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				$temp_arr = array(
+					'ID' 		=> $row['ID'],
+					'name'		=> $row['username'],
+					'password'	=> $row['password'],
+					'time'		=> date("Y-m-d", strtotime($row['register_time'])),
+					'uid'		=> $row['unique_id'],
+					'email'		=> $row['email'],
+					'avatar'	=> $row['avatar'],
+					'sex'		=> $row['sex'],
+					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
+					'level'		=> $row['level'],
+					'bg' 		=> is_null($row['cover_bg']) ? ($BASE_URL . "/image/default.png") : ""
+					);
+			return $temp_arr;
+			}
+		}
+		return False;
+	}
+ 
 }
 
 ?>

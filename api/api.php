@@ -11,7 +11,6 @@ include(dirname(__FILE__) . "../../class/book.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 
 
-
 if ($_GET) {
 	if ($_GET['action'] == "get_book_info_by_id") {
 		$id = (int)$_GET['book_id'];

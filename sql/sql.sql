@@ -13,7 +13,7 @@ CREATE TABLE users (
 	unique_id VARCHAR(255) NOT null,
 	email VARCHAR(255),
 	avatar VARCHAR(255) NULL,
-    loaction VARCHAR(255) NULL,
+    location VARCHAR(255) NULL,
     sex INT NULL,
     level INT NOT NULL DEFAULT 0,
     cover_bg VARCHAR(255) NULL,
@@ -55,10 +55,14 @@ CREATE TABLE borrow (
     book_id INT NOT NULL,
     user_id INT NOT NULL,
     borrow_date TIMESTAMP NOT NULL,
-    return_date TIMESTAMP NOT NULL,
+    accepte_date TIMESTAMP NULL,
+    return_date TIMESTAMP NULL,
+    accepted INT NOT NULL DEFAULT 0,
     completed INT NOT NULL DEFAULT 0,
     PRIMARY KEY(ID),
-    CHECK(completed = 0 OR completed = 1)
+    CHECK(completed = 0 OR completed = 1),
+    CHECK(accepted = 0 OR accepted = 1)
+
 );
 
 

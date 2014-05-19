@@ -70,12 +70,12 @@ if ($_GET) {
 				
 				<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
 				<div class="books-add right-container right clear">
-					<h2 class="title">添加图书</h2>
+					<h2 class="title">修改图书</h2>
 					<div class="add-form right-content left">
 						<form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'] . "?action=book_update_submit&book_id=" . $book['ID']; ?>" method="POST" class="">
 							<div class="clear">
 								<div class="left">
-									<h3 class="title">添加图书</h3>
+									<h3 class="title">修改图书</h3>
 <p>
 	<label for="bookName">书名：</label>
 	<input type="text" id="bookName" name="bookname" placeholder="书名" value="<?php echo $book['name'] ?>">

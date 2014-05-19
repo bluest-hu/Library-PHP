@@ -47,10 +47,14 @@
 				<ul>
 					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加图书</a></li>
 					<li><a href="<?php echo $BASE_URL . "/admin/category.php" ?>">目录管理</a></li>
+					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">作者管理</a></li>
 				</ul>
 			</li>
 			<li>
-				<a href="<?php echo $BASE_URL . "/admin/invite.php" ?>"><span class="icons">&#xF171</span>Invate</a>
+				<a href="<?php echo $BASE_URL . "/admin/user.php" ?>">
+					<span class="icons">&#xF171</span>
+					用户管理
+				</a>
 			</li>
 			
 		</ul>

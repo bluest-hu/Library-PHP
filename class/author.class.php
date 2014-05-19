@@ -37,23 +37,12 @@ class Author {
 	 */
 	public static function check_author_is_exit($name) {
 
-		global $DATABASE_CONFIG;
-		
-		$sql = new MySQLDatabase($DATABASE_CONFIG);
-
 		$query = "SELECT *
 			FROM author
 			WHERE author_name = '$name'
 			LIMIT 1";
-
-		$result = $sql->query_db($query);
 		
-		if ($result) {
-			if ($sql->affected_rows() === 1) {
-				return true;
-			}
-		}
-		return false;
+		return MySQLDatabase::query($query);;
 	}
 
 

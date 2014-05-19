@@ -613,63 +613,13 @@ class Book {
 
 
 	public static function del_by_id($id) {
-		global $DATABASE_CONFIG;
-
-		$sql = new MySQLDatabase($DATABASE_CONFIG);
-		
+	
 		$query = "DELETE FROM books
 			WHERE ID = $id
 			LIMIT 1";
 
-		$result = $sql->query_db($query);
-
-		if ($result) {
-			if ($sql->affected_rows() == 1) {
-				return true;
-			}
-		}
-		return false;
+		return MySQLDatabase::query($query);
 	} 
-
-
-	// public static function get_book_list_by_author($author) {
-	// 	$res_arr = array();
-
-	// 	global $DATABASE_CONFIG;
-
-	// 	$sql = new MySQLDatabase($DATABASE_CONFIG);
-		
-	// 	$query = "SELECT *
-	// 		FROM books
-	// 		WHERE author = '$author'
-	// 		ORDER BY publish_date DESC";
-
-	// 	$result = $sql->query_db($query);
-
-	// 	if ($result) {
-	// 		while($row = $sql->fetch_array()) {
-	// 			$temp_arr = array(
-	// 				'ID' 		=> $row['ID'],
-	// 				'name'		=> $row['book_name'],
-	// 				'publisher'	=> $row['publisher'],
-	// 				'cover'		=> $row['cover'],
-	// 				'author'	=> $row['author'],
-	// 				'date'		=> $row['publish_date'],
-	// 				'sum'		=> $row['sum_count'],
-	// 				'borrow'	=> $row['borrowed_count'],
-	// 				'cate'		=> Category::get_cate_name_by_id($row['category']),
-	// 				'tag'		=> $row['tags'],
-	// 				'summary' 	=> htmlspecialchars_decode($row['summary'])
-	// 				);
-
-	// 			array_push($res_arr, $temp_arr);
-	// 		}
-
-	// 		return $res_arr;
-	// 	}
-	// 	return False;
-	// }
-
 
 	public static function update (
 		$bookname, 
@@ -831,7 +781,6 @@ class Book {
 			
 			$result = $sql->query_db($query);	
 
-			// echo $query;
 
 			if ($result) {
 				if ($sql->affected_rows() == 1) {
@@ -842,6 +791,40 @@ class Book {
 			
 			return FALSE;
 		}
+	}
+
+	public static function borrow($book_id, &$ERROR_MESSAGE) {
+		global $DATABASE_CONFIG;
+		
+		$CAN_SUBMIT = TRUE;
+		
+		$book = Book::get_book_info_by_id($book_id);
+
+		if (!$book) {
+			array_push($ERROR_MESSAGE, "该书不存在！");
+			$CAN_SUBMIT = FALSE;
+		}
+
+		// 检查 能否借阅
+		if ($book['borrow'] >= $book['sum']) {
+			array_push($ERROR_MESSAGE, "该书剩余借阅数已满！");
+			$CAN_SUBMIT = FALSE;
+		}
+
+		if ($CAN_SUBMIT) {
+
+			$borrow = $book['borrow'];
+			
+			$borrow++;
+
+			$query = "UPDATE  books
+				SET borrowed_count = $borrow
+				WHERE ID = $book_id
+				LIMIT 1";
+
+			return MySQLDatabase::query($query);
+		}
+		return FALSE;
 	}
 }
 ?>

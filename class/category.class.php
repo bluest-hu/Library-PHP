@@ -223,11 +223,7 @@ class Category {
 				return $value['name'];
 			}
 		}
-
 		return false;
 	}
-
-
-
 }
 ?>

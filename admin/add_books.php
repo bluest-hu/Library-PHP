@@ -10,6 +10,7 @@ include(dirname(__FILE__) . "../../class/category.class.php");
 include(dirname(__FILE__) . "../../class/author.class.php");
 include(dirname(__FILE__) . "../../class/book.class.php");
 
+
 // 存储警告信息
 $WARN_MESSAGE = array();
 $SUCESS_MESSAGE = array();
@@ -28,9 +29,11 @@ if ($_GET && $_GET['action'] == "add_books") {
 		$category 		= $_POST['catagory'];
 		$summary 		= $_POST['summery'];
 
-		Book::add_new($bookname, $publisher, $author, $cover, $publish_date,$sum_count,$category,$summary,$WARN_MESSAGE);
-	
-
+		$result = Book::add_new($bookname, $publisher, $author, $cover, $publish_date,$sum_count,$category,$summary,$WARN_MESSAGE);
+		
+		if ($result) {
+			header("Location:" . $BASE_URL . "/admin/books.php");
+		}
 		print_r($WARN_MESSAGE);
 	}
 }

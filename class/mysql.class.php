@@ -127,5 +127,21 @@ class MySQLDatabase extends DataBase{
 	public  function affected_rows() {
 		return mysql_affected_rows ($this->link);
 	}
+
+	public static function query($query) {
+		
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			if($sql->affected_rows() === 1) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 ?>

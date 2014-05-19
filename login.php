@@ -82,8 +82,9 @@ if ($_GET) {
                             $_SESSION['is_login']   = TRUE;
                             $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
                             $_SESSION['user_bg']    = is_null($row['cover_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['cover_bg'];
-                            $unique_id               = User::get_unique();
+                            $unique_id              = User::get_unique();
                             $_SESSION['level']      = (int)$row['level'];
+                            $_SESSION['user_id']    = $row['ID'];
 
                             setcookie('username', $username, time() + 60 * 60 * 24);
                             // 悬着记住密码的情况

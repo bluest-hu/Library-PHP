@@ -92,6 +92,11 @@ if ($_GET) {
 		color: #FFF;
 		background-color: #E74C3C;
 	}
+
+	td p b {
+		/*width: 52px;*/
+		/*display: inline-block;*/
+	}
     </style>
 </head>
 <body>
@@ -152,7 +157,7 @@ foreach ($book_all as $key => $value) {
 					if ((int)$value['cate'] === 0) {
 						$__cate_name = "未分类";
 					}  else {
-						$__cate_name =  Category::get_cate_name_by_id((int)$value['cate']) . "sdasd"; 
+						$__cate_name =  Category::get_cate_name_by_id((int)$value['cate']); 
 					}
 				?>
 
