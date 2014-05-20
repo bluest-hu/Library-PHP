@@ -132,7 +132,7 @@ foreach ($book_all as $key => $value) {
 <tr>
 	<td><?php echo $i ;?></td>
 	<td style="max-width:300px;">
-		<img class="book-cover left" src="<?php echo $BASE_URL ."/image/book_covers/" .$value['cover'];?>"/>
+		<img class="book-cover left" src="<?php echo $value['cover'];?>"/>
 		<div class="left">
 			<p>
 				<b>书名：</b>

@@ -35,9 +35,9 @@ function get_current($target_name) {
 				<li class="<?php get_current("admin/profile.php"); ?>">
 					<a href="<?php echo $BASE_URL . '/admin/profile.php'; ?>"><span class="icon">&#xF045</span>Users</a>
 				</li>
-				<li>
+			<!-- 	<li>
 					<a href=""><span class="icon">&#xF0AD</span>Tags</a>
-				</li>
+				</li> -->
 			</ul>
 		</nav>
 

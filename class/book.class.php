@@ -534,6 +534,7 @@ class Book {
 		
 		$arr = array();		
 		global $DATABASE_CONFIG;
+		global $BASE_URL;
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 		
@@ -545,7 +546,8 @@ class Book {
 
 		$query = "SELECT *
 			FROM books
-			WHERE ID = $id";
+			WHERE ID = $id
+			LIMIT 1";
 
 		$result = $sql->query_db($query);
 			
@@ -555,7 +557,7 @@ class Book {
 					'ID' 		=> $row['ID'],
 					'name'		=> $row['book_name'],
 					'publisher'	=> $row['publisher'],
-					'cover'		=> $row['cover'],
+					'cover'		=> is_null($row['cover']) ? $BASE_URL . "/image/books.png" : $BASE_URL . "/image/book_covers/" . $row['cover'],
 					'author'	=> $row['author'],
 					'date'		=> date("Y-m-d", strtotime($row['publish_date'])),
 					'sum'		=> $row['sum_count'],
@@ -580,7 +582,10 @@ class Book {
 		$res_arr = array();
 
 		global $DATABASE_CONFIG;
+		global $BASE_URL;
+		
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
+		
 		$query = "SELECT *
 			FROM books
 			ORDER BY publish_date DESC";
@@ -593,9 +598,9 @@ class Book {
 					'ID' 		=> $row['ID'],
 					'name'		=> $row['book_name'],
 					'publisher'	=> $row['publisher'],
-					'cover'		=> $row['cover'],
+					'cover'		=> is_null($row['cover']) ? $BASE_URL . "/image/books.png" : $BASE_URL . "/image/book_covers/" . $row['cover'],
 					'author'	=> $row['author'],
-					'date'		=> $row['publish_date'],
+					'date'		=> date("Y-m-d", strtotime($row['publish_date'])),
 					'sum'		=> $row['sum_count'],
 					'borrow'	=> $row['borrowed_count'],
 					'cate'		=> Category::get_cate_name_by_id($row['category']),

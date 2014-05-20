@@ -27,30 +27,35 @@ if ($_GET) {
 
 		$__user_info = User::get_info_by_id($user_id);
 
-print_r($__user_info);
-
-
 		if ($__user_info) {
 			$__has_borrowed_count = count(Borrow::get_borrowed_info_user_id($user_id, true, false));
 			$__has_extended_count = count(Borrow::get_extended_info($user_id, 60));
 
 			if ($_GET['action'] == "deactive_user") {
 				if ($__has_borrowed_count > 0 || $__has_extended_count > 0) {
-					array_push($WARNING_MESSAGE, "无法删除用户");
+					array_push($WARNING_MESSAGE, "无法禁用用户");
 				} else {
-					
+					if(User::deactive_by_id($user_id)) {
+						header("location:" . $BASE_URL . "/admin/user.php");
+					}
 				}
 			} elseif ($_GET['action'] == "del_user") {
-				
-
+				if ($__has_borrowed_count > 0 || $__has_extended_count > 0) {
+					array_push($WARNING_MESSAGE, "无法删除用户");
+				} else {
+					if(User::del_by_id($user_id)) {
+						header("location:" . $BASE_URL . "/admin/user.php");
+					}
+				}
 			} elseif ($_GET['action'] == "upgrade_user") {
-				
+				if(User::set_as_admin_by_id($user_id)) {
+					header("location:" . $BASE_URL . "/admin/user.php");
+				}
 
-			} elseif ($_GET['action'] == "deactive_user") {
-				
-
-			} elseif ($_GET['action'] =='active_user') {
-				
+			}elseif ($_GET['action'] =='active_user') {
+				if(User::active_by_id($user_id)) {
+					header("location:" . $BASE_URL . "/admin/user.php");
+				}
 			}
 		} else {
 			// bande
@@ -170,6 +175,17 @@ print_r($__user_info);
 		width: 50px;
 	}
 
+	.notice {
+		padding:10px 20px;
+		background-color:#E74C3C;
+		color: #FFF;
+		font-size: 12px;
+		border: 1px solid #E0E0E0;
+		border-bottom: none;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px; 
+	}
+
     </style>
 </head>
 <body>
@@ -184,7 +200,7 @@ print_r($__user_info);
 					<h3 class="title">用户管理</h3>
 					<div class="notice">
 						<p>有书未归还或者超期的用户无法删除</p>
-						<p>已经被禁用的用户无设为管理员</p>
+						<p>已经被禁用的用户无发设为管理员</p>
 					</div>
 <table>
 <thead>
@@ -211,15 +227,16 @@ foreach ($users as $key => $value) {
 			<img class="avatar left" style="width:50px;" src="<?php echo $value['avatar'];?>" alt="">
 			<div>
 				<p>
-					<b>用户名：</b><?php echo $value['name']; ?>
+					<b>用户名：</b>
+					<a href="<?php echo $BASE_URL . "/admin/borrow_detail.php?u_id=". $value['ID'] ?>"><?php echo $value['name']; ?></a> 
 				</p>
 				<p>
 					<b>等级：</b>
-					普通用户
+					<?php echo $value['level'] == 0 ? "普通用户" : "管理员"; ?>
 				</p>
 				<p>
 					<b>状态：</b>
-					禁用
+					<?php echo $value['active'] == 1 ? "正常" : "禁用" ?>
 				</p>
 			</div>
 		</td>
@@ -249,40 +266,24 @@ foreach ($users as $key => $value) {
 			$acitve_user_url = $BASE_URL . "/admin/user.php?action=active_user&u_id=" . $value['ID'];
 			$upgrade_user_url = $BASE_URL . "/admin/user.php?action=upgrade_user&u_id=" . $value['ID'];
 			?>
-			<?php if ($has_extended_count > 0 || $has_borrowed_count > 0) {?>
-				
+			<?php if ($has_extended_count > 0 || $has_borrowed_count > 0 || $value['active'] == 0) {?>
 				<span class="action ">禁用</span>
-				
-				
 				<span class="action ">删除</span>
-				
 			<?php } else { ?>
-				
 				<a class="action deactive" href="<?php echo $deactive_user_url ?>">禁用</a>
-				
-				
 				<a class="action del" href="<?php echo $del_user_url ?>">删除</a>
-				
 			<?php } ?>
 
 			<?php if ($value['level'] != 1 ) { ?>
-				
 				<a class="action upgrade" href="<?php echo $upgrade_user_url ?>">管理员</a>
-				
 			<?php } else {?>
-				
 				<span class="action">管理员</span>
-				
 			<?php }?>
 			
-			<?php if ($value['level'] == 0 ) { ?>
-				
-				<span class="action">激活</span>
-				
-			<?php } else {?>
-				
+			<?php if ($value['active'] == 0 ) { ?>
 				<a class="action active" href="<?php echo $acitve_user_url ?>">激活</a>
-				
+			<?php } else {?>
+				<span class="action">激活</span>
 			<?php }?>
 			
 		</td>

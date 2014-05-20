@@ -61,9 +61,9 @@ class Borrow {
 				$temp_arr = array(
 					'id' 		=> $row['ID'],
 					'book'  	=> $row['book_id'],
-					'borrow'	=> $row['borrow_date'],
-					'return'	=> $row['return_date'],
-					'accepte' 	=> $row['accepte_date']
+					'borrow'	=> is_null($row['borrow_date']) ? NULL : date("Y-m-d", strtotime($row['borrow_date'])),
+					'return'	=> is_null($row['return_date']) ? NULL : date("Y-m-d", strtotime($row['return_date'])),
+					'accepte' 	=> is_null($row['accepte_date']) ? NULL : date("Y-m-d", strtotime($row['accepte_date']))
 					);	
 				array_push($res_arr, $temp_arr);
 			}	
@@ -81,7 +81,7 @@ class Borrow {
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 
-		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date
+		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date, TO_DAYS(NOW()) - TO_DAYS(accepte_date) AS extended
 			FROM borrow
 			WHERE  user_id = $user_id
 					AND accepted = 1 
@@ -101,9 +101,82 @@ class Borrow {
 				$temp_arr = array(
 					'id' 		=> $row['ID'],
 					'book'  	=> $row['book_id'],
-					'borrow'	=> $row['borrow_date'],
-					'return'	=> $row['return_date'],
-					'accepte' 	=> $row['accepte_date']
+					'extended' 	=> $row['extended'],
+					'borrow'	=> is_null($row['borrow_date']) ? NULL : date("Y-m-d", strtotime($row['borrow_date'])),
+					'return'	=> is_null($row['return_date']) ? NULL : date("Y-m-d", strtotime($row['return_date'])),
+					'accepte' 	=> is_null($row['accepte_date']) ? NULL : date("Y-m-d", strtotime($row['accepte_date']))
+					);	
+				array_push($res_arr, $temp_arr);
+			}	
+
+			return $res_arr;
+		}
+
+		return false;
+	}
+
+	public static function get_completed_info($user_id) {
+
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date
+			FROM borrow
+			WHERE  user_id = $user_id
+					AND accepted = 0 
+					AND completed = 1
+			ORDER BY borrow_date ASC";
+
+		$result = $sql->query_db($query);
+
+		$res_arr = array();
+
+		if ($result) {
+			while ($row = $sql->fetch_array()) {
+				// print_r($row);
+				$temp_arr = array(
+					'id' 		=> $row['ID'],
+					'book'  	=> $row['book_id'],
+					'borrow'	=> is_null($row['borrow_date']) ? NULL : date("Y-m-d", strtotime($row['borrow_date'])),
+					'return'	=> is_null($row['return_date']) ? NULL : date("Y-m-d", strtotime($row['return_date'])),
+					'accepte' 	=> is_null($row['accepte_date']) ? NULL : date("Y-m-d", strtotime($row['accepte_date']))
+					);	
+				array_push($res_arr, $temp_arr);
+			}	
+
+			return $res_arr;
+		}
+
+		return false;
+	}
+
+	public static function get_borrow_info($user_id) {
+
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date
+			FROM borrow
+			WHERE  user_id = $user_id
+					AND accepted = 1 
+					AND completed = 0
+			ORDER BY borrow_date ASC";
+
+		$result = $sql->query_db($query);
+
+		$res_arr = array();
+
+		if ($result) {
+			while ($row = $sql->fetch_array()) {
+				// print_r($row);
+				$temp_arr = array(
+					'id' 		=> $row['ID'],
+					'book'  	=> $row['book_id'],
+					'borrow'	=> is_null($row['borrow_date']) ? NULL : date("Y-m-d", strtotime($row['borrow_date'])),
+					'return'	=> is_null($row['return_date']) ? NULL : date("Y-m-d", strtotime($row['return_date'])),
+					'accepte' 	=> is_null($row['accepte_date']) ? NULL : date("Y-m-d", strtotime($row['accepte_date']))
 					);	
 				array_push($res_arr, $temp_arr);
 			}	

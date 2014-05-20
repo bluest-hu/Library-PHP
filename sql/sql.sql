@@ -16,10 +16,12 @@ CREATE TABLE users (
     location VARCHAR(255) NULL,
     sex INT NULL,
     level INT NOT NULL DEFAULT 0,
+    active INT NOT NULL DEFAULT 1,
     cover_bg VARCHAR(255) NULL,
 	PRIMARY KEY (ID),
 	UNIQUE(username),
-    CHECK(sex = 0 OR sex = 1 OR sex = 2)
+    CHECK(sex = 0 OR sex = 1 OR sex = 2),
+    CHECK(active = 0 OR active = 1)
 );
 
 # TABLE Books

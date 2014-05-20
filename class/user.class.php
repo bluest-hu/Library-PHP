@@ -92,6 +92,8 @@ class User {
 	}
 
 
+
+
 	/**
 	 * [check_username_is_exit description]
 	 * @param  [type] $username [description]
@@ -113,6 +115,39 @@ class User {
 		$query = "DELETE FROM users
 			WHERE ID = $id
 			LIMIT 1";
+
+		return MySQLDatabase::query($query);
+	}
+
+	public static function deactive_by_id($id) {
+	
+		$query = "UPDATE users
+			SET active = 0
+			WHERE ID = $id
+			LIMIT 1";
+			
+		return MySQLDatabase::query($query);
+	}
+
+
+	public static function active_by_id($id) {
+	
+		$query = "UPDATE users
+			SET active = 1
+			WHERE ID = $id
+			LIMIT 1";
+			
+		return MySQLDatabase::query($query);
+	}
+
+
+	public static function set_as_admin_by_id($id) {
+	
+		$query = "UPDATE users
+			SET level = 1
+			WHERE ID = $id
+			LIMIT 1";
+			
 		return MySQLDatabase::query($query);
 	}
 
@@ -313,7 +348,7 @@ class User {
 	 * @param  [type] $username [description]
 	 * @return [type]           [description]
 	 */
-	public static function del_user_by_username ($username) {
+	public static function del_by_username ($username) {
 		// 检查
 		$query = "DELETE FROM users
 			WHERE username = '$username'
@@ -349,6 +384,7 @@ class User {
 					'sex'		=> $row['sex'],
 					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
 					'level'		=> $row['level'],
+					'active'	=> $row['active'],
 					'bg' 		=> is_null($row['cover_bg']) ? $BASE_URL . "/image/default.png": $BASE_URL . "/image/". $row['cover_bg']
 					);
 
@@ -415,6 +451,7 @@ class User {
 					'sex'		=> $row['sex'],
 					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
 					'level'		=> $row['level'],
+					'active' 	=> $row['active'],
 					'bg' 		=> is_null($row['cover_bg']) ? ($BASE_URL . "/image/default.png") : ""
 					);
 			return $temp_arr;

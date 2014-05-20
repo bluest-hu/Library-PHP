@@ -34,11 +34,11 @@
 				<a href="<?php echo $BASE_URL . "/admin/profile.php" ?>"><span class="icons">&#xF080</span>Profile</a>
 			</li>
 			<li>
-				<a href=""><span class="icons">&#xF133</span>消息</a>
+				<a href="<?php echo $BASE_URL . "/admin/borrow_detail.php";?>"><span class="icons">&#xF133</span>借阅信息</a>
 			</li>
-			<li>
+<!-- 			<li>
 				<a href=""><span class="icons">&#xF04D</span>设置</a>
-			</li>
+			</li> -->
 			<li>
 				<a href="<?php echo $BASE_URL . "/admin/books.php" ?>">
 					<span class="icons">&#xF0D2</span>
