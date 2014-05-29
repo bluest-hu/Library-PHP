@@ -79,7 +79,10 @@ $(function() {
 "</div>" +
 "<div class='column-three left' style='clear:right'>" +
 	"<h4 class='title'>图书简介</h4>" +
-	"<div>" + dealUnkonwText(json.summary)  + "</div>"
+	"<div>" + dealUnkonwText(json.summary)  + "</div>" +
+"</div>" + 
+"<div class='column-four left'>" +
+	"<h4 class='title'>借阅操作</h4>" +
 "</div>";
 				$content.html(__content);
 				

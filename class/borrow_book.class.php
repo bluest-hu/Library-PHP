@@ -22,8 +22,23 @@ class Borrow {
 		return false;
 	}
 
-	public static function complete($id) {
+	public static function complete_by_id($id) {
+		$query = "UPDATE borrow
+				SET completed = 1
+					,return_date = NOW()
+				WHERE ID = $id";
 
+
+		return MySQLDatabase::query($query);
+	}
+
+	public function accept_by_id($id) {
+		$query = "UPDATE borrow
+				SET accepted = 1
+					,accepte_date = NOW()
+				WHERE ID = $id";
+
+		return MySQLDatabase::query($query);
 	}
 
 	/**
@@ -81,7 +96,7 @@ class Borrow {
 
 		$sql = new MySQLDatabase($DATABASE_CONFIG);
 
-		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date, TO_DAYS(NOW()) - TO_DAYS(accepte_date) AS extended
+		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date, TO_DAYS(NOW()) - TO_DAYS(accepte_date) - $extended_days AS extended
 			FROM borrow
 			WHERE  user_id = $user_id
 					AND accepted = 1 
@@ -124,7 +139,7 @@ class Borrow {
 		$query = "SELECT ID, book_id, borrow_date, return_date, accepte_date
 			FROM borrow
 			WHERE  user_id = $user_id
-					AND accepted = 0 
+					AND accepted = 1 
 					AND completed = 1
 			ORDER BY borrow_date ASC";
 
@@ -186,6 +201,15 @@ class Borrow {
 
 		return false;
 	}
+
+
+	public static function del_by_user_id($user_id) {
+		$query = "DELETE * FROM borrow
+			WHERE user_id = $user_id";
+		return MySQLDatabase::query($query);	
+	}
+
+
 }
 
 

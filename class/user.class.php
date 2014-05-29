@@ -449,10 +449,10 @@ class User {
 					'email'		=> $row['email'],
 					'avatar'	=> $row['avatar'],
 					'sex'		=> $row['sex'],
-					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
+					'location'	=> is_null($row['location']) ? "未知" : $row['location'],
 					'level'		=> $row['level'],
 					'active' 	=> $row['active'],
-					'bg' 		=> is_null($row['cover_bg']) ? ($BASE_URL . "/image/default.png") : ""
+					'bg' 		=> is_null($row['cover_bg']) ? ($BASE_URL . "/image/Lake.jpg") : ""
 					);
 			return $temp_arr;
 			}

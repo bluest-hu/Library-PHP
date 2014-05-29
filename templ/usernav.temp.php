@@ -31,7 +31,7 @@
 	<nav class="navigation">
 		<ul>
 			<li>
-				<a href="<?php echo $BASE_URL . "/admin/profile.php" ?>"><span class="icons">&#xF080</span>Profile</a>
+				<a href="<?php echo $BASE_URL . "/user.php" ?>"><span class="icons">&#xF080</span>Profile</a>
 			</li>
 			<li>
 				<a href="<?php echo $BASE_URL . "/admin/borrow_detail.php";?>"><span class="icons">&#xF133</span>借阅信息</a>

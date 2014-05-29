@@ -6,9 +6,6 @@ include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 
-// 当前主页是否为自己的
-$is_my_page = false;
-$get_user_name = "";
 
 // 没有登陆切没有指定查看的用户 强制跳转到登陆
 if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level'] < 1) {
@@ -16,9 +13,6 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level']
 }
 
 $CATE_ADD_WARN_MESSAGE = array();
-
-
-$cation_url = "";
 
 if ($_GET) {
 	if ($_GET['action'] === "add_cate") {
@@ -31,9 +25,8 @@ if ($_GET) {
 
 			if (Category::add_new($cate_name, $cate_desc,$CATE_ADD_WARN_MESSAGE )) {
 				header("location:" . $BASE_URL . "/admin/category.php");
-				// echo "sucsess";
 			} else {
-				// print_r($CATE_ADD_WARN_MESSAGE);
+				
 			}
 		}
 	} else if ($_GET['action'] == 'cate_del') {

@@ -18,16 +18,40 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level']
 	header("Location:" . $BASE_URL . "login.php"); 
 }
 
+$user_id = $_SESSION['user_id'];	
+
 if ($_GET) {
-	if ($_GET['u_id']) {
+	if (isset($_GET['u_id'])) {
 		$user_id = $_GET['u_id'];
 	} 
-} else {
-	$user_id = $_SESSION['user_id'];	
 }
 
 
 $user_info = User::get_info_by_id($user_id);
+
+if ($_GET && $_SESSION['level'] == 1) {
+	if (isset($_GET['action']) && isset($_GET['id'])) {
+		if ($_GET['action'] == "accepte" ) {
+			$complete_id = $_GET['id'];
+			if (Borrow::accept_by_id($complete_id)) {
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+			}
+		} else if ($_GET['action'] == "return_money") {
+			$return_money_id = $_GET['id'];
+
+			if (Borrow::complete_by_id($return_money_id)) {
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+			}
+		} else if ($_GET['action'] == "return") {
+			$return_id = $_GET['id'];
+
+			if (Borrow::complete_by_id($return_id)) {
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+			}
+		}
+
+	}
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -72,7 +96,13 @@ $user_info = User::get_info_by_id($user_id);
     	display: block;
     	margin-right: 10px;
     }
+	.right-content .title {
+		margin-top: 20px;
+	}
 
+	.warning {
+		color: red;
+	}
     </style>
 </head>
 <body>
@@ -83,7 +113,7 @@ $user_info = User::get_info_by_id($user_id);
 			<?php include(dirname(__FILE__) . "../../templ/usernav.temp.php"); ?>
 			<div class="right-container right">
 				<div class="main-title">
-					<span class="icons">&#xF0E3</span>用户 <?php echo $user_info['name'];?> 的借阅管理
+					<span class="icons">&#xF0D1</span>用户 <?php echo $user_info['name'];?> 的借阅管理
 					<div style="float:right;margin-right:25px;">
 					</div>
 					
@@ -94,12 +124,13 @@ $wait_for_agree = Borrow::get_borrowed_info_user_id($user_id, false, false);
 ?>
 
 				<div class="catagory right-content clear">
-					<h3 class="title">等待管理员同意的书目：<?php echo count($wait_for_agree);?> 本</h3>
+					<h3 class="title" style="margin-top:0px;">等待管理员同意的书目：<?php echo count($wait_for_agree);?> 本</h3>
 	<table>
 		<thead>
 			<tr>
 				<th>序号</th>
 				<th>书籍信息</th>
+				<th>申请信息</th>
 				<th>操作</th>
 			</tr>
 		</thead>			
@@ -131,14 +162,16 @@ $index++;
 				<b>剩余数目：</b>
 				<span class="reduce"><?php echo $book_info['sum'] - $book_info['borrow'] ?></span>
 			</p>
-			
 		</div>
+	</td>
+	<td>
+		<p><span>申请时间：<?php echo $value['borrow']?></span></p>
 	</td>
 	<td>
 	<?php 
 		if ($user_info['level'] == 1 && $user_info['active'] == 1) {
 	?>
-		<a  class="btn agree" href="">同意借阅</a>	
+		<a class="btn agree" href="<?php echo $_SERVER['PHP_SELF'] . "?action=accepte&id=" . $value['id'] ?>">同意借阅</a>	
 	<?php } ?>
 	</td>
 </tr>
@@ -211,7 +244,7 @@ foreach ($wait_for_agree as $key => $value) {
 		<?php 
 			if ($user_info['level'] == 1 && $user_info['active'] == 1) {
 			?>
-			<a  class="btn agree" href="">缴纳欠款</a>	
+			<a  class="btn agree" href="<?php echo $_SERVER['PHP_SELF'] . "?action=return_money&id=" . $value['id'] ?>">缴纳欠款</a>	
 			<?php 
 			} 
 			?>
@@ -222,12 +255,144 @@ foreach ($wait_for_agree as $key => $value) {
 
 ?>
 </table>
+<?php 
 
-					<h3 class="title">正在借阅的书目：</h3>
+$borrowed_books = Borrow::get_borrow_info($user_id);
+?>
+
+	<h3 class="title">正在借阅的书目：<?php echo count($borrowed_books);?>本</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>书籍信息</th>
+				<th>借阅信息</th>
+				<th>操作</th>
+			</tr>
+		</thead>	
+		<tbody>
+<?php 
 
 
+$index = 0;
+foreach ($borrowed_books as $key => $value) {
+	$index++;
+	$book_info = Book::get_book_info_by_id($value['book']);
+?>
+	<tr>
+		<td>
+			<?php echo $index; ?>
+		</td>
+		<td>
+			<img  class="book-cover left" src="<?php echo $book_info['cover'] ?>" alt="<?php echo $book_info['name'] ?>">
+			<div class="borrow-detial">
+				<p>
+					<b>图书名：</b>
+					<span class="title">《<?php echo $book_info['name'] ?>》</span>
+				</p>
+				<p>
+					<b>借阅时间：</b>
+					<span class="date"><?php echo $value['accepte'] ?></span>
+				</p>
+				<p>
+					<b>图书总数：</b>
+					<span class="sum"><?php echo $book_info['sum']; ?></span>
+				</p>
+				<p>
+					<b>剩余数目：</b>
+					<span class="reduce"><?php echo $book_info['sum'] - $book_info['borrow'] ?></span>
+				</p>
+				
+			</div>
+		</td>
+		<td>
+			<p>
+				<span>借阅时间 <?php echo $value['accepte'];?></span>
+			</p>
+			<p>
+				<span>截止时间 <?php echo $deadtime = date("Y-m-d",strtotime("+60 days",strtotime($value['accepte'])));?></span>
+			</p>
+			<p>
+				<span>剩余天数 <?php echo $exted_day = round((strtotime($deadtime) - time()) / (60*60*24)) ;?>天</span>
+			</p>
+		</td>
+		<td>
+			<?php if ($exted_day >= 0) { ?>
+				<a href="<?php echo $_SERVER['PHP_SELF'] . "?action=return&id=" . $value['id'] ?>">归还</a>
+			<?php } else {?>
+				<span class="warning">请先缴纳欠款</span>
+			<?php } ?>
+		</td>
+	</tr>
+<?php
+}
+?>			
+		</tbody>
+	</table>
 
-					<h3 class="title">已经归还的书目：</h3>
+
+<?php 
+$completed_books = Borrow::get_completed_info($user_id);
+?>
+	<h3 class="title">已经归还的书目：<?php echo count($completed_books);?> 本</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>书籍信息</th>
+				<th>借阅信息</th>
+				<th>操作</th>
+			</tr>
+		</thead>	
+		<tbody>
+<?php
+$book_info = null; 
+$index = 0;
+foreach ($completed_books as $key => $value) {
+	$index++;
+
+	$book_info = Book::get_book_info_by_id($value['book']);
+}
+?>			
+			<tr>
+				<td><?php echo $index; ?></td>
+				<td>
+					<img  class="book-cover left" src="<?php echo $book_info['cover'] ?>" alt="<?php echo $book_info['name'] ?>">
+					<div class="borrow-detial">
+						<p>
+							<b>图书名：</b>
+							<span class="title">《<?php echo $book_info['name'] ?>》</span>
+						</p>
+						<p>
+							<b>借阅时间：</b>
+							<span class="date"><?php echo $value['accepte'] ?></span>
+						</p>
+						<p>
+							<b>图书总数：</b>
+							<span class="sum"><?php echo $book_info['sum']; ?></span>
+						</p>
+						<p>
+							<b>剩余数目：</b>
+							<span class="reduce"><?php echo $book_info['sum'] - $book_info['borrow'] ?></span>
+						</p>
+						
+					</div>
+				</td>
+				<td>
+					<p>
+						<span>借阅时间 <?php echo $value['accepte'];?></span>
+					</p>
+					<p>
+						<span>归还时间 <?php echo $value['return'];?></span>
+					</p>
+				</td>
+				<td>
+					无
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
 				</div>
 			</div>
 		</div>
@@ -236,6 +401,22 @@ foreach ($wait_for_agree as $key => $value) {
 </body>
 	<script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/jquery-2.1.0.min.js"></script>
 	<script type="text/javascript" src="<?php echo $BASE_URL; ?>/script/common.js"></script> 
+	<script type="text/javascript">
+
+		$(function () {
+			$(".right-content table").css("display","none");
+			$(".right-content h3.title").on("click", function() {
+				$table = $(this).next("table");
+				if ($table.css("display") == "none") {
+					$table.fadeIn();
+					
+				} else {
+					$table.fadeOut();
+				}
+			});
+		});
+
+	</script>
 </html>
 
 

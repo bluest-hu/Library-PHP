@@ -244,7 +244,7 @@ class Book {
 				FROM books 
 				LIMIT $start_index , $offset";
 		} else {
-			$query = "SELECT *
+			$query = " SELECT *
 				FROM books 
 				WHERE  category = $cate_id
 				LIMIT $start_index , $offset";
@@ -259,7 +259,10 @@ class Book {
 
 
 <div class="books-list right">
-	<h2 class="title">图书</h2>
+	<div class="top-nav">
+		<h2 class="title">图书</h2>
+	</div>
+
 	<ul class="books-list-container clear">
 <?php 		$BOOK_LIST_COUNT = 0;
 			while($row = $sql->fetch_array()) {
@@ -395,7 +398,9 @@ class Book {
 
 
 <div class="books-list right">
-	<h2 class="title">图书</h2>
+		<div class="top-nav">
+		<h2 class="title">图书</h2>
+	</div>
 	<ul class="books-list-container clear">
 <?php 		$BOOK_LIST_COUNT = 0;
 			while($row = $sql->fetch_array()) {

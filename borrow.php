@@ -46,7 +46,6 @@ if ($_GET) {
 <body>
 	<div class="main">
 		<?php include("templ/nav.temp.php"); ?>
-
 		<div class="content" id="mianContent">
 		</div>
 	</div>

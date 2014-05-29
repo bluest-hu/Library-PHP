@@ -24,7 +24,8 @@ function get_current($target_name) {
 		<nav class="navigation left">
 			<ul>
 				<li class="<?php get_current("index.php"); ?>">
-					<a href="<?php echo $BASE_URL;?>"><span class="icon">&#xF161</span>Index</a>
+					<a href="<?php echo $BASE_URL;?>">
+						<span class="icon">&#xF161</span>Index</a>
 				</li>
 				<li class="<?php get_current("books.php"); ?>">
 					<a href="<?php echo $BASE_URL. "/books.php";?>"><span class="icon">&#xF0D1</span>Books</a>
@@ -35,9 +36,9 @@ function get_current($target_name) {
 				<li class="<?php get_current("admin/profile.php"); ?>">
 					<a href="<?php echo $BASE_URL . '/admin/profile.php'; ?>"><span class="icon">&#xF045</span>Users</a>
 				</li>
-			<!-- 	<li>
-					<a href=""><span class="icon">&#xF0AD</span>Tags</a>
-				</li> -->
+				<li>
+					<a href=""><span class="icon">&#xF0AD</span>Search</a>
+				</li>
 			</ul>
 		</nav>
 
@@ -64,13 +65,10 @@ function get_current($target_name) {
 					<?php
 					switch($_SESSION['level']) {
 						case 0:
-							echo "Super";
+							echo "普通用户";
 							break;
 						case 1:
-							echo "一般用户";
-							break;
-						case 2:
-							echo "Admin";
+							echo "管理员";
 							break;
 						default:
 							echo "";		
@@ -81,7 +79,8 @@ function get_current($target_name) {
 				</div>
 				<div class="user-action">
 					<ul class="actions">
-						<li><a href="<?php echo $BASE_URL . 'cc';?>"></a></li>
+						<li><a href="<?php echo $BASE_URL . 'cc';?>">测试</a></li>
+						<li><a href="">text</a></li>
 						<li><a href="<?php echo $BASE_URL . '/Logout.php'; ?>">Logout</a></li>
 					</ul>
 				</div>

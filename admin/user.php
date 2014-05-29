@@ -44,7 +44,9 @@ if ($_GET) {
 					array_push($WARNING_MESSAGE, "无法删除用户");
 				} else {
 					if(User::del_by_id($user_id)) {
-						header("location:" . $BASE_URL . "/admin/user.php");
+						if(Borrow::del_by_user_id($user_id)) {
+							header("location:" . $BASE_URL . "/admin/user.php");
+						}
 					}
 				}
 			} elseif ($_GET['action'] == "upgrade_user") {

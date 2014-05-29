@@ -134,15 +134,18 @@
 }
 
 
-.books-list .title {
+.books-list .top-nav {
 	border-bottom: 1px solid #E0E0E0;
-	text-indent: 30px;
-	line-height: 80px;
 	margin-bottom: 15px;
 	background: #FFF;
 	margin-left: -10px;
 	color: #666;
 	box-shadow: 0px 1px 4px rgba(0,0,0,.1);
+}
+
+.books-list .title {
+	text-indent: 30px;
+	line-height: 80px;
 }
 
 .book-list-nav {
@@ -252,23 +255,23 @@
 	border-right: 1px solid #333;
 }
 
-
 .expland  .column-one {
-	margin-right: 20px;
+	
 }
-
 
 .expland  .column-two p b {
 	color: #AAA;
 }
-.expland   p {
+.expland  p {
 	font-size: 12px;
 	line-height: 20px;
 	color: #EEE;
 }
 
 .expland .book-cover {
-	
+	padding-right: 20px;
+	border-right: 1px solid #222;
+	box-shadow: inset -1px 0px 0 rgba(255,255,255,.1);
 }
 
 .books-list .book-name {
@@ -286,10 +289,21 @@
 
 .books-list  .column-two {
 	max-width: 250px;
+	padding-right: 20px;
+	margin-left: 20px;
+	border-right: 1px solid #222;
+	box-shadow: inset -1px 0px 0 rgba(255,255,255,.1);
 }
 
 .books-list  .column-three {
 	max-width: 250px;
+	padding-right: 20px;
+	margin-left: 20px;
+	box-shadow: inset -1px 0px 0 rgba(255,255,255,.1);
+	border-right: 1px solid #222;
+}
+
+.books-list  .column-four {
 	margin-left: 20px;
 }
 
