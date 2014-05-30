@@ -1,5 +1,6 @@
 <?php 
 
+
 include(dirname(__FILE__) . "..\..\config.php");
 
 // hightlight current page
@@ -8,7 +9,6 @@ function get_current($target_name) {
 		echo "current";
 	}
 }
-
 
 ?>
 
@@ -36,15 +36,15 @@ function get_current($target_name) {
 				<li class="<?php get_current("admin/profile.php"); ?>">
 					<a href="<?php echo $BASE_URL . '/admin/profile.php'; ?>"><span class="icon">&#xF045</span>Users</a>
 				</li>
-				<li>
-					<a href=""><span class="icon">&#xF0AD</span>Search</a>
+				<li class="<?php get_current("search.php"); ?>">
+					<a href="<?php echo $BASE_URL . '/search.php'; ?>"><span class="icon">&#xF0AD</span>Search</a>
 				</li>
 			</ul>
 		</nav>
 
 		<div class="search left">
-			<form class="search-from" id="searchForm" action="">
-				<input type="text" name="s" id="s" placeholder="Search"/>
+			<form class="search-from" id="searchForm" method="POST" action="<?php echo $BASE_URL . '/search.php?action=search_all'; ?>">
+				<input type="text" name="book_name" id="s" placeholder="Search" required/>
 				<input type="submit" id="headerSubmit" value="&#xF097" />	
 			</form>
 		</div>
@@ -63,25 +63,19 @@ function get_current($target_name) {
 					<!-- <br/> -->
 					<span class="text-normal left level">
 					<?php
-					switch($_SESSION['level']) {
-						case 0:
-							echo "普通用户";
-							break;
-						case 1:
-							echo "管理员";
-							break;
-						default:
-							echo "";		
-							break;
-					}		
+
+					if($_SESSION['level'] == 1) {
+						echo "管理员";
+					} else {
+						echo "普通用户";
+					}
 					?>
 					</span>
 				</div>
 				<div class="user-action">
 					<ul class="actions">
-						<li><a href="<?php echo $BASE_URL . 'cc';?>">测试</a></li>
-						<li><a href="">text</a></li>
-						<li><a href="<?php echo $BASE_URL . '/Logout.php'; ?>">Logout</a></li>
+						<li><a href="<?php echo $BASE_URL . "/admin/profile.php" ?>">用户信息</a></li>
+						<li><a href="<?php echo $BASE_URL . '/Logout.php'; ?>">登出</a></li>
 					</ul>
 				</div>
 			</div>

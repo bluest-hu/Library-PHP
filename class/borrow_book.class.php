@@ -22,14 +22,51 @@ class Borrow {
 		return false;
 	}
 
-	public static function complete_by_id($id) {
+
+	public static function get_info_by_id($id) {
+		global $DATABASE_CONFIG;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query =  "SELECT * FROM borrow
+			WHERE ID = $id
+			LIMIT 1 ";
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while ($row = $sql->fetch_array()) {
+				$res_arr = array(
+					'id' 		=> $row['ID'],
+					'book'  	=> $row['book_id'],
+					'extended' 	=> $row['extended'],
+					'borrow'	=> is_null($row['borrow_date']) ? NULL : date("Y-m-d", strtotime($row['borrow_date'])),
+					'return'	=> is_null($row['return_date']) ? NULL : date("Y-m-d", strtotime($row['return_date'])),
+					'accepte' 	=> is_null($row['accepte_date']) ? NULL : date("Y-m-d", strtotime($row['accepte_date']))
+				); 	
+
+				return $res_arr;
+			}
+		}
+
+		return false;
+		
+	}
+
+	public static function complete_by_id($id,& $ERROR_MESSAGE) {
+		
 		$query = "UPDATE borrow
 				SET completed = 1
 					,return_date = NOW()
 				WHERE ID = $id";
 
 
-		return MySQLDatabase::query($query);
+		$book_id = Borrow::get_info_by_id($id)['book'];
+
+		if (Book::return_book($book_id,$ERROR_MESSAGE)) {
+			return MySQLDatabase::query($query);
+		}
+
+		return false;
 	}
 
 	public function accept_by_id($id) {
@@ -204,12 +241,18 @@ class Borrow {
 
 
 	public static function del_by_user_id($user_id) {
-		$query = "DELETE * FROM borrow
+		$query = "DELETE FROM borrow
 			WHERE user_id = $user_id";
 		return MySQLDatabase::query($query);	
 	}
 
 
+	public static function del_by_book_id($book_id) {
+		$query = "DELETE FROM borrow
+			WHERE book_id = $book_id";
+
+		return MySQLDatabase::query($query);	
+	}
 }
 
 

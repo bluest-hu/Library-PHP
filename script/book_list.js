@@ -20,7 +20,6 @@ function dealUnkonwText(text) {
 
 $(function() {
 
-
 	// 插入的行数
 	var $books = $(".books-list-container .book");
 	var sumCount = $books.length;
@@ -38,10 +37,14 @@ $(function() {
 
 	// 缓存 上次点击的图书索引 
 	var lastClickedBookIndex = null;
-
 	// 详情窗口是否打开
 	var isSlideDown = false;
 
+	var waitBorrowCount = parseInt($("#wait").html())
+	var isBorrowedCount = parseInt($("#isBorrow").html());
+	var outOfDateCount  = parseInt($("#outOfDate").html());
+
+	var isLogin = $(".user-borrow-info");
 
 	var __html = 	 
 	'<li class="expland">' +
@@ -57,8 +60,10 @@ $(function() {
 	var $closeBtn = $html.find(".close-btn");
 	var $content = $html.find(".book-detail"); 
 
+	
+
 	$books.on("click", function () {
-		var __this = $(this);
+		 window.__this = $(this);
 
 		$.ajax({
 			url:$(this).find(".book-name").attr('href'),
@@ -66,6 +71,30 @@ $(function() {
 			async:false,
 			complete:function (data) {
 				var json = eval("(" + data.responseText + ")");
+
+				var remain = (json.sum - json.borrow);
+
+				var borrowBtn  = "";
+
+				if (remain > 0) {
+					borrowBtn = '<a class="btn " href="http://localhost:8080/api/api.php?action=borrow_books&book_id=' + json.ID  + '">借阅</a>';
+				} else {
+					borrowBtn = "<span class='btn disable'>无剩余书目</span>";
+				}
+
+
+				if (waitBorrowCount+isBorrowedCount>=10) {
+					borrowBtn = "<span class='btn disable'>借阅数已达上限</span>";
+				}
+
+				if (outOfDateCount>0) {
+					borrowBtn = "<span class='btn disable'>已有欠款，无法借阅</span>";
+				}
+
+				if (isLogin.length === 0) {
+					borrowBtn = "<span class='btn disable'>请先登录</span>";
+				}
+
 				var __content = 
 "<div class='column-one book-cover left'>"+
 	"<img src='"+json.cover+"'/>" +
@@ -83,9 +112,37 @@ $(function() {
 "</div>" + 
 "<div class='column-four left'>" +
 	"<h4 class='title'>借阅操作</h4>" +
+	"<p >图书总数："+ json.sum+ " 本</p>" + 
+	"<p id='borrow'>借阅总数：" + json.borrow + " 本</p>" +
+	"<p id='remainCount'>剩余数目：" + remain + " 本</P>" +
+	"<p>" + borrowBtn + "</p>" +
 "</div>";
 				$content.html(__content);
 				
+				$html.find(".book-detail a.btn").on("click", function(event) {
+
+					$.ajax({
+						url:$(this).attr("href"),
+						method:"GET",
+						async:false,
+						complete:function(data2) {
+							var json2 = eval("(" + data2.responseText + ")");
+							if (json2.result = "success") {
+								$("#wait").html(waitBorrowCount+1);
+								waitBorrowCount = parseInt($("#wait").html())
+								isBorrowedCount = parseInt($("#isBorrow").html());
+								outOfDateCount  = parseInt($("#outOfDate").html());
+								update(json);
+								alert("借阅成功");
+								location.reload();
+							}
+						}
+					});
+
+					event = event || window.event;
+					event.preventDefault();
+				});
+
 			}
 		});
 
@@ -128,6 +185,57 @@ $(function() {
 		lastClickedBookIndex  = bookIndex;
 
 	});
+	
+
+	function update(json) {
+
+				json.borrow++;
+				var remain = (json.sum - json.borrow);
+
+				var borrowBtn  = "";
+
+				if (remain > 0) {
+					borrowBtn = '<a class="btn " href="http://localhost:8080/api/api.php?action=borrow_books&book_id=' + json.ID  + '">借阅</a>';
+				} else {
+					borrowBtn = "<span class='btn disable'>无剩余书目</span>";
+				}
+
+
+				if (waitBorrowCount+isBorrowedCount>=10) {
+					borrowBtn = "<span class='btn disable'>借阅数已达上限</span>";
+				}
+
+				if (outOfDateCount>0) {
+					borrowBtn = "<span class='btn disable'>已有欠款，无法借阅</span>";
+				}
+
+				if (isLogin.length === 0) {
+					borrowBtn = "<span class='btn disable'>请先登录</span>";
+				}
+
+				var __content = 
+"<div class='column-one book-cover left'>"+
+	"<img src='"+json.cover+"'/>" +
+"</div>"  +
+"<div class='column-two left'>" +
+	"<h4 class='title'>图书信息</h4>" +
+	"<p>" + "<b>书名：</b>《" +json.name + "》</p>" +
+	"<p>" + "<b>出版社：</b>" +  dealUnkonwText(json.publisher) + "</p>" +
+	"<p>" +"<b>作者：</b>" + dealUnkonwText(json.author) + "</p>" +
+	"<p>" +"<b>分类：</b>" + dealUnkonwText(json.cate) + "</p>" +
+"</div>" +
+"<div class='column-three left' style='clear:right'>" +
+	"<h4 class='title'>图书简介</h4>" +
+	"<div>" + dealUnkonwText(json.summary)  + "</div>" +
+"</div>" + 
+"<div class='column-four left'>" +
+	"<h4 class='title'>借阅操作</h4>" +
+	"<p >图书总数："+ json.sum+ " 本</p>" + 
+	"<p id='borrow'>借阅总数：" + json.borrow + " 本</p>" +
+	"<p id='remainCount'>剩余数目：" + remain + " 本</P>" +
+	"<p>" + borrowBtn + "</p>" +
+"</div>";
+	}
 
 
 	$closeBtn.on("click", function () {

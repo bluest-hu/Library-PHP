@@ -7,6 +7,7 @@ include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 include(dirname(__FILE__) . "../../class/author.class.php");
 include(dirname(__FILE__) . "../../class/book.class.php");
+include(dirname(__FILE__) . "../../class/borrow_book.class.php");
 
 
 
@@ -15,7 +16,9 @@ if ($_GET) {
 		$del_book_id = (int)$_GET['book_id'];
 
 		if (Book::del_by_id($del_book_id)) {
-			header("location:" .  $BASE_URL . "/admin/books.php");
+			if (Borrow::del_by_book_id($del_book_id)) {
+				header("location:" .  $BASE_URL . "/admin/books.php");
+			}
 		}
 	}
 }

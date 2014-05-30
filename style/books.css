@@ -144,6 +144,7 @@
 }
 
 .books-list .title {
+	display: inline-block;
 	text-indent: 30px;
 	line-height: 80px;
 }
@@ -318,4 +319,41 @@ p.nothing {
 	color: #333;
 	font-weight: bold;
 	text-shadow: 0 1px 1px rgba(255, 255, 255, .6);
+}
+
+.btn {
+	display: inline-block;
+	margin-top: 5px;
+	font-size: 15px;
+	border: 1px solid #3498DB;
+	padding: 2px 15px;
+	border-radius: 30px;
+}
+
+.btn:hover  {
+	background-color: #3498DB;
+	color: #FFF;
+}
+
+.btn.disable {
+	border-color: #7F8C8D;
+	color: #7F8C8D;
+}
+
+.btn.disable:hover {
+	background-color: #7F8C8D;
+	color: #FFF;
+}
+.user-borrow-info {
+	padding-right: 20px;
+	padding-left: 20px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	height: inherit;
+	background-color: #3498DB;
+}
+.user-borrow-info p {
+	font-size: 12px;
+	line-height: 18px;
+	color: #FFF;
 }

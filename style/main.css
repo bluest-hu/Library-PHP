@@ -289,7 +289,7 @@
 }
 
 .header .search-from #s {
-	width: 120px;
+	width: 100px;
 	border-radius: 30px;
 	height: 28px;
 	position: relative;
@@ -299,7 +299,7 @@
 
 .header .search-from #s:focus {
 	border-color: #cAcAcA;
-	width: 200px;
+	width: 190px;
 
 }
 

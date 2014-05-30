@@ -76,16 +76,19 @@ if ($_GET) {
                     }
 
                     while($row = $login_sql->fetch_array()) {
+                       
                         if ($password === $row['password']) {
-                            
+
+
                             $_SESSION['username']   = htmlspecialchars_decode($username);
                             $_SESSION['is_login']   = TRUE;
                             $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
                             $_SESSION['user_bg']    = is_null($row['cover_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['cover_bg'];
                             $unique_id              = User::get_unique();
-                            $_SESSION['level']      = $row['level'];
+                            $_SESSION['level']      = intval($row['level']);
                             $_SESSION['user_id']    = $row['ID'];
-                            $_SESSION['level']      = $row['active'];
+                            $_SESSION['active']     = $row['active']; 
+
 
 
                             setcookie('username', $username, time() + 60 * 60 * 24);
@@ -114,8 +117,8 @@ if ($_GET) {
                             }
 
                             // 跳转到转入页面
-                            $location = is_null($_SESSION['referer_url']) ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
-                            header("Location:" .$BASE_URL. $location); 
+                            $location = is_null($_SESSION['referer_url']) ? "admin/profile.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                            //header("Location:" .$BASE_URL. $location); 
                             
                         } else {
                             array_push($WARN_MESSAGE, '密码或者用户名错误！');
@@ -130,7 +133,7 @@ if ($_GET) {
 // 处理已经登陆的情况
 if (isset($_SESSION['is_login'])) {
     if ($_SESSION['is_login']) {
-        header("Location:user.php?user={$_SESSION['username']}");
+        header("Location:/admin/profile.php?user={$_SESSION['username']}");
     }
 }
 
@@ -158,11 +161,12 @@ if (isset($_COOKIE['username']) && isset($_COOKIE['unique_id']) ) {
                 // 将重要信息写入 SESSION
                 $_SESSION['username']   = htmlspecialchars_decode($cookies_username);
                 $_SESSION['is_login']   = TRUE;
+                $_SESSION['user_id']    = $row['ID'];
                 $_SESSION['avatar']     = is_null($row['avatar']) ? $DEFAULT_USER_AVASTAR : $row['avatar'];
                 $_SESSION['level']      = $row['level'];
                 $_SESSION['user_bg']    = is_null($row['cover_bg']) ? $DEFAULT_USER_BACKGROUND_IMAGE : $row['cover_bg'];
                 $cookies_unique_id      = User::get_unique(); 
-
+                  $_SESSION['active']     = $row['active']; 
                 // 处理自动登录
                 $update_query = "UPDATE users 
                             SET unique_id = '$cookies_unique_id'
@@ -183,7 +187,7 @@ if (isset($_COOKIE['username']) && isset($_COOKIE['unique_id']) ) {
                         setcookie('avatar', $_SESSION['avatar'], $COOKIES_TIME);
 
                         // 跳转到转入页面
-                        $location = $_SESSION['referer_url'] == NULL ? "user.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
+                        $location = $_SESSION['referer_url'] == NULL ? "admin/profile.php?user=". $_SESSION['username'] : $_SESSION['referer_url'];
                         header("Location:" . $BASE_URL . $location); 
                     }
                 }

@@ -14,44 +14,16 @@ $is_my_page = false;
 $get_user_name = "";
 
 // 没有登陆切没有指定查看的用户 强制跳转到登陆
-if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level'] = 0) {
+if (!isset($_SESSION['is_login']) && $_SESSION['is_login'] == false) {
 	header("Location:" . $BASE_URL . "login.php"); 
 }
 
 $user_id = $_SESSION['user_id'];	
 
-if ($_GET) {
-	if (isset($_GET['u_id'])) {
-		$user_id = $_GET['u_id'];
-	} 
-}
-
 
 $user_info = User::get_info_by_id($user_id);
 
-if ($_GET && $_SESSION['level'] == 1) {
-	if (isset($_GET['action']) && isset($_GET['id'])) {
-		if ($_GET['action'] == "accepte" ) {
-			$complete_id = $_GET['id'];
-			if (Borrow::accept_by_id($complete_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
-			}
-		} else if ($_GET['action'] == "return_money") {
-			$return_money_id = $_GET['id'];
 
-			if (Borrow::complete_by_id($return_money_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
-			}
-		} else if ($_GET['action'] == "return") {
-			$return_id = $_GET['id'];
-
-			if (Borrow::complete_by_id($return_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
-			}
-		}
-
-	}
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -135,7 +107,7 @@ $wait_for_agree = Borrow::get_borrowed_info_user_id($user_id, false, false);
 				<th>序号</th>
 				<th>书籍信息</th>
 				<th>申请信息</th>
-				<th>操作</th>
+				<!-- <th>操作</th> -->
 			</tr>
 		</thead>			
 <?php
@@ -171,13 +143,7 @@ $index++;
 	<td>
 		<p><span>申请时间：<?php echo $value['borrow']?></span></p>
 	</td>
-	<td>
-	<?php 
-		if ($user_info['level'] == 1 && $user_info['active'] == 1) {
-	?>
-		<a class="btn agree" href="<?php echo $_SERVER['PHP_SELF'] . "?action=accepte&id=" . $value['id'] ?>">同意借阅</a>	
-	<?php } ?>
-	</td>
+	
 </tr>
 
 
@@ -199,7 +165,7 @@ $wait_for_agree = Borrow::get_extended_info($user_id, 60);
 				<th>序号</th>
 				<th>书籍信息</th>
 				<th>欠款信息</th>
-				<th>操作</th>
+				<!-- <th>操作</th> -->
 			</tr>
 		</thead>	
 
@@ -244,15 +210,7 @@ foreach ($wait_for_agree as $key => $value) {
 			<span class="money">欠费 <?php echo $value['extended'] * 0.5; ?> 元</span>
 		</p>
 	</td>
-	<td>
-		<?php 
-			if ($user_info['level'] == 1 && $user_info['active'] == 1) {
-			?>
-			<a  class="btn agree" href="<?php echo $_SERVER['PHP_SELF'] . "?action=return_money&id=" . $value['id'] ?>">缴纳欠款</a>	
-			<?php 
-			} 
-			?>
-	</td>
+	
 </tr>
 <?php
 }
@@ -271,7 +229,7 @@ $borrowed_books = Borrow::get_borrow_info($user_id);
 				<th>序号</th>
 				<th>书籍信息</th>
 				<th>借阅信息</th>
-				<th>操作</th>
+				<!-- <th>操作</th> -->
 			</tr>
 		</thead>	
 		<tbody>
@@ -320,13 +278,7 @@ foreach ($borrowed_books as $key => $value) {
 				<span>剩余天数 <?php echo $exted_day = round((strtotime($deadtime) - time()) / (60*60*24)) ;?>天</span>
 			</p>
 		</td>
-		<td>
-			<?php if ($exted_day >= 0) { ?>
-				<a href="<?php echo $_SERVER['PHP_SELF'] . "?action=return&id=" . $value['id'] ?>">归还</a>
-			<?php } else {?>
-				<span class="warning">请先缴纳欠款</span>
-			<?php } ?>
-		</td>
+	
 	</tr>
 <?php
 }
@@ -345,19 +297,19 @@ $completed_books = Borrow::get_completed_info($user_id);
 				<th>序号</th>
 				<th>书籍信息</th>
 				<th>借阅信息</th>
-				<th>操作</th>
+				<!-- <th>操作</th> -->
 			</tr>
 		</thead>	
 		<tbody>
 <?php
 $book_info = null; 
 $index = 0;
-
 foreach ($completed_books as $key => $value) {
 	$index++;
+
 	$book_info = Book::get_book_info_by_id($value['book']);
-?>
-		
+
+?>			
 			<tr>
 				<td><?php echo $index; ?></td>
 				<td>
@@ -390,13 +342,11 @@ foreach ($completed_books as $key => $value) {
 						<span>归还时间 <?php echo $value['return'];?></span>
 					</p>
 				</td>
-				<td>
+			<!-- 	<td>
 					无
-				</td>
+				</td> -->
 			</tr>
-			<?php 
-}
-?>	
+<?php } ?>			
 		</tbody>
 	</table>
 

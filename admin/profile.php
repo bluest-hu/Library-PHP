@@ -13,11 +13,10 @@ if (!isset($_SESSION['is_login']) && !isset($_GET["user"]) && $_SESSION['level']
 	header("Location:" . $BASE_URL . "/login.php"); 
 }
 
-
-
 $u_id = $_SESSION['user_id'];
 
 $user = User::Get_info_by_id($u_id);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -49,6 +48,20 @@ $user = User::Get_info_by_id($u_id);
 		color: #666;
 		font-size: 14px;
 		line-height: 24px;
+	}
+
+	.borrow-info {
+		color: #666;
+		line-height: 30px;
+	}
+
+	.borrow-info .count {
+		border:  1px solid #E0E0E0;
+		padding: 1px 4px;
+		text-align: center;
+		border-radius: 3px;
+		margin: 2px;
+		background-color: #EFEFEF;
 	}
     </style>
 </head>
@@ -118,21 +131,31 @@ $user = User::Get_info_by_id($u_id);
 
 						<h3 class="title" style="margin-top:20px;">
 							借阅信息
-							<a class="edit" href="<?php echo $BASE_URL . "/admin/borrow_detail.php" ?>">详细</a>
+
+							<?php if($_SESSION['level']  == 1) { ?>
+								<a class="edit" href="<?php echo $BASE_URL . "/admin/borrow_detail.php" ?>">详细</a>
+							<?php } else { ?>
+								<a class="edit" href="<?php echo $BASE_URL . "/admin/borrow_detail_no_action.php" ?>">详细</a>
+							<?php } ?>
 						</h3>
 
 						<div class="borrow-info">
 							
-							<p>等待管理员同意：
-								<b class="count"><?php echo  count(Borrow::get_borrowed_info_user_id($u_id, false, false)); ?></b>
-								本
+							<p>
+								等待同意：
+								<b class="count"><?php echo  count(Borrow::get_borrowed_info_user_id($u_id, false, false)); ?></b>本
 							</p>
-							<p>已经超期:
-								<b class="count">
-									<?php echo count(Borrow::get_extended_info($u_id, 60)); ?>
-								</b>
-								本
+							<p>已经超期：
+								<b class="count"><?php echo count(Borrow::get_extended_info($u_id, 60)); ?></b>本
 							</p>
+							<p>正在借阅：
+								<b class="count"><?php echo count(Borrow::get_borrow_info($u_id)); ?></b>本
+							</p>
+							<p>
+								曾经借阅：
+								<b class="count"><?php echo count(Borrow::get_completed_info($u_id)); ?></b>本
+							</p>
+
 						</div>
 					</div>
 				</div>

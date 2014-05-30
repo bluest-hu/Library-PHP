@@ -138,7 +138,7 @@ if ($_GET) {
 								<div class="add-result right">
 									<h3 class="title">效果预览</h3>
 									<div class="book-show">
-										<img src="<?php echo $BASE_URL . "/image/book_covers/" . $book['cover'];?>" id="showCover" class="image-cover" alt="">
+										<img src="<?php echo $book['cover'];?>" id="showCover" class="image-cover" alt="">
 									</div>
 								</div>
 							</div>

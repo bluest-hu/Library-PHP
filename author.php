@@ -8,6 +8,8 @@ include(dirname(__FILE__) . "../class/mysql.class.php");
 include(dirname(__FILE__) . "../class/book.class.php");
 include(dirname(__FILE__) . "../class/category.class.php");
 include(dirname(__FILE__) . "../class/author.class.php");
+include(dirname(__FILE__) . "../class/borrow_book.class.php");
+
 
 $author_all = Author::get_all();
 $author_id = 0;

@@ -258,9 +258,29 @@ class Book {
 ?>
 
 
-<div class="books-list right">
+<div class="books-list right clear">
 	<div class="top-nav">
 		<h2 class="title">图书</h2>
+<?php
+
+
+
+
+
+?>
+
+<?php if (isset($_SESSION['is_login']) && $_SESSION['is_login'] == true) { 
+
+$u_id  = $_SESSION['user_id'];
+	?>
+	
+		<div class="user-borrow-info right">
+			<p>等待同意：<b class="count" id="wait"><?php echo  count(Borrow::get_borrowed_info_user_id($u_id, false, false)); ?></b>本</p>
+			<p>已经超期：<b class="count" id="outOfDate"><?php echo count(Borrow::get_extended_info($u_id, 60)); ?></b>本</p>
+			<p>正在借阅：<b class="count" id="isBorrow"><?php echo count(Borrow::get_borrow_info($u_id)); ?></b>本</p>
+			<p>曾经借阅：<b class="count" id=""><?php echo count(Borrow::get_completed_info($u_id)); ?></b>本</p>
+		</div>
+<?php } ?>
 	</div>
 
 	<ul class="books-list-container clear">
@@ -400,6 +420,27 @@ class Book {
 <div class="books-list right">
 		<div class="top-nav">
 		<h2 class="title">图书</h2>
+
+		<?php
+
+
+
+
+?>
+
+<?php if (isset($_SESSION['is_login']) && $_SESSION['is_login'] == true) {
+		$u_id  = $_SESSION['user_id'];
+
+
+ ?>
+	
+		<div class="user-borrow-info right">
+			<p>等待同意：<b class="count" id="wait"><?php echo  count(Borrow::get_borrowed_info_user_id($u_id, false, false)); ?></b>本</p>
+			<p>已经超期：<b class="count" id="outOfDate"><?php echo count(Borrow::get_extended_info($u_id, 60)); ?></b>本</p>
+			<p>正在借阅：<b class="count" id="isBorrow"><?php echo count(Borrow::get_borrow_info($u_id)); ?></b>本</p>
+			<p>曾经借阅：<b class="count" id=""><?php echo count(Borrow::get_completed_info($u_id)); ?></b>本</p>
+		</div>
+<?php } ?>
 	</div>
 	<ul class="books-list-container clear">
 <?php 		$BOOK_LIST_COUNT = 0;
@@ -584,7 +625,6 @@ class Book {
 	 */
 	public static function get_all() {
 
-		$res_arr = array();
 
 		global $DATABASE_CONFIG;
 		global $BASE_URL;
@@ -596,6 +636,8 @@ class Book {
 			ORDER BY publish_date DESC";
 
 		$result = $sql->query_db($query);
+
+		$res_arr = array();
 
 		if ($result) {
 			while($row = $sql->fetch_array()) {
@@ -835,6 +877,202 @@ class Book {
 			return MySQLDatabase::query($query);
 		}
 		return FALSE;
+	}
+
+
+	public static function return_book($book_id, &$ERROR_MESSAGE) {
+		global $DATABASE_CONFIG;
+		
+		$CAN_SUBMIT = TRUE;
+		
+
+		$book = Book::get_book_info_by_id($book_id);
+
+		if (!$book) {
+			array_push($ERROR_MESSAGE, "该书不存在！");
+			$CAN_SUBMIT = FALSE;
+		}
+
+
+		if ($CAN_SUBMIT) {
+
+			$borrow = $book['borrow'];
+			
+			$borrow--;
+
+			$query = "UPDATE  books
+				SET borrowed_count = $borrow
+				WHERE ID = $book_id
+				LIMIT 1";
+
+			return MySQLDatabase::query($query);
+		}
+		return FALSE;
+	}
+
+
+	public static function list_search_all(
+		$bookname, 
+		$author, 
+		$category, 
+		$publish_date_begain, 
+		$publish_date_end) {
+
+		global $DATABASE_CONFIG;
+		global $BASE_URL;
+
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+
+		$query = "SELECT *  
+			FROM books 
+			 WHERE "; 
+
+		if (!empty($bookname)) {
+			$query .=" book_name LIKE '%" . $bookname. "%'";
+		} 
+
+		if (!empty($author)) {
+			$query .=" AND author LIKE '%" . $author . "%'";
+		} 
+
+		if (!empty($category) || $category != 0) {
+			$query .=" AND category = $category";
+		} 
+
+		if (!empty($publish_date_begain)) {
+			$query .= " AND publish_date >= $publish_date_begain";
+		}
+
+		if (!empty($publish_date_end)) {
+			$query .= " AND publish_date <= $publish_date_begain";
+		}
+
+		$result = $sql->query_db($query);
+
+		// 检测是否有内容
+		$HAS_CONTENT = TRUE;
+		if ($result) {
+?>
+
+
+<div class="books-list right clear">
+	<div class="top-nav">
+		<h2 class="title">图书</h2>
+<?php
+
+?>
+
+<?php if (isset($_SESSION['is_login']) && $_SESSION['is_login'] == true) { 
+
+$u_id  = $_SESSION['user_id'];
+	?>
+	
+		<div class="user-borrow-info right">
+			<p>等待同意：<b class="count" id="wait"><?php echo  count(Borrow::get_borrowed_info_user_id($u_id, false, false)); ?></b>本</p>
+			<p>已经超期：<b class="count" id="outOfDate"><?php echo count(Borrow::get_extended_info($u_id, 60)); ?></b>本</p>
+			<p>正在借阅：<b class="count" id="isBorrow"><?php echo count(Borrow::get_borrow_info($u_id)); ?></b>本</p>
+			<p>曾经借阅：<b class="count" id=""><?php echo count(Borrow::get_completed_info($u_id)); ?></b>本</p>
+		</div>
+<?php } ?>
+	</div>
+
+	<ul class="books-list-container clear">
+<?php 		$BOOK_LIST_COUNT = 0;
+			while($row = $sql->fetch_array()) {
+				$BOOK_LIST_COUNT++;
+
+?>
+
+		<li class="book">
+			<img class="book-cover" src="<?php echo $BASE_URL .'/image/book_covers/'. $row['cover'];?>" />
+			<a class="book-name" title="<?php echo $row['book_name'];?>" href="<?php echo  $BASE_URL .'/api/api.php?action=get_book_info_by_id&book_id=' . $row['ID'] ;?>" class="book-title">
+				<?php echo  mb_substr($row['book_name'],0,10,"utf-8");?>
+			</a>
+		</li>
+
+
+<?php				
+			}
+			// 如果木有输图书
+			if ($BOOK_LIST_COUNT < 1) {
+				$HAS_CONTENT = FALSE;
+				echo "<p class='nothing'>Nothing Here</p></div>";
+			}
+?>
+	</ul>
+<?php 
+		}else {
+				echo "<p class='nothing'>Nothing Here</p></div>";
+				$HAS_CONTENT = FALSE;
+		}
+?>
+
+</div> 
+<?php
+	}
+
+
+	public static function search_all($bookname, $author, $category, $publish_date_begain, $publish_date_end) {
+		
+		global $DATABASE_CONFIG;
+		global $BASE_URL;
+
+		$sql = new MySQLDatabase($DATABASE_CONFIG);
+
+		$query = "SELECT *  
+			FROM books 
+			 WHERE ";
+
+
+		if (!empty($bookname)) {
+			$query .=" book_name LIKE '%" . $bookname. "%'";
+		} 
+
+		if (!empty($author)) {
+			$query .=" AND author LIKE '%" . $author . "%'";
+		} 
+
+		if (!empty($category) || $category != 0) {
+			$query .=" AND category = $category";
+		} 
+
+		if (!empty($publish_date_begain)) {
+			$query .= " AND publish_date >= $publish_date_begain";
+		}
+
+		if (!empty($publish_date_end)) {
+			$query .= " AND publish_date <= $publish_date_begain";
+		}
+
+
+		$res_arr = array();
+		
+		$result = $sql->query_db($query);
+
+		if ($result) {
+			while($row = $sql->fetch_array()) {
+				$temp_arr = array(
+					'ID' 		=> $row['ID'],
+					'name'		=> $row['book_name'],
+					'publisher'	=> $row['publisher'],
+					'cover'		=> is_null($row['cover']) ? $BASE_URL . "/image/books.png" : $BASE_URL . "/image/book_covers/" . $row['cover'],
+					'author'	=> $row['author'],
+					'date'		=> date("Y-m-d", strtotime($row['publish_date'])),
+					'sum'		=> $row['sum_count'],
+					'borrow'	=> $row['borrowed_count'],
+					'cate'		=> Category::get_cate_name_by_id($row['category']),
+					'tag'		=> $row['tags'],
+					'summary' 	=> htmlspecialchars_decode($row['summary'])
+					);
+
+				array_push($res_arr, $temp_arr);
+			}
+
+			return $res_arr;
+		}
+		return False;
 	}
 }
 ?>

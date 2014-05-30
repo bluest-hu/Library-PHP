@@ -10,10 +10,10 @@
 				<?php
 				switch($_SESSION['level']) {
 					case 0:
-						echo "Super";
+						echo "普通用户";
 						break;
 					case 1:
-						echo "普通用户";
+						echo "管理员";
 						break;
 					case 2:
 						echo "Admin";
@@ -31,14 +31,13 @@
 	<nav class="navigation">
 		<ul>
 			<li>
-				<a href="<?php echo $BASE_URL . "/user.php" ?>"><span class="icons">&#xF080</span>Profile</a>
+				<a href="<?php echo $BASE_URL . "/admin/profile.php" ?>"><span class="icons">&#xF080</span>Profile</a>
 			</li>
+			<?php 
+			if($_SESSION['level'] == "1") { ?>
 			<li>
 				<a href="<?php echo $BASE_URL . "/admin/borrow_detail.php";?>"><span class="icons">&#xF133</span>借阅信息</a>
 			</li>
-<!-- 			<li>
-				<a href=""><span class="icons">&#xF04D</span>设置</a>
-			</li> -->
 			<li>
 				<a href="<?php echo $BASE_URL . "/admin/books.php" ?>">
 					<span class="icons">&#xF0D2</span>
@@ -47,7 +46,7 @@
 				<ul>
 					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">添加图书</a></li>
 					<li><a href="<?php echo $BASE_URL . "/admin/category.php" ?>">目录管理</a></li>
-					<li><a href="<?php echo $BASE_URL . "/admin/add_books.php" ?>">作者管理</a></li>
+					<!-- <li><a href="<?php //echo $BASE_URL . "/admin/add_books.php" ?>">作者管理</a></li> -->
 				</ul>
 			</li>
 			<li>
@@ -56,6 +55,13 @@
 					用户管理
 				</a>
 			</li>
+				<?php } else { ?>
+			<li>
+				<a href="<?php echo $BASE_URL . "/admin/borrow_detail_no_action.php";?>"><span class="icons">&#xF133</span>借阅信息</a>
+			</li>	
+				<?php } ?>
+
+			
 			
 		</ul>
 	</nav>

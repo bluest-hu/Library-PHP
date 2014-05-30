@@ -5,6 +5,8 @@ include(dirname(__FILE__) . "../../config.php");
 include(dirname(__FILE__) . "../../function.php");
 include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
+include(dirname(__FILE__) . "../../class/book.class.php");
+
 
 
 // 没有登陆切没有指定查看的用户 强制跳转到登陆
@@ -222,6 +224,7 @@ if ($_GET) {
 									<th>序号：</th>
 									<th>分类：</th>
 									<th>描述：</th>
+									<th>图书数目：</th>
 									<th>添加日期：</th>
 									<th>操作：</th>
 								</tr>
@@ -248,6 +251,7 @@ foreach ($cate_arr as $key => $value) {
 		<a href="<?php echo $cate_url ?>"><?php echo $value['name']; ?></a>
 	</td>
 	<td class="cate-desc"><?php echo $cate_desc_output ?></td>
+	<td><?php echo Book::get_books_sum($value['id']);?></td>
 	<td><?php echo $time ;?></td>
 	<td class="cate_list_action">
 		<a class="del-btn" href="<?php echo $_SERVER['PHP_SELF']. '?action=cate_del&cate_id=' . $value['id'];?>">删除</a> 
