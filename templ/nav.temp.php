@@ -55,7 +55,7 @@ function get_current($target_name) {
          if (isset($_SESSION['is_login']) && $_SESSION['is_login'] == true) {
 		?>
 			<div class="user-area clear">
-				<a class="avatar avatar-50 left" href="<?php echo $BASE_URL . "/user.php?user=" . $_SESSION['username'] ?>">
+				<a class="avatar avatar-50 left" href="<?php echo $BASE_URL . "/admin/profile.php?user=" . $_SESSION['username'] ?>">
 					<img class="avatar-50" src="<?php echo isset($_SESSION['avatar']) ?  $_SESSION['avatar'] : "image/default.png";  ?>">
 				</a>
 				<div class="user-title left clear">

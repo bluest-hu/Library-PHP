@@ -77,7 +77,7 @@ $user = User::Get_info_by_id($u_id);
 					<div class="user-profile left">
 						<h3 class="title">
 							用户信息
-							<a class="edit" href="">编辑</a>
+							<a class="edit" href="<?php echo $BASE_URL . "/admin/profile_edit.php" ?>">编辑</a>
 						</h3>
 
 						<div>
@@ -119,12 +119,12 @@ $user = User::Get_info_by_id($u_id);
 										<b>地址：</b>
 										<?php echo $user['location']; ?>
 									</span>
-									<br>
+								<!-- 	<br>
 									<span>
 										<span class="icons">&#xF046</span>
 										<b>生日：</b>
 										<?php echo $user['location']; ?>
-									</span>
+									</span> -->
 								</div>
 							</div>
 						</div>

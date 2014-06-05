@@ -34,19 +34,19 @@ if ($_GET && $_SESSION['level'] == 1) {
 		if ($_GET['action'] == "accepte" ) {
 			$complete_id = $_GET['id'];
 			if (Borrow::accept_by_id($complete_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php?u_id=" . $user_id);
 			}
-		} else if ($_GET['action'] == "return_money") {
+		} else if ($_GET['action'] == "return_money?u_id=" . $user_id) {
 			$return_money_id = $_GET['id'];
 
 			if (Borrow::complete_by_id($return_money_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php?u_id=" . $user_id);
 			}
 		} else if ($_GET['action'] == "return") {
 			$return_id = $_GET['id'];
 
 			if (Borrow::complete_by_id($return_id)) {
-				header("Location:" . $BASE_URL . "/admin/borrow_detail.php");
+				header("Location:" . $BASE_URL . "/admin/borrow_detail.php?u_id=" . $user_id);
 			}
 		}
 
@@ -173,7 +173,7 @@ $index++;
 	</td>
 	<td>
 	<?php 
-		if ($user_info['level'] == 1 && $user_info['active'] == 1) {
+		if ($_SESSION['level'] == 1 && $user_info['active'] == 1) {
 	?>
 		<a class="btn agree" href="<?php echo $_SERVER['PHP_SELF'] . "?action=accepte&id=" . $value['id'] ?>">同意借阅</a>	
 	<?php } ?>

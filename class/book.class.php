@@ -884,7 +884,6 @@ $u_id  = $_SESSION['user_id'];
 		global $DATABASE_CONFIG;
 		
 		$CAN_SUBMIT = TRUE;
-		
 
 		$book = Book::get_book_info_by_id($book_id);
 
@@ -942,12 +941,14 @@ $u_id  = $_SESSION['user_id'];
 		} 
 
 		if (!empty($publish_date_begain)) {
-			$query .= " AND publish_date >= $publish_date_begain";
+			$query .= " AND publish_date >= '$publish_date_begain'";
 		}
 
 		if (!empty($publish_date_end)) {
-			$query .= " AND publish_date <= $publish_date_begain";
+			$query .= " AND publish_date <= '$publish_date_end'";
 		}
+
+		//echo  $query;
 
 		$result = $sql->query_db($query);
 
