@@ -156,11 +156,13 @@ foreach ($book_all as $key => $value) {
 				<b>分类：</b>
 				<?php
 					$__cate_name;
-					$cate_url = $BASE_URL . "/books.php?action=list_book&cate_id=". $value['cate']."&page=1";
-					if ((int)$value['cate'] === 0) {
+					$cate_url = $BASE_URL . "/books.php?action=list_book&cate_id=". $value['cate_id']."&page=1";
+
+					if ((int)$value['cate_id'] === 0) {
 						$__cate_name = "未分类";
 					}  else {
-						$__cate_name =  Category::get_cate_name_by_id((int)$value['cate']); 
+						$__cate_name =  $value['cate'];
+
 					}
 				?>
 

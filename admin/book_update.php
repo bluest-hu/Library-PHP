@@ -8,12 +8,13 @@ include(dirname(__FILE__) . "../../class/mysql.class.php");
 include(dirname(__FILE__) . "../../class/user.class.php");
 include(dirname(__FILE__) . "../../class/category.class.php");
 include(dirname(__FILE__) . "../../class/book.class.php");
+include(dirname(__FILE__) . "../../class/author.class.php");
 
 // 存储警告信息
 $WARN_MESSAGE = array();
 $SUCESS_MESSAGE = array();
 
-
+$CAN_SUBMIT = true;
 
 if ($_GET) {
 
@@ -22,21 +23,123 @@ if ($_GET) {
 
 	if ($_GET['action'] == "book_update_submit") {
 
-			$bookname 		= $_POST['bookname'];
-			$publisher 		= $_POST['publisher'];
-			$author 		= $_POST['author'];
+
+			// $bookname_old 		= $book['name'];
+			// $publisher_old 		= $book['publisher'];
+			// $author_old 		= $book['author'];
+			// $cover_old 			= $book["cover"];
+			// $publish_date_old 	= $book['date'];
+			// $sum_old 			= $book['sum'];
+			// $category_old 		= $book['cate_id'];
+			// $summary_get 		= $book['summery'];
+
+
+			$bookname_get 		= MySQLDatabase::escape(trim($_POST['bookname']));
+			$publisher_get 		= MySQLDatabase::escape(trim($_POST['publisher']));
+			$author_get 		= MySQLDatabase::escape(trim($_POST['author']));
 			// 处理封面
-			$cover 			= isset($_POST['cover']) ? $_POST['cover'] : "";
-			$publish_date 	= $_POST['publishDate'];
-			$sum_count 		= $_POST['sumCount'];
-			$category 		= $_POST['catagory'];
-			$summary 		= $_POST['summery'];
+			$publish_date_get 	= MySQLDatabase::escape(trim($_POST['publishDate']));
+			$sum_count_get 		= MySQLDatabase::escape(trim($_POST['sumCount']));
+			$category_get 		= MySQLDatabase::escape(trim($_POST['catagory']));
+			$summary_get 		= MySQLDatabase::escape(trim($_POST['summery']));
+
+			if (empty($bookname_get)) {
+				$CAN_SUBMIT = false;
+				array_push($WARN_MESSAGE, '用户名不能为空');
+			}
 
 
-			// 更新哈~~ 老子不验证 ID 了
-			// 特么烦死了
+	 		if (!empty($author_get)) {
+				if (!Author::check_author_is_exit($author_get)) {
+					if (!Author::create_author_by_name($author_get)) {
+					}
+				}
+			}
 
-			
+			$FILE_UPLOAD_CONFIG = array(
+				'MAX_FILE_SIZE' => 10000 * 1000,
+				'TYPE' 			=> array(
+					'image/jpeg',
+					'image/png',
+					'image/gif',
+					'image/pjpeg'
+					),
+				'DIR' 			=> '../image/book_covers/'
+				);
+
+			if ($_FILES && $CAN_SUBMIT) {
+				$file = $_FILES['cover'];
+
+				if ($file['error'] == 0) {
+					// FLAG 能否上传成功的标志位
+					$CAN_UPLOAD = true;
+
+					// 检查文件尺寸
+					if ($file["size"] > $FILE_UPLOAD_CONFIG['MAX_FILE_SIZE']) {
+						array_push($WARN_MESSAGE, '上传文件尺寸过大');
+						$CAN_UPLOAD = false;
+					}
+
+					// 检查文件类型
+					if (!in_array($file['type'], $FILE_UPLOAD_CONFIG['TYPE'])) {
+						array_push($WARN_MESSAGE, '上传文件类型不符合');
+						$CAN_UPLOAD = false;
+					}
+				
+					$filename = md5("$bookname_get") . getExtenName($file['name']);
+					$file_full_name = $FILE_UPLOAD_CONFIG['DIR'] . $filename;
+
+					if ($CAN_UPLOAD) {
+
+						// 上传成功
+						if (move_uploaded_file($file['tmp_name'], $file_full_name)) {
+							$cover = $filename;
+
+							$query = "UPDATE books
+								SET cover = '$cover'
+								WHERE ID = $book_id
+								LIMIT 1";
+								MySQLDatabase::query($query);
+						} 
+					} else {
+						array_push($WARN_MESSAGE, "文件上传失败");
+					}
+				} else {
+					switch ($file['error']) {
+						case UPLOAD_ERR_INI_SIZE :
+							break;
+						case UPLOAD_ERR_FORM_SIZE :
+							break;
+						case UPLOAD_ERR_PARTIAL :
+							break;
+						case UPLOAD_ERR_NO_FILE :
+							break;
+						case UPLOAD_ERR_NO_TMP_DIR :
+							break;
+						case UPLOAD_ERR_CANT_WRITE :	
+							break;
+						default:
+							break;
+					}
+				}
+			}
+
+			$query = "UPDATE books
+				SET book_name='$bookname_get', 
+					publisher='$publisher_get', 
+					author='$author_get', 
+					publish_date='$publish_date_get',
+					sum_count=$sum_count_get, 
+					category='$category_get', 
+					summary='$summary_get'
+				WHERE ID = $book_id";
+
+			$result = MySQLDatabase::query($query);
+
+
+			if ($result) {
+				header("location:" . $BASE_URL . "/admin/books.php");
+			}			
 	}
 } else {
 	// 木有GET请求就跳
@@ -108,7 +211,7 @@ if ($_GET) {
 <div class="clear">
 	<label for="cateDropDownInput">图书分类：</label>
 	<div class="drop-down-input catagory-input left">
-		<input class="input-text" id="cateDropDownInput" type="text" placeholder="默认分类" readonly value="<?php echo Category::get_cate_name_by_id((int)$book['cate']); ?>">
+		<input class="input-text" id="cateDropDownInput" type="text" placeholder="默认分类" readonly value="<?php echo $book['cate']; ?>">
 		<span class="arrow-container"><span class="arrow">&#xF16B</span></span>
 		<div class="options">
 			<?php 
@@ -121,7 +224,7 @@ if ($_GET) {
 
 			?>
 		</div>
-		<input class="hidden-input" type="hidden" name="catagory" value="<?php echo (int)$book['cate']; ?>">
+		<input class="hidden-input" type="hidden" name="catagory" value="<?php echo $book['cate_id']; ?>">
 	</div>
 </div>
 
@@ -185,6 +288,13 @@ if ($_GET) {
 			'indent', 
 			'outdent'
 		]
+	});
+
+	$(function () {
+		var $editor = $("#editor");
+		if ($editor.attr("value") != "") {
+			editor.setValue($editor.attr("value"));
+		}
 	});
 
 	$(function() {

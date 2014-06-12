@@ -125,6 +125,8 @@ class Book {
 					if (move_uploaded_file($file['tmp_name'], $file_full_name)) {
 						$cover = $filename;
 
+						
+
 					} 
 				} else {
 					array_push($WARN_MESSAGE, "文件上传失败");
@@ -609,6 +611,7 @@ $u_id  = $_SESSION['user_id'];
 					'sum'		=> $row['sum_count'],
 					'borrow'	=> $row['borrowed_count'],
 					'cate'		=> Category::get_cate_name_by_id($row['category']),
+					'cate_id'	=> $row['category'],
 					'tag'		=> $row['tags'],
 					'summary' 	=> htmlspecialchars_decode($row['summary'])
 					);
@@ -650,6 +653,7 @@ $u_id  = $_SESSION['user_id'];
 					'date'		=> date("Y-m-d", strtotime($row['publish_date'])),
 					'sum'		=> $row['sum_count'],
 					'borrow'	=> $row['borrowed_count'],
+					'cate_id' 	=> $row['category'],
 					'cate'		=> Category::get_cate_name_by_id($row['category']),
 					'tag'		=> $row['tags'],
 					'summary' 	=> htmlspecialchars_decode($row['summary'])

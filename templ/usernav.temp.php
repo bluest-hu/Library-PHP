@@ -2,7 +2,7 @@
 	<div class="user-card">
 		<img class="user-bg" src="<?php echo $_SESSION['user_bg']; ?>" alt="">
 		<div class="user-info">
-			<a class="avatar avatar-50 left user-avastar" href="<?php echo $BASE_URL . "/user.php?user=" . $_SESSION['username'] ?>">
+			<a class="avatar avatar-50 left user-avastar" href="<?php echo $BASE_URL . "/admin/profile.php"; ?>">
 				<img class="avatar avatar-50" src="<?php echo isset($_SESSION['avatar']) ?  $_SESSION['avatar'] : "image/default.png";  ?>">
 			</a>
 			<div class="text-info">

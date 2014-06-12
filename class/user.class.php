@@ -380,7 +380,7 @@ class User {
 					'time'		=> date("Y-m-d", strtotime($row['register_time'])),
 					'uid'		=> $row['unique_id'],
 					'email'		=> $row['email'],
-					'avatar'	=> is_null($row['avatar']) ? $BASE_URL . "/image/default.png": $BASE_URL . "/image/". $row['avatar'],
+					'avatar'	=> is_null($row['avatar']) ? $BASE_URL . "/image/default.png": $BASE_URL . "/image/avatar/". $row['avatar'],
 					'sex'		=> $row['sex'],
 					'loaction'	=> is_null($row['location']) ? "未知" : $row['location'],
 					'level'		=> $row['level'],

@@ -109,6 +109,7 @@ if ($_GET) {
 
 	.avatar {
 		margin-right: 10px;
+		height: 50px;
 	}
 
 	.action-area {

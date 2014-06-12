@@ -120,9 +120,6 @@ if ( $_GET ) {
 				}
 			}
 
-
-
-
 			if ($_FILES) {
 
 				$file_avatar = $_FILES['avatar'];
@@ -188,7 +185,47 @@ if ( $_GET ) {
 		}
 
 		header("location:" . $BASE_URL . "/admin/profile.php");
+	} else if (isset($_GET['action']) && $_GET['action'] === "change_passwd" &&isset($_POST)) {
+		$passwd_old = trim(MySQLDatabase::escape($_POST['passwd_old']));
+		$passwd_new = trim(MySQLDatabase::escape($_POST['passwd_new']));
+		$password_repeat = trim(MySQLDatabase::escape($_POST['passwd_repeat']));
+
+		if (empty($passwd_old)) {
+			array_push($WARN_MESSAGE, '原密码不能为空');
+		} else {
+
+			$passwd_old = User::encry_password($_SESSION['username'], $passwd_old);
+			$user = User::get_info_by_id($_SESSION['user_id']);
+
+			if ($user) {
+
+				if ($user['password'] === $passwd_old) {
+
+					if(!empty($passwd_new)) {
+						if ($passwd_new === $password_repeat) {
+							$password = User::encry_password($_SESSION['username'], $passwd_new);
+							$ID = $_SESSION['user_id'];
+							$query = "UPDATE users
+								set password = '$password'
+								WHERE ID = $ID";
+
+							if (MySQLDatabase::query($query)) {
+								header("location:" . $BASE_URL . "/admin/profile.php");
+							}
+
+						} else {
+							array_push($WARN_MESSAGE, '两次密码不一致');
+						}
+					} else {
+						array_push($WARN_MESSAGE, '新密码不能为空');
+					}
+				} else {
+						array_push($WARN_MESSAGE, '密码不正确');
+				}
+			}
+		}
 	}
+
 }
 ?>
 <!DOCTYPE html>
@@ -217,7 +254,33 @@ if ( $_GET ) {
 		margin-top: 30px;
 		background-color: #3498DB;
 	}
+	.warning {
+		position: relative;
+		padding: 20px;
+		background: rgb(255, 136, 136);
+		color: #E74C3C;
+		font: normal 13px/1.2 "Microsoft Yahei";
+	}
 
+	.close-btn {
+		position: absolute;
+		display: block;
+		width: 15px;
+		height: 15px;
+		right: 10px;
+		top: 10px;
+		text-align: center;
+		font: normal 12px/15px Arial;
+		border: 1px solid transparent;
+	}
+
+	.close-btn:hover {
+		background: #E74C3C;
+		border-radius: 50%;
+		cursor: pointer;
+		color: #FFF;
+		border: 1px solid #C0392B;
+	}
     </style>
 </head>
 <body>
@@ -272,6 +335,42 @@ if ( $_GET ) {
 
 								<input type="submit" id="submit">
 							</form>
+						</div>
+					</div>
+
+					<div class="user-profile left">
+						<h3 class="title">
+							修改用户密码
+						</h3>
+						<div>
+							<form action="<?php echo $_SERVER['PHP_SELF']; ?>?action=change_passwd" method="POST">
+								<p>
+									<label for="passwdOld">原密码：</label>
+									<input type="password" name="passwd_old" id="passwdOld" required>
+								</p>
+
+								<p>
+									<label for="passwdNew">新密码：</label>
+									<input type="password" name="passwd_new" id="passwdNew" required>
+								</p>
+
+								<p>
+									<label for="passwdRepeat">密码重复：</label>
+									<input type="password" id="passwdRepeat" name="passwd_repeat" required>
+								</p>
+
+								<input type="submit" id="submit">
+							</form>
+							 <?php if (count($WARN_MESSAGE) >= 1) { ?>
+
+			                    <div class="warning message">
+			                        <span class="close-btn">X</span>
+			                         <?php
+			                            foreach ($WARN_MESSAGE as $value) {
+			                                echo "\t\t" . "<p>{$value}</P>\n";
+			                        }?> 
+			                    </div>
+			                <?php } ?>
 						</div>
 					</div>
 				</div>

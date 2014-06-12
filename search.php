@@ -138,7 +138,9 @@ if ($_GET) {
 			$publish_date_begain   	= MySQLDatabase::escape(isset($_POST['publish_date_begain']) ? $_POST['publish_date_begain'] : null);
 			$publish_date_end   	= MySQLDatabase::escape(isset($_POST['publish_date_end']) ? $_POST['publish_date_end'] : null);
 
-			Book::list_search_all($bookname, $author, $category, $publish_date_begain, $publish_date_end);
+			if (!empty($bookname)) {
+				Book::list_search_all($bookname, $author, $category, $publish_date_begain, $publish_date_end);
+			}
 	}
 }?>				
 			<div>		

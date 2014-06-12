@@ -63,6 +63,34 @@ $user = User::Get_info_by_id($u_id);
 		margin: 2px;
 		background-color: #EFEFEF;
 	}
+
+		.warning {
+		position: relative;
+		padding: 20px;
+		background: rgb(255, 136, 136);
+		color: #E74C3C;
+		font: normal 13px/1.2 "Microsoft Yahei";
+	}
+
+	.close-btn {
+		position: absolute;
+		display: block;
+		width: 15px;
+		height: 15px;
+		right: 10px;
+		top: 10px;
+		text-align: center;
+		font: normal 12px/15px Arial;
+		border: 1px solid transparent;
+	}
+
+	.close-btn:hover {
+		background: #E74C3C;
+		border-radius: 50%;
+		cursor: pointer;
+		color: #FFF;
+		border: 1px solid #C0392B;
+	}
     </style>
 </head>
 <body>
@@ -140,6 +168,10 @@ $user = User::Get_info_by_id($u_id);
 						</h3>
 
 						<div class="borrow-info">
+							 <div class="warning message">
+							    <span class="close-btn">X</span>
+							    <p><b>管理员提醒您：</b>您有<?php echo count(Borrow::get_extended_info($u_id, 60)); ?>本书超期了！</p>
+							 </div>
 							
 							<p>
 								等待同意：
